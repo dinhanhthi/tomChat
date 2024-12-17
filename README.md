@@ -1,6 +1,6 @@
-# 🐕 nextjs-tailwind-starter
+# 🦐 xChat
 
-A starter for [Next.js 14+](https://nextjs.org/) with preconfigured [Tailwind CSS](https://tailwindcss.com/), [ESLint](https://eslint.org/), [VSCode](https://code.visualstudio.com/) Settings and [Prettier](https://prettier.io/).
+An UI to run seamlessly LLM services (OpenAI, Claude, Gemini, Mistral,...)
 
 ## Getting Started
 
@@ -15,8 +15,7 @@ yarn --version
 
 > [!WARNING]  
 > `--turbo` [doesn't work](https://github.com/vercel/next.js/issues/42651) with [`yarn` PnP](https://yarnpkg.com/features/pnp), try `npm` or force yarn to use `node-modules` instead!
-> (Using `node_modules` with new `yarn`: `yarn config set nodeLinker node-modules`)
-> (Revert to pnp by `yarn config set nodeLinker pnp`)
+> (`yarn config set nodeLinker node-modules`, revert to use pnp by `yarn config set nodeLinker pnp`)
 
 ```bash
 # install
@@ -47,16 +46,4 @@ yarn reinstall
 
 # run test in watch mode
 yarn test
-```
-
-For an example of an api request, let's make a `GET` to `http://localhost:3001/api/hello`.
-
-## Upgrade guide
-
-```bash
-# Next.js
-yarn add next@latest react@latest react-dom@latest eslint-config-next@latest
-
-# Tailwind
-yarn add -D tailwindcss@latest postcss@latest autoprefixer@latest @tailwindcss/typography@latest eslint-plugin-tailwindcss@latest prettier-plugin-tailwindcss@latest
 ```
