@@ -4,6 +4,7 @@ import { AppSidebar } from '../components/app-sidebar'
 import { SidebarInset, SidebarProvider } from '../components/ui/sidebar'
 import './globals.scss'
 import AppHeader from '../components/app-header'
+import AppInputMsg from '../components/app-input-msg'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,6 +22,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <SidebarInset className="flex flex-col h-full">
             <AppHeader />
             <div className="flex-1">{children}</div>
+            <AppInputMsg className='pb-4' />
           </SidebarInset>
         </SidebarProvider>
       </body>
