@@ -47,3 +47,10 @@ yarn reinstall
 # run test in watch mode
 yarn test
 ```
+
+## Notes
+
+- To change the print width rules: change in 3 places:
+  - `.vscode/settings.json/prettier.printWidth`
+  - `.vscode/settings.json/editor.rulers`
+  - `.prettierrc.printWidth`

@@ -12,7 +12,7 @@
   "typescript.preferences.quoteStyle": "single",
   "prettier.trailingComma": "none",
   "prettier.singleQuote": true,
-  "prettier.printWidth": 100,
+  "prettier.printWidth": 120,
   "prettier.semi": false,
   "search.exclude": {
     "**/dist": true
@@ -23,5 +23,5 @@
     "**/Thumbs.db": true,
     "**/node_modules": true
   },
-  "editor.rulers": [100]
+  "editor.rulers": [120]
 }

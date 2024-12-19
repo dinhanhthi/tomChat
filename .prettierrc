@@ -9,7 +9,7 @@
   "singleQuote": true,
   "tabWidth": 2,
   "bracketSameLine": false,
-  "printWidth": 100,
+  "printWidth": 120,
   "importOrder": ["^@core/(.*)$", "^@server/(.*)$", "^@ui/(.*)$", "^[./]"],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
