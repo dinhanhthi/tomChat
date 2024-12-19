@@ -1,6 +1,6 @@
 'use client'
 
-import { CircleUserRound, Edit, Search } from 'lucide-react'
+import { CircleUserRound, Edit, MessageSquareShare, Search, SlidersHorizontal } from 'lucide-react'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { SidebarTrigger, useSidebar } from './ui/sidebar'
@@ -11,7 +11,11 @@ export default function AppHeader() {
     <header className="flex flex-row justify-between items-center pl-2 pr-4 h-14 shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
       <div className="flex items-center gap-2">
         <div className="flex items-center">
-          <SidebarTrigger className="group-data-[collapsible=icon]:opacity-0" />
+          <SidebarTrigger
+            tooltip="Toggle sidebar (⌘+B)"
+            tooltipPosition="bottom"
+            className="group-data-[collapsible=icon]:opacity-0"
+          />
           {!open && (
             <Button variant="ghost" size="iconBig" tooltip="Search chat (⌘+K)" tooltipPosition="bottom">
               <Search />
@@ -24,8 +28,14 @@ export default function AppHeader() {
         <Separator orientation="vertical" className="mr-2 h-4" />
         <div className="flex items-center gap-2">Some useful title</div>
       </div>
-      <div className="flex flex-row gap-2 items-center">
-        <Button variant="ghost" size="iconBig" tooltip="Search chat (⌘+K)" tooltipPosition="bottom">
+      <div className="flex flex-row items-center">
+        <Button variant="ghost" size="iconBig" tooltip="Share this chat" tooltipPosition="bottom">
+          <MessageSquareShare />
+        </Button>
+        <Button variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
+          <SlidersHorizontal />
+        </Button>
+        <Button variant="ghost" size="iconBig" tooltip="Profile" tooltipPosition="bottom">
           <CircleUserRound />
         </Button>
       </div>

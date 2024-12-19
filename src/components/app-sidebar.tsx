@@ -1,5 +1,12 @@
-import { Sidebar, SidebarContent, SidebarHeader, SidebarRail, SidebarSeparator } from '@/components/ui/sidebar'
-import { Github } from 'lucide-react'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+  SidebarSeparator
+} from '@/components/ui/sidebar'
+import { BadgeInfo, BookOpenText, Bug, Github, Lightbulb, ScrollText } from 'lucide-react'
 import Image from 'next/image'
 import Logo from '../../public/logo.svg'
 import { SearchForm } from './search-form'
@@ -33,14 +40,6 @@ const conversations = [
 export function AppSidebar() {
   return (
     <Sidebar collapsible="offcanvas">
-      {/* <SidebarHeader className="p-0 flex flex-row items-center justify-between gap-2 h-14 px-2">
-        <SidebarTrigger tooltip="Close sidebar" />
-        <div className="flex flex-1 items-center justify-end">
-          <Button variant="ghost" size="iconBig" tooltip="New chat" tooltipPosition="bottom">
-            <Edit />
-          </Button>
-        </div>
-      </SidebarHeader> */}
       <SidebarHeader className="flex flex-row gap-2 justify-betweens">
         <div className="flex items-center flex-row gap-2 flex-1">
           <div className="flex flex-row whitespace-nowrap flex-nowrap items-center">
@@ -51,7 +50,7 @@ export function AppSidebar() {
           </div>
           <div className="text-[0.6rem] text-slate-600 font-mono border border-slate-300 rounded-lg px-2">v0.0.0</div>
         </div>
-        <Button variant="ghost" size="iconBig">
+        <Button variant="ghost" size="iconBig" tooltip="Source code" tooltipPosition="bottom">
           <Github />
         </Button>
       </SidebarHeader>
@@ -65,20 +64,23 @@ export function AppSidebar() {
 
       <SidebarSeparator />
 
-      {/* <SidebarFooter className="flex flex-row gap-2 justify-betweens">
-        <div className="flex items-center flex-row gap-2 flex-1">
-          <div className="flex flex-row whitespace-nowrap flex-nowrap items-center">
-            <div className="p-2 rounded-lg">
-              <Image src={Logo} alt="xChat" width={20} height={20} className="shrink-0" />
-            </div>
-            <div className="text-slate-600 text-sm font-medium">xChat</div>
-          </div>
-          <div className="text-[0.6rem] text-slate-600 font-mono border border-slate-300 rounded-lg px-2">v0.0.0</div>
-        </div>
-        <Button variant="ghost" size="iconBig">
-          <Github />
+      <SidebarFooter className="flex flex-row items-center justify-evenly">
+        <Button variant="ghost" size="iconBig" tooltip="About" tooltipPosition="bottom">
+          <BadgeInfo />
         </Button>
-      </SidebarFooter> */}
+        <Button variant="ghost" size="iconBig" tooltip="Documentation" tooltipPosition="bottom">
+          <BookOpenText />
+        </Button>
+        <Button variant="ghost" size="iconBig" tooltip="Changelog" tooltipPosition="bottom">
+          <ScrollText />
+        </Button>
+        <Button variant="ghost" size="iconBig" tooltip="Bug report" tooltipPosition="bottom">
+          <Bug />
+        </Button>
+        <Button variant="ghost" size="iconBig" tooltip="Feature request" tooltipPosition="bottom">
+          <Lightbulb />
+        </Button>
+      </SidebarFooter>
 
       <SidebarRail />
     </Sidebar>

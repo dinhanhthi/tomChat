@@ -1,5 +1,9 @@
+import Container from '../components/container';
+
 export default function Home() {
   return (
-    <div>Messages</div>
+    <Container>
+      Main messages
+    </Container>
   )
 }
