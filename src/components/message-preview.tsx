@@ -1,10 +1,14 @@
+import { Copy, RefreshCw, Volume2 } from 'lucide-react'
 import Image from 'next/image'
-import Markdown from 'react-markdown'
+import RemarkMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
+import rehypeKatex from 'rehype-katex'
 import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
 import LogoOpenAI from '../../public/img/services/openai.svg'
 import { Message } from '../interface'
-import { cn } from '../lib/utils'
+import { cn, processMarkdownString } from '../lib/utils'
+import { Button } from './ui/button'
 
 export default function MessagePreview(props: { className?: string; message: Message }) {
   const { message: msg, className } = props
@@ -23,10 +27,27 @@ export default function MessagePreview(props: { className?: string; message: Mes
           <Image src={LogoOpenAI} alt="OpenAI" width={20} height={20} className="shrink-0 !m-0" />
         </div>
       )}
-      <div>
-        <Markdown className={cn('text-sm x-prose [&>*]:first:mt-0')} rehypePlugins={[rehypeHighlight, remarkGfm]}>
-          {msg.text}
-        </Markdown>
+      <div className="flex-1 flex flex-col gap-2">
+        <RemarkMarkdown
+          className={cn('text-sm x-prose [&>*]:first:mt-0 [&>*]:last:mb-0')}
+          remarkPlugins={[remarkMath, remarkGfm]}
+          rehypePlugins={[rehypeHighlight, rehypeKatex]}
+        >
+          {processMarkdownString(msg.text)}
+        </RemarkMarkdown>
+        {!msg.user && (
+          <div className="flex flex-row items-center ml-auto opacity-60 hover:opacity-100">
+            <Button variant="ghost" size="icon" tooltip="Read aloud" tooltipPosition="bottom">
+              <Volume2 />
+            </Button>
+            <Button variant="ghost" size="icon" tooltip="Copy" tooltipPosition="bottom">
+              <Copy />
+            </Button>
+            <Button variant="ghost" size="icon" tooltip="Try again" tooltipPosition="bottom">
+              <RefreshCw />
+            </Button>
+          </div>
+        )}
       </div>
     </article>
   )

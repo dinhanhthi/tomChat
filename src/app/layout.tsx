@@ -5,6 +5,7 @@ import AppInputMsg from '../components/app-input-msg'
 import { AppSidebar } from '../components/app-sidebar'
 import { SidebarProvider } from '../components/ui/sidebar'
 import './globals.scss'
+import { cn } from '../lib/utils'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,7 +17,7 @@ export const metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cn('overflow-y-hidden', inter.className)}>
         <SidebarProvider>
           <AppSidebar />
           <main className="flex flex-col h-svh flex-1 bg-background">

@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import 'highlight.js/styles/github.css';
+@import 'katex/dist/katex.min.css';
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -27,7 +28,7 @@
     @apply mt-0;
   }
   .x-h1 {
-    @apply text-2xl mb-4;
+    @apply text-2xl mb-4 font-bold;
   }
   .x-prose {
     @apply prose max-w-none leading-normal;
@@ -137,4 +138,8 @@
 }
 ::-webkit-scrollbar-track {
   background: transparent;
+}
+
+.katex-display {
+  overflow: auto hidden;
 }
