@@ -10,12 +10,12 @@ export function processMarkdownString(md: string) {
   // md = md.replace(/\\(\(|\[)(.*?)\\(\)|\])/g, (_, open, content) => {
   //   return open === '(' ? `$${content}$` : `$$${content}$$`
   // })
-  // md = md
-  //   .replace(/\\\(.*?\\\)/g, match => `$${match.slice(2, -2)}$`) // Convert \( ... \) to $ ... $
-  //   .replace(/\\\[.*?\\\]/g, match => `$$${match.slice(2, -2)}$$`) // Convert \[ ... \] to $$ ... $$
+  md = md
+    .replace(/\\\(.*?\\\)/g, match => `$${match.slice(2, -2)}$`) // Convert \( ... \) to $ ... $
+    // .replace(/\\\[.*?\\\]/g, match => `$$${match.slice(2, -2)}$$`) // Convert \[ ... \] to $$ ... $$
   // .replace(/\\\[(.*?)\\\]/g, '$$$$$1$$$$')
-  // return md
-  return convertMathEquations(md)
+  return md
+  // return convertMathEquations(md)
 }
 
 function convertMathEquations(input: string): string {
