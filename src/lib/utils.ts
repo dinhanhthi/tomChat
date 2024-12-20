@@ -6,86 +6,53 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function processMarkdownString(md: string) {
-  // Replace all \( \) with $ $ for inline math and \[ \] with $$ $$ for block math
-  // md = md.replace(/\\(\(|\[)(.*?)\\(\)|\])/g, (_, open, content) => {
-  //   return open === '(' ? `$${content}$` : `$$${content}$$`
-  // })
+  // Convert \( ... \) to $ ... $
   md = md
     .replace(/\\\(.*?\\\)/g, match => `$${match.slice(2, -2)}$`) // Convert \( ... \) to $ ... $
-    // .replace(/\\\[.*?\\\]/g, match => `$$${match.slice(2, -2)}$$`) // Convert \[ ... \] to $$ ... $$
-  // .replace(/\\\[(.*?)\\\]/g, '$$$$$1$$$$')
+  // Convert \[ ... \] to $$ ... $$
+  md = convertDisplayStyle(md)
   return md
-  // return convertMathEquations(md)
 }
 
-function convertMathEquations(input: string): string {
-  // Match code blocks enclosed in triple backticks
-  const codeBlockPattern = /```[\s\S]*?```/g
-  const codeBlocks = input.match(codeBlockPattern) || []
+function convertDisplayStyle(text: string): string {
+  let result = '';
+  let inBacktick = false;
+  let inTripleBacktick = false;
+  let currentBlock = '';
+  let i = 0;
 
-  // Match inline code snippets enclosed in single backticks
-  const inlineCodePattern = /`[^`]*`/g
-  const inlineCodes = input.match(inlineCodePattern) || []
-
-  // Replace code blocks and inline code snippets with placeholders
-  let modifiedInput = input
-  codeBlocks.forEach((block, index) => {
-    modifiedInput = modifiedInput.replace(block, `__CODE_BLOCK_${index}__`)
-  })
-  inlineCodes.forEach((code, index) => {
-    modifiedInput = modifiedInput.replace(code, `__INLINE_CODE_${index}__`)
-  })
-
-  // Convert inline math equations
-  modifiedInput = modifiedInput.replace(/\\\((.*?)\\\)/g, '$$($1)$$')
-
-  // Convert block display mode equations
-  modifiedInput = modifiedInput.replace(/\\\[\s*([\s\S]*?)\s*\\\]/, (_match, p1) => {
-    return ` $$\n\n ${p1.trim()} \n $$\n\n`
-  })
-
-  // Restore code blocks and inline code snippets
-  codeBlocks.forEach((block, index) => {
-    modifiedInput = modifiedInput.replace(`__CODE_BLOCK_${index}__`, block)
-  })
-  inlineCodes.forEach((code, index) => {
-    modifiedInput = modifiedInput.replace(`__INLINE_CODE_${index}__`, code)
-  })
-
-  return modifiedInput
+  while (i < text.length) {
+    if (text.slice(i, i + 3) === '```') {
+      inTripleBacktick = !inTripleBacktick;
+      result += '```';
+      i += 3;
+      continue;
+    }
+    
+    if (text[i] === '`' && !inTripleBacktick) {
+      inBacktick = !inBacktick;
+      result += '`';
+      i++;
+      continue;
+    }
+    
+    if (!inBacktick && !inTripleBacktick && text.slice(i, i + 2) === '\\[') {
+      let j = i + 2;
+      while (j < text.length && text.slice(j, j + 2) !== '\\]') {
+        currentBlock += text[j];
+        j++;
+      }
+      if (j < text.length) {
+        result += '$$\n' + currentBlock + '\n$$';
+        currentBlock = '';
+        i = j + 2;
+        continue;
+      }
+    }
+    
+    result += text[i];
+    i++;
+  }
+  
+  return result;
 }
-
-// function convertMathEquations(input: string): string {
-//   // Match code blocks enclosed in triple backticks
-//   const codeBlockPattern = /```[\s\S]*?```/g;
-//   const codeBlocks = input.match(codeBlockPattern) || [];
-
-//   // Match inline code snippets enclosed in single backticks
-//   const inlineCodePattern = /`[^`]*`/g;
-//   const inlineCodes = input.match(inlineCodePattern) || [];
-
-//   // Replace code blocks and inline code snippets with placeholders
-//   let modifiedInput = input;
-//   codeBlocks.forEach((block, index) => {
-//     modifiedInput = modifiedInput.replace(block, `__CODE_BLOCK_${index}__`);
-//   });
-//   inlineCodes.forEach((code, index) => {
-//     modifiedInput = modifiedInput.replace(code, `__INLINE_CODE_${index}__`);
-//   });
-
-//   // Convert inline math equations
-//   modifiedInput = modifiedInput.replace(/\\\((.*?)\\\)/g, '$$($1)$$');
-
-//   // Convert block display mode equations
-//   modifiedInput = modifiedInput.replace(/\\\[(.*?)\\\]/g, '$$$$($1)$$$$');
-
-//   // Restore code blocks and inline code snippets
-//   codeBlocks.forEach((block, index) => {
-//     modifiedInput = modifiedInput.replace(`__CODE_BLOCK_${index}__`, block);
-//   });
-//   inlineCodes.forEach((code, index) => {
-//     modifiedInput = modifiedInput.replace(`__INLINE_CODE_${index}__`, code);
-//   });
-
-//   return modifiedInput;
-// }
