@@ -8,12 +8,11 @@ import remarkMath from 'remark-math'
 import LogoOpenAI from '../../public/img/services/openai.svg'
 import { Message } from '../interface'
 import { cn, processMarkdownString } from '../lib/utils'
+import { Pre } from './markdown-blocks'
 import { Button } from './ui/button'
 
 export default function MessagePreview(props: { className?: string; message: Message }) {
   const { message: msg, className } = props
-  const processedText = processMarkdownString(msg.text)
-  /* ###Thi */ console.log(`👉👉👉 processedText:`, processedText)
 
   return (
     <article
@@ -35,6 +34,9 @@ export default function MessagePreview(props: { className?: string; message: Mes
           className={cn('text-sm x-prose [&>*]:first:mt-0 [&>*]:last:mb-0')}
           remarkPlugins={[remarkMath, remarkGfm]}
           rehypePlugins={[rehypeKatex, rehypeHighlight]}
+          components={{
+            pre: Pre
+          }}
         >
           {processMarkdownString(msg.text)}
         </RemarkMarkdown>

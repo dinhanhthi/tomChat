@@ -1,23 +1,29 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
-export function CodeBlock({ children }: { children: React.ReactNode }) {
-  const [copied, setCopied] = useState(false);
-  
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(children as string);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+const CodeCopyButton: React.FC<{ code: string }> = ({ code }) => {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
 
   return (
-    <div className="relative">
-      <button 
-        onClick={copyToClipboard}
-        className="absolute right-2 top-2"
-      >
-        {copied ? '✓' : 'Copy'}
-      </button>
-      {children}
+    <button onClick={handleCopy} style={{ position: 'absolute', right: '10px', top: '10px' }}>
+      {copied ? 'Copied!' : 'Copy'}
+    </button>
+  )
+}
+
+export const Pre: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const code = children?.toString() || ''
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <CodeCopyButton code={code} />
+      <pre>{children}</pre>
     </div>
-  );
+  )
 }
