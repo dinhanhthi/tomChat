@@ -31,7 +31,7 @@ export default function MessagePreview(props: { className?: string; message: Mes
       )}
       <div className="flex-1 flex flex-col gap-2">
         <RemarkMarkdown
-          className={cn('text-sm x-prose [&>*]:first:mt-0 [&>*]:last:mb-0')}
+          className={cn('text-sm x-prose [&>*]:first:mt-2 [&>*]:last:mb-0')}
           remarkPlugins={[remarkMath, remarkGfm]}
           rehypePlugins={[rehypeKatex, rehypeHighlight]}
           components={{
@@ -41,7 +41,7 @@ export default function MessagePreview(props: { className?: string; message: Mes
           {processMarkdownString(msg.text)}
         </RemarkMarkdown>
         {!msg.user && (
-          <div className="flex flex-row items-center ml-auto opacity-60 hover:opacity-100">
+          <div className="flex flex-row items-center ml-auto text-muted-foreground">
             <Button variant="ghost" size="icon" tooltip="Read aloud" tooltipPosition="bottom">
               <Volume2 />
             </Button>

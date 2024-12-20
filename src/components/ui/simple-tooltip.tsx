@@ -6,9 +6,7 @@ export default function SimpleTooltip(props: { text: string; children: React.Rea
     <TooltipProvider delayDuration={1}>
       <Tooltip>
         <TooltipTrigger asChild>{props.children}</TooltipTrigger>
-        <TooltipContent className={cn({ hidden: props.hidden })}>
-          <p>{props.text}</p>
-        </TooltipContent>
+        <TooltipContent className={cn({ hidden: props.hidden })}>{props.text}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   )

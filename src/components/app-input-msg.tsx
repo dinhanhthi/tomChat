@@ -52,8 +52,8 @@ export default function AppInputMsg(props: { className?: string }) {
             </Button>
           </div>
         </div>
-        <div className="text-[0.7rem] text-stone-500">
-          Usage of this chat: <span className="font-medium">$0.5</span>
+        <div className="text-[0.7rem] text-muted-foreground">
+          Usage of this chat: $0.5, tokens: 100.
         </div>
       </div>
     </Container>

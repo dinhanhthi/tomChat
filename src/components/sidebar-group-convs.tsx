@@ -27,10 +27,10 @@ export default function SidebarGroupConvs(props: {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{props.label}</SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarMenu className='gap-0'>
         {props.conversations.map((conversation, index) => (
           <SidebarMenuItem key={index}>
-            <SidebarMenuButton className='group-data-[collapsible=icon]:opacity-0' asChild>
+            <SidebarMenuButton className='group-data-[collapsible=icon]:opacity-0 text-sm' asChild>
               <a href="#">
                 <span>{conversation.icon}</span>
                 <span>{conversation.content}</span>
