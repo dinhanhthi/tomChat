@@ -28,7 +28,7 @@ export default function AppHeader() {
         <Separator orientation="vertical" className="mr-2 h-4" />
         <div className="flex items-center gap-2">Some useful title</div>
       </div>
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-center gap-2">
         <Button variant="ghost" size="iconBig" tooltip="Share this chat" tooltipPosition="bottom">
           <MessageSquareShare />
         </Button>

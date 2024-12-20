@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'highlight.js/styles/github.css';
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -13,6 +15,30 @@
     --foreground-rgb: 255, 255, 255;
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
+  }
+}
+
+@layer base {
+  .x-code {
+    @apply break-words rounded-md text-gray-600 bg-gray-100 p-[1px_4px_2px_4px]
+    font-mono font-normal before:content-[''] after:content-[''];
+  }
+  .x-headings {
+    @apply mt-0;
+  }
+  .x-h1 {
+    @apply text-2xl mb-4;
+  }
+  .x-prose {
+    @apply prose max-w-none leading-normal;
+    @apply prose-code:x-code;
+    @apply prose-headings:x-headings;
+    @apply prose-h1:x-h1;
+    @apply prose-hr:my-6;
+
+    pre {
+      @apply p-0 m-0 bg-transparent;
+    }
   }
 }
 

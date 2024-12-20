@@ -1,10 +1,10 @@
 import { Inter } from 'next/font/google'
 
-import { AppSidebar } from '../components/app-sidebar'
-import { SidebarInset, SidebarProvider } from '../components/ui/sidebar'
-import './globals.scss'
 import AppHeader from '../components/app-header'
 import AppInputMsg from '../components/app-input-msg'
+import { AppSidebar } from '../components/app-sidebar'
+import { SidebarProvider } from '../components/ui/sidebar'
+import './globals.scss'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,11 +19,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={inter.className}>
         <SidebarProvider>
           <AppSidebar />
-          <SidebarInset className="flex flex-col h-full">
+          <main className="flex flex-col h-svh flex-1 bg-background">
             <AppHeader />
-            <div className="flex-1">{children}</div>
-            <AppInputMsg className='pb-4' />
-          </SidebarInset>
+            <div className="flex-1 min-h-0">{children}</div>
+            <AppInputMsg className="pb-2" />
+          </main>
         </SidebarProvider>
       </body>
     </html>
