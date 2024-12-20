@@ -12,6 +12,9 @@ import { Button } from './ui/button'
 
 export default function MessagePreview(props: { className?: string; message: Message }) {
   const { message: msg, className } = props
+  const processedText = processMarkdownString(msg.text)
+  /* ###Thi */ console.log(`👉👉👉 processedText:`, processedText)
+
   return (
     <article
       className={cn(
@@ -31,7 +34,7 @@ export default function MessagePreview(props: { className?: string; message: Mes
         <RemarkMarkdown
           className={cn('text-sm x-prose [&>*]:first:mt-0 [&>*]:last:mb-0')}
           remarkPlugins={[remarkMath, remarkGfm]}
-          rehypePlugins={[rehypeHighlight, rehypeKatex]}
+          rehypePlugins={[rehypeKatex, rehypeHighlight]}
         >
           {processMarkdownString(msg.text)}
         </RemarkMarkdown>
