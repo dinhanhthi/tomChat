@@ -4,8 +4,8 @@ import AppHeader from '../components/app-header'
 import AppInputMsg from '../components/app-input-msg'
 import { AppSidebar } from '../components/app-sidebar'
 import { SidebarProvider } from '../components/ui/sidebar'
-import './globals.scss'
 import { cn } from '../lib/utils'
+import './globals.scss'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,13 +17,13 @@ export const metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={cn('overflow-y-hidden', inter.className)}>
+      <body className={cn(inter.className)}>
         <SidebarProvider>
           <AppSidebar />
           <main className="flex flex-col h-svh flex-1 bg-background">
             <AppHeader />
             {/* The relative here is used for ScrollToBottomButton */}
-            <div className="flex-1 min-h-0 relative">{children}</div>
+            <div className="flex-1 min-h-0 relative overflow-hidden">{children}</div>
             <AppInputMsg className="pb-2" />
           </main>
         </SidebarProvider>
