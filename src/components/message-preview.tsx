@@ -31,7 +31,10 @@ export default function MessagePreview(props: { className?: string; message: Mes
       )}
       <div className="flex-1 flex flex-col gap-2">
         <RemarkMarkdown
-          className={cn('text-sm x-prose [&>*]:first:mt-2 [&>*]:last:mb-0')}
+          className={cn('text-sm x-prose [&>*]:last:mb-0', {
+            '[&>*]:first:mt-2': !msg.user,
+            '[&>*]:first:mt-0': msg.user
+          })}
           remarkPlugins={[remarkMath, remarkGfm]}
           rehypePlugins={[rehypeKatex, rehypeHighlight]}
           components={{
