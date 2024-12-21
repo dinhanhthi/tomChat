@@ -1,3 +1,4 @@
+import { Message } from 'ai'
 import { Copy, RefreshCw, Volume2 } from 'lucide-react'
 import Image from 'next/image'
 import RemarkMarkdown from 'react-markdown'
@@ -6,7 +7,6 @@ import rehypeKatex from 'rehype-katex'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import LogoOpenAI from '../../public/img/services/openai.svg'
-import { Message } from '../interface'
 import { cn, processMarkdownString } from '../lib/utils'
 import { Pre } from './markdown-blocks'
 import { Button } from './ui/button'
@@ -18,18 +18,19 @@ interface MessagePreviewProps {
 
 export default function MessagePreview(props: MessagePreviewProps) {
   const { message, className } = props
+  const isUser = message.role === 'user'
 
   return (
     <article
       className={cn(
         'flex flex-row items-start gap-4 md:gap-5 lg:gap-6',
         {
-          'ml-auto p-4 bg-gray-100 rounded-2xl': message.user
+          'ml-auto p-4 bg-gray-100 rounded-2xl': isUser
         },
         className
       )}
     >
-      {!message.user && (
+      {!isUser && (
         <div className="rounded-full p-2 border border-slate-300 flex items-center justify-center">
           <Image src={LogoOpenAI} alt="OpenAI" width={20} height={20} className="shrink-0 !m-0" />
         </div>
@@ -37,8 +38,8 @@ export default function MessagePreview(props: MessagePreviewProps) {
       <div className="flex-1 flex flex-col gap-2">
         <RemarkMarkdown
           className={cn('x-prose [&>*]:last:mb-0', {
-            '[&>*]:first:mt-1.5': !message.user,
-            '[&>*]:first:mt-0': message.user
+            '[&>*]:first:mt-1.5': !isUser,
+            '[&>*]:first:mt-0': isUser
           })}
           remarkPlugins={[remarkMath, remarkGfm]}
           rehypePlugins={[rehypeKatex, rehypeHighlight]}
@@ -46,9 +47,9 @@ export default function MessagePreview(props: MessagePreviewProps) {
             pre: Pre
           }}
         >
-          {processMarkdownString(message.text)}
+          {processMarkdownString(message.content)}
         </RemarkMarkdown>
-        {!message.user && (
+        {!isUser && (
           <div className="flex flex-row items-center ml-auto text-muted-foreground">
             <Button variant="ghost" size="icon" tooltip="Read aloud" tooltipPosition="bottom">
               <Volume2 />
