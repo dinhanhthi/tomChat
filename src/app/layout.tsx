@@ -22,7 +22,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <AppSidebar />
           <main className="flex flex-col h-svh flex-1 bg-background">
             <AppHeader />
-            <div className="flex-1 min-h-0">{children}</div>
+            {/* The relative here is used for ScrollToBottomButton */}
+            <div className="flex-1 min-h-0 relative">{children}</div>
             <AppInputMsg className="pb-2" />
           </main>
         </SidebarProvider>

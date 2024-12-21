@@ -1,4 +1,3 @@
-import Container from '../components/container'
 import Messages from '../components/messages'
 import { Message } from '../interface'
 
@@ -40,11 +39,5 @@ const exMsgs: Message[] = [
 export default function Home() {
   const messages = exMsgs
 
-  return (
-    <div className="overflow-y-auto h-full w-full">
-      <Container>
-        <Messages messages={messages} />
-      </Container>
-    </div>
-  )
+  return <Messages messages={messages} />
 }
