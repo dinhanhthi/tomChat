@@ -22,6 +22,7 @@
     "reinstall": "yarn run clean && rimraf node_modules && rm yarn.lock && yarn install && rimraf package-lock.json"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^1.0.10",
     "@radix-ui/react-dialog": "^1.1.4",
     "@radix-ui/react-dropdown-menu": "^2.1.4",
     "@radix-ui/react-label": "^2.1.1",
@@ -31,6 +32,7 @@
     "@types/node": "22.10.2",
     "@types/react": "19.0.1",
     "@types/react-dom": "19.0.2",
+    "ai": "^4.0.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "eslint": "^8.57.0",
@@ -47,7 +49,8 @@
     "sass": "^1.83.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "5.7.2"
+    "typescript": "5.7.2",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.15",
