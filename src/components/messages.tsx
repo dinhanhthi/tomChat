@@ -14,7 +14,7 @@ export default function Messages(props: { messages: Message[]; className?: strin
       <Container>
         <div className={cn('h-full px-4 pt-8 pb-14 gap-8 flex flex-col scroll-mb-[250px]', props.className)}>
           {props.messages.map((msg, i) => (
-            <MessagePreview key={i} message={msg} serviceSticky={false} />
+            <MessagePreview key={i} message={msg} />
           ))}
         </div>
       </Container>
