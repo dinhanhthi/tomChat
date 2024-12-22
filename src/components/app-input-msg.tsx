@@ -73,7 +73,7 @@ export default function AppInputMsg(props: {
               </Button>
             </div>
             <Button
-              className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl"
+              className="hover:bg-transparent hover:text-sky-500 [&_svg]:size-[22px] rounded-xl"
               type="submit"
               variant="ghost"
               size="iconBig"
