@@ -1,5 +1,5 @@
-import Messages from '../components/messages'
+import PageChat from '../components/page-chat'
 
 export default function Home() {
-  return <Messages />
+  return <PageChat />
 }

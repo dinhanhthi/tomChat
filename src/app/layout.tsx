@@ -1,7 +1,6 @@
 import { Inter } from 'next/font/google'
 
 import AppHeader from '../components/app-header'
-import AppInputMsg from '../components/app-input-msg'
 import { AppSidebar } from '../components/app-sidebar'
 import { SidebarProvider } from '../components/ui/sidebar'
 import { cn } from '../lib/utils'
@@ -22,9 +21,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <AppSidebar />
           <main className="flex flex-col h-svh flex-1 bg-background">
             <AppHeader />
-            {/* The relative here is used for ScrollToBottomButton */}
-            <div className="flex-1 min-h-0 relative overflow-hidden">{children}</div>
-            <AppInputMsg className="pb-2" />
+            <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
           </main>
         </SidebarProvider>
       </body>
