@@ -26,7 +26,7 @@ export default function SidebarGroupConvs(props: {
   const { isMobile } = useSidebar()
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{props.label}</SidebarGroupLabel>
+      <SidebarGroupLabel className='sticky top-0 bg-sidebar z-20'>{props.label}</SidebarGroupLabel>
       <SidebarMenu className='gap-0'>
         {props.conversations.map((conversation, index) => (
           <SidebarMenuItem key={index}>
