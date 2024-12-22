@@ -1,15 +1,20 @@
 'use client'
 
+import { UseChatHelpers } from 'ai/react/dist'
 import { Globe, Paperclip, Send } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { cn } from '../lib/utils'
 import Container from './container'
 import { Button } from './ui/button'
 
-export default function AppInputMsg(props: { className?: string }) {
-  const { className } = props
+export default function AppInputMsg(props: {
+  className?: string
+  input: UseChatHelpers['input']
+  handleInputChange: UseChatHelpers['handleInputChange']
+  handleSubmit: UseChatHelpers['handleSubmit']
+}) {
+  const { className, input, handleInputChange, handleSubmit } = props
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const [input, setInput] = useState('')
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -19,7 +24,7 @@ export default function AppInputMsg(props: { className?: string }) {
   }
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInput(event.target.value)
+    handleInputChange(event)
     adjustHeight()
   }
 
@@ -28,7 +33,7 @@ export default function AppInputMsg(props: { className?: string }) {
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
       <div></div>
       <div className="flex-1 flex flex-col items-center gap-2">
-        <div className="flex flex-col p-2 bg-gray-100 rounded-3xl w-full">
+        <form onSubmit={handleSubmit} className="flex flex-col p-2 bg-gray-100 rounded-3xl w-full">
           <textarea
             rows={1}
             ref={textareaRef}
@@ -47,14 +52,12 @@ export default function AppInputMsg(props: { className?: string }) {
                 <Globe />
               </Button>
             </div>
-            <Button variant="ghost" size="iconBig">
+            <Button type='submit' variant="ghost" size="iconBig">
               <Send />
             </Button>
           </div>
-        </div>
-        <div className="text-[0.7rem] text-muted-foreground">
-          Usage of this chat: $0.5, tokens: 100.
-        </div>
+        </form>
+        <div className="text-[0.7rem] text-muted-foreground">Usage of this chat: $0.5, tokens: 100.</div>
       </div>
     </Container>
   )
