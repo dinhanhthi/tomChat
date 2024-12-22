@@ -28,6 +28,13 @@ export default function AppInputMsg(props: {
     adjustHeight()
   }
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault()
+      handleSubmit()
+    }
+  }
+
   return (
     <Container className={cn('flex flex-row gap-4 md:gap-5 lg:gap-6 pt-2', className)}>
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
@@ -41,18 +48,36 @@ export default function AppInputMsg(props: {
             onChange={handleInput}
             className="bg-transparent resize-none focus-visible:outline-none p-2 min-h-6 max-h-[calc(25dvh)] overflow-auto"
             placeholder="Ask something..."
+            onKeyDown={handleKeyDown}
             autoFocus
           />
           <div className="flex flex-row justify-between gap-4 items-center">
             <div className="flex flex-row items-center">
-              <Button variant="ghost" size="iconBig" tooltip="Attach files" tooltipPosition="left">
+              <Button
+                className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl rounded-bl-2xl"
+                variant="ghost"
+                size="iconBig"
+                tooltip="Attach files"
+                tooltipPosition="left"
+              >
                 <Paperclip />
               </Button>
-              <Button variant="ghost" size="iconBig" tooltip="Search the web" tooltipPosition="right">
+              <Button
+                className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl"
+                variant="ghost"
+                size="iconBig"
+                tooltip="Search the web"
+                tooltipPosition="right"
+              >
                 <Globe />
               </Button>
             </div>
-            <Button type='submit' variant="ghost" size="iconBig">
+            <Button
+              className="hover:bg-transparent hover:text-sky-500 [&_svg]:size-[22px] rounded-xl"
+              type="submit"
+              variant="ghost"
+              size="iconBig"
+            >
               <Send />
             </Button>
           </div>
