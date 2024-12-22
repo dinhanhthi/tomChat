@@ -45,14 +45,31 @@ export default function AppInputMsg(props: {
           />
           <div className="flex flex-row justify-between gap-4 items-center">
             <div className="flex flex-row items-center">
-              <Button variant="ghost" size="iconBig" tooltip="Attach files" tooltipPosition="left">
+              <Button
+                className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl rounded-bl-2xl"
+                variant="ghost"
+                size="iconBig"
+                tooltip="Attach files"
+                tooltipPosition="left"
+              >
                 <Paperclip />
               </Button>
-              <Button variant="ghost" size="iconBig" tooltip="Search the web" tooltipPosition="right">
+              <Button
+                className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl"
+                variant="ghost"
+                size="iconBig"
+                tooltip="Search the web"
+                tooltipPosition="right"
+              >
                 <Globe />
               </Button>
             </div>
-            <Button type='submit' variant="ghost" size="iconBig">
+            <Button
+              className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl"
+              type="submit"
+              variant="ghost"
+              size="iconBig"
+            >
               <Send />
             </Button>
           </div>
