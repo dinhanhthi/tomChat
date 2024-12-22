@@ -9,7 +9,6 @@ import {
 import { BadgeInfo, BookOpenText, Bug, Github, Lightbulb, ScrollText } from 'lucide-react'
 import Image from 'next/image'
 import Logo from '../../public/logo.svg'
-import { SearchForm } from './search-form'
 import SidebarGroupConvs from './sidebar-group-convs'
 import { Button } from './ui/button'
 
@@ -40,7 +39,7 @@ const conversations = [
 export function AppSidebar() {
   return (
     <Sidebar collapsible="offcanvas">
-      <SidebarHeader className="flex flex-row gap-2 justify-betweens">
+      <SidebarHeader className="flex h-14 flex-row gap-2 justify-betweens">
         <div className="flex items-center flex-row gap-2 flex-1">
           <div className="flex flex-row whitespace-nowrap flex-nowrap items-center">
             <div className="p-2 rounded-lg">
@@ -55,7 +54,9 @@ export function AppSidebar() {
         </Button>
       </SidebarHeader>
 
-      <SearchForm className="pb-2" />
+      <SidebarSeparator />
+
+      {/* <SearchForm className="pb-2" /> */}
 
       <SidebarContent>
         <SidebarGroupConvs label="Today" conversations={conversations.slice(0, 4)}></SidebarGroupConvs>
