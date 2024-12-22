@@ -28,6 +28,13 @@ export default function AppInputMsg(props: {
     adjustHeight()
   }
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault()
+      handleSubmit()
+    }
+  }
+
   return (
     <Container className={cn('flex flex-row gap-4 md:gap-5 lg:gap-6 pt-2', className)}>
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
@@ -41,6 +48,7 @@ export default function AppInputMsg(props: {
             onChange={handleInput}
             className="bg-transparent resize-none focus-visible:outline-none p-2 min-h-6 max-h-[calc(25dvh)] overflow-auto"
             placeholder="Ask something..."
+            onKeyDown={handleKeyDown}
             autoFocus
           />
           <div className="flex flex-row justify-between gap-4 items-center">
