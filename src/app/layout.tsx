@@ -5,6 +5,7 @@ import { AppSidebar } from '../components/app-sidebar'
 import { SidebarProvider } from '../components/ui/sidebar'
 import { cn } from '../lib/utils'
 import './globals.scss'
+import SearchDialog from '../components/search-dialog'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,6 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <AppHeader />
             <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
           </main>
+          <SearchDialog />
         </SidebarProvider>
       </body>
     </html>
