@@ -10,6 +10,7 @@ import {
   useSidebar
 } from '@/components/ui/sidebar'
 import { Archive, MessageCircle, MessageSquareShare, MoreHorizontal, Pencil, Star, Trash2 } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 import { toast } from 'sonner'
 import { Conversation } from '../interface'
 import { removeConversation } from '../lib/conversations'
@@ -29,7 +30,11 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
       confirmClassName: 'bg-danger hover:bg-danger-hover text-white',
       onConfirm: async () => {
         await removeConversation(conversation.id)
-        toast(`Chat ${conversation.title} has been deleted!`)
+        toast(
+          <div className="x-prose dark:prose-invert text-sm">
+            <ReactMarkdown>{`Chat **${conversation.title}** has been deleted!`}</ReactMarkdown>
+          </div>
+        )
       }
     })
   }
@@ -42,11 +47,14 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
           <SidebarMenu className="gap-0">
             {conversations.map((conversation, index) => (
               <SidebarMenuItem key={index}>
-                <SidebarMenuButton className="group-data-[collapsible=icon]:opacity-0 text-sm hover:bg-gray-200" asChild>
+                <SidebarMenuButton
+                  className="group-data-[collapsible=icon]:opacity-0 text-sm hover:bg-gray-200"
+                  asChild
+                >
                   <a href="#">
                     {conversation.icon && <span>{conversation.icon}</span>}
                     {!conversation.icon && <MessageCircle />}
-                    <span className='select-none'>{conversation.title}</span>
+                    <span className="select-none">{conversation.title}</span>
                   </a>
                 </SidebarMenuButton>
                 <DropdownMenu>

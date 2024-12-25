@@ -40,6 +40,14 @@
     pre {
       @apply p-0 m-0 bg-transparent;
     }
+
+    & > *:first-child {
+      @apply mt-0;
+    }
+
+    & > *:last-child {
+      @apply mb-0;
+    }
   }
 }
 
