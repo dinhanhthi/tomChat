@@ -1,0 +1,91 @@
+'use client'
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog'
+import React, { createContext, useContext, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import { cn } from '../lib/utils'
+import { Separator } from './ui/separator'
+
+interface AlertDialogOptions {
+  title?: string
+  description?: string
+  confirmText?: string
+  confirmClassName?: string
+  cancelText?: string
+  onConfirm?: () => void
+  onCancel?: () => void
+}
+
+interface AlertDialogContextType {
+  showAlert: (options: AlertDialogOptions) => void
+}
+
+const AlertDialogContext = createContext<AlertDialogContextType | undefined>(undefined)
+
+export function AlertDialogProvider({ children }: { children: React.ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [options, setOptions] = useState<AlertDialogOptions>({})
+
+  const showAlert = (opts: AlertDialogOptions) => {
+    setOptions(opts)
+    setIsOpen(true)
+  }
+
+  const handleConfirm = () => {
+    options.onConfirm?.()
+    setIsOpen(false)
+  }
+
+  const handleCancel = () => {
+    options.onCancel?.()
+    setIsOpen(false)
+  }
+
+  return (
+    <AlertDialogContext.Provider value={{ showAlert }}>
+      {children}
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogContent className="!rounded-[2rem]">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{options.title || 'Confirm Action'}</AlertDialogTitle>
+            <Separator className="my-4" />
+            <AlertDialogDescription asChild>
+              <div className="prose dark:prose-invert">
+                <ReactMarkdown>{options.description || 'Are you sure you want to continue?'}</ReactMarkdown>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="focus-visible:!ring-0 focus-visible:!ring-offset-0" onClick={handleCancel}>
+              {options.cancelText || 'Cancel'}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className={cn('focus-visible:!ring-0 focus-visible:!ring-offset-0', options.confirmClassName)}
+              onClick={handleConfirm}
+            >
+              {options.confirmText || 'Continue'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </AlertDialogContext.Provider>
+  )
+}
+
+// Custom hook
+export function useAlertDialog() {
+  const context = useContext(AlertDialogContext)
+  if (!context) {
+    throw new Error('useAlertDialog must be used within an AlertDialogProvider')
+  }
+  return context
+}

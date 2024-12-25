@@ -9,6 +9,8 @@ export interface Conversation {
   createdAt: Date
   updatedAt: Date
   usage?: Usage
+  favorite?: boolean
+  archived?: boolean
 }
 
 export interface exMessage extends Message {

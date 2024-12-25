@@ -9,36 +9,43 @@ import {
   SidebarMenuItem,
   useSidebar
 } from '@/components/ui/sidebar'
-import { Folder, Forward, MessageCircle, MoreHorizontal, Trash2 } from 'lucide-react'
-import { SearchableConversation } from '../hooks/useConversations'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from './ui/dropdown-menu'
+import { Archive, MessageCircle, MessageSquareShare, MoreHorizontal, Pencil, Star, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Conversation } from '../interface'
+import { removeConversation } from '../lib/conversations'
+import { useAlertDialog } from './dialog-confirm'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 
 export default function SidebarGroupConvs(props: { label: string; conversations?: Conversation[] }) {
   const { label, conversations = [] } = props
   const { isMobile } = useSidebar()
+  const { showAlert } = useAlertDialog()
+
+  const removeChat = (conversation: Conversation) => async () => {
+    showAlert({
+      title: 'Delete Chat',
+      description: `Are you sure you want to delete **${conversation.title}**?`,
+      confirmText: 'Delete',
+      confirmClassName: 'bg-danger hover:bg-danger-hover text-white',
+      onConfirm: async () => {
+        await removeConversation(conversation.id)
+        toast(`Chat ${conversation.title} has been deleted!`)
+      }
+    })
+  }
+
   return (
     <>
       {conversations.length > 0 && (
         <SidebarGroup>
-          <SidebarGroupLabel className="sticky top-0 bg-sidebar z-20">{label}</SidebarGroupLabel>
+          <SidebarGroupLabel className="sticky top-0 bg-sidebar z-20 text-sidebar-primary">{label}</SidebarGroupLabel>
           <SidebarMenu className="gap-0">
             {conversations.map((conversation, index) => (
               <SidebarMenuItem key={index}>
-                <SidebarMenuButton className="group-data-[collapsible=icon]:opacity-0 text-sm" asChild>
+                <SidebarMenuButton className="group-data-[collapsible=icon]:opacity-0 text-sm hover:bg-gray-200" asChild>
                   <a href="#">
-                    {conversation.icon && (
-                      <span>{conversation.icon}</span>
-                    )}
-                    {!conversation.icon && (
-                      <MessageCircle />
-                    )}
+                    {conversation.icon && <span>{conversation.icon}</span>}
+                    {!conversation.icon && <MessageCircle />}
                     <span>{conversation.title}</span>
                   </a>
                 </SidebarMenuButton>
@@ -50,22 +57,30 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
                     </SidebarMenuAction>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
-                    className="w-48 rounded-lg"
+                    className="w-fit rounded-lg"
                     side={isMobile ? 'bottom' : 'right'}
                     align={isMobile ? 'end' : 'start'}
                   >
                     <DropdownMenuItem>
-                      <Folder className="text-muted-foreground" />
-                      <span>View Project</span>
+                      <MessageSquareShare className="text-muted-foreground" />
+                      <span>Share</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      <Forward className="text-muted-foreground" />
-                      <span>Share Project</span>
+                      <Star className="text-muted-foreground" />
+                      <span>Favorite</span>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                      <Trash2 className="text-muted-foreground" />
-                      <span>Delete Project</span>
+                      <Pencil className="text-muted-foreground" />
+                      <span>Rename</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Archive className="text-muted-foreground" />
+                      <span>Archive</span>
+                    </DropdownMenuItem>
+                    {/* <DropdownMenuSeparator /> */}
+                    <DropdownMenuItem onClick={removeChat(conversation)} className="text-danger hover:!text-danger">
+                      <Trash2 />
+                      <span>Delete</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

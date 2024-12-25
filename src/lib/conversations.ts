@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db/database'
-import { exMessage } from '../interface'
+import { Conversation, exMessage } from '../interface'
 
 export const getConversation = async (chatId: string) => {
   return await db.conversations.get(chatId)
@@ -18,6 +18,16 @@ export const createConversation = async (title: string, chatId?: string) => {
   })
 
   return id
+}
+
+export const removeConversation = async (chatId: string) => {
+  await db.conversations.delete(chatId)
+  await db.messages.where('chatId').equals(chatId).delete()
+  return chatId
+}
+
+export const updateConversationMetadata = async (chatId: string, metadata: Partial<Conversation>) => {
+  return await db.conversations.update(chatId, metadata)
 }
 
 export const addMessage = async (chatId: string, message: exMessage) => {

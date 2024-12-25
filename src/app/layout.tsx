@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google'
 
 import AppHeader from '../components/app-header'
 import { AppSidebar } from '../components/app-sidebar'
+import { AlertDialogProvider } from '../components/dialog-confirm'
 import SearchDialog from '../components/search-dialog'
 import { SidebarProvider } from '../components/ui/sidebar'
 import { Toaster } from '../components/ui/sonner'
@@ -19,14 +20,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body className={cn(inter.className)}>
-        <SidebarProvider>
-          <AppSidebar />
-          <main className="flex flex-col h-svh flex-1 bg-background min-w-0">
-            <AppHeader />
-            <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
-          </main>
-          <SearchDialog />
-        </SidebarProvider>
+        <AlertDialogProvider>
+          <SidebarProvider>
+            <AppSidebar />
+            <main className="flex flex-col h-svh flex-1 bg-background min-w-0">
+              <AppHeader />
+              <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
+            </main>
+            <SearchDialog />
+          </SidebarProvider>
+        </AlertDialogProvider>
         <Toaster position="top-center" />
       </body>
     </html>

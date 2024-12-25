@@ -17,6 +17,8 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+				danger: 'var(--danger)',
+				'danger-hover': 'var(--danger-hover)',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
