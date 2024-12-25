@@ -21,7 +21,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={cn(inter.className)}>
         <SidebarProvider>
           <AppSidebar />
-          <main className="flex flex-col h-svh flex-1 bg-background">
+          <main className="flex flex-col h-svh flex-1 bg-background min-w-0">
             <AppHeader />
             <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
           </main>

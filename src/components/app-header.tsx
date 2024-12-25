@@ -1,7 +1,8 @@
 'use client'
 
 import { CircleUserRound, Edit, MessageSquareShare, Search, SlidersHorizontal } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useConversation } from '../hooks/useConversation'
 import { useDialogStore } from './search-dialog'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
@@ -9,7 +10,12 @@ import { SidebarTrigger } from './ui/sidebar'
 
 export default function AppHeader() {
   const router = useRouter()
+  const pathname = usePathname()
+  const chatId = pathname?.split('/chat/')?.[1]
   const { setIsOpen } = useDialogStore()
+
+  const { conversation } = useConversation(chatId)
+  const chatTitle = conversation?.title
 
   function handleNewClicked() {
     router.push('/')
@@ -17,8 +23,8 @@ export default function AppHeader() {
   }
 
   return (
-    <header className="flex flex-row justify-between items-center pl-2 pr-4 h-14 shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b border-slate-200">
-      <div className="flex items-center gap-2">
+    <header className="flex flex-row justify-between items-center pl-2 pr-4 h-14 shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b border-slate-200 w-full">
+      <div className="flex items-center gap-2 flex-1 min-w-0">
         <div className="flex items-center">
           <SidebarTrigger
             tooltip="Toggle sidebar (⌘+B)"
@@ -29,8 +35,12 @@ export default function AppHeader() {
             <Edit />
           </Button>
         </div>
-        <Separator orientation="vertical" className="mr-2 h-4" />
-        <div className="flex items-center gap-2">Some useful title</div>
+        {chatTitle && (
+          <>
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <div className="truncate flex-1 min-w-0 pr-4 text-[1.05rem]">{chatTitle}</div>
+          </>
+        )}
       </div>
       <div className="flex flex-row items-center gap-2">
         <Button

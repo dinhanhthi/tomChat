@@ -6,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useScrollToBottom } from '../hooks/useScrollToBottom'
-import { exMessage } from '../interface'
 import { addMessage, getConversation, getMessages } from '../lib/utils/conversations'
 import { cn } from '../lib/utils/helpers'
 import AppInputMsg from './app-input-msg'
@@ -85,7 +84,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
               {messages.map((msg, i) => (
                 <MessagePreview key={msg.id ?? i} message={msg} />
               ))}
-              <div className='min-h-8 shrink-0'></div>
+              <div className="min-h-8 shrink-0"></div>
             </div>
           )}
           {isLoading && (
