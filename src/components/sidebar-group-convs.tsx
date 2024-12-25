@@ -46,7 +46,7 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
                   <a href="#">
                     {conversation.icon && <span>{conversation.icon}</span>}
                     {!conversation.icon && <MessageCircle />}
-                    <span>{conversation.title}</span>
+                    <span className='select-none'>{conversation.title}</span>
                   </a>
                 </SidebarMenuButton>
                 <DropdownMenu>
