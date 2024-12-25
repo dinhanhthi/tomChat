@@ -2,10 +2,11 @@ import { Inter } from 'next/font/google'
 
 import AppHeader from '../components/app-header'
 import { AppSidebar } from '../components/app-sidebar'
-import { SidebarProvider } from '../components/ui/sidebar'
-import { cn } from '../lib/utils'
-import './globals.scss'
 import SearchDialog from '../components/search-dialog'
+import { SidebarProvider } from '../components/ui/sidebar'
+import { Toaster } from '../components/ui/sonner'
+import { cn } from '../lib/utils/helpers'
+import './globals.scss'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -26,6 +27,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </main>
           <SearchDialog />
         </SidebarProvider>
+        <Toaster position="top-center" />
       </body>
     </html>
   )

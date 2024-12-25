@@ -7,6 +7,9 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
+  /* ###Thi */ console.log(`👉👉👉 messages: `, messages);
+
+  // https://sdk.vercel.ai/docs/reference/ai-sdk-core/stream-text
   const result = streamText({
     model: openai('gpt-4o-mini'),
     messages,

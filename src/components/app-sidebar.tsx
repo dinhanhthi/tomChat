@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Sidebar,
   SidebarContent,
@@ -8,6 +10,7 @@ import {
 } from '@/components/ui/sidebar'
 import { BadgeInfo, BookOpenText, Bug, Github, Lightbulb, ScrollText } from 'lucide-react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import Logo from '../../public/logo.svg'
 import SidebarGroupConvs from './sidebar-group-convs'
 import { Button } from './ui/button'
@@ -37,16 +40,20 @@ const conversations = [
 ]
 
 export function AppSidebar() {
+  const router = useRouter()
+  const backToHome = () => {
+    router.push('/')
+  }
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader className="flex h-14 flex-row gap-2 justify-betweens">
         <div className="flex items-center flex-row gap-2 flex-1">
-          <div className="flex flex-row whitespace-nowrap flex-nowrap items-center">
+          <button onClick={backToHome} className="flex flex-row whitespace-nowrap flex-nowrap items-center">
             <div className="p-2 rounded-lg">
               <Image src={Logo} alt="xChat" width={20} height={20} className="shrink-0" />
             </div>
             <div className="text-slate-600 text-sm font-medium">xChat</div>
-          </div>
+          </button>
           <div className="text-[0.6rem] text-slate-600 font-mono border border-slate-300 rounded-lg px-2">v0.0.0</div>
         </div>
         <Button variant="ghost" size="iconBig" tooltip="Source code" tooltipPosition="bottom">

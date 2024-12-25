@@ -7,7 +7,7 @@ import rehypeKatex from 'rehype-katex'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import LogoOpenAI from '../../public/img/services/openai.svg'
-import { cn, processMarkdownString } from '../lib/utils'
+import { cn, processMarkdownString } from '../lib/utils/helpers'
 import { Pre } from './markdown-blocks'
 import { Button } from './ui/button'
 

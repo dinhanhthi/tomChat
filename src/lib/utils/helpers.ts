@@ -10,11 +10,14 @@ export function processMarkdownString(md: string) {
   md = md
     .replace(/\\\(.*?\\\)/g, match => `$${match.slice(2, -2)}$`) // Convert \( ... \) to $ ... $
   // Convert \[ ... \] to $$ ... $$
-  md = convertDisplayStyle(md)
+  md = convertMathDisplayStyle(md)
   return md
 }
 
-function convertDisplayStyle(text: string): string {
+/**
+ * Convert \[ ... \] to $$ ... $$
+ */
+function convertMathDisplayStyle(text: string): string {
   let result = '';
   let inBacktick = false;
   let inTripleBacktick = false;

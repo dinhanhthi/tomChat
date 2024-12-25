@@ -5,6 +5,7 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { create } from 'zustand'
 import { Button } from './ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from './ui/dialog'
+import { useConversations } from '../hooks/useConversations'
 
 interface DialogStore {
   isOpen: boolean
@@ -20,6 +21,9 @@ export default function SearchDialog() {
   const { isOpen, setIsOpen } = useDialogStore()
   const inputRef = useRef<HTMLInputElement>(null)
   const [query, setQuery] = useState('')
+  const { conversations } = useConversations(query)
+
+  // /* ###Thi */ console.log(`👉👉👉 conversations: `, conversations);
 
   useEffect(() => {
     if (inputRef.current) {

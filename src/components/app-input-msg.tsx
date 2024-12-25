@@ -3,18 +3,28 @@
 import { UseChatHelpers } from 'ai/react/dist'
 import { Globe, Paperclip, Send } from 'lucide-react'
 import { useRef } from 'react'
-import { cn } from '../lib/utils'
+import { v4 as uuidv4 } from 'uuid'
+import { useConversation } from '../hooks/useConversation'
+import { addMessage, createConversation } from '../lib/utils/conversations'
+import { cn } from '../lib/utils/helpers'
 import Container from './container'
 import { Button } from './ui/button'
 
 export default function AppInputMsg(props: {
+  chatId: string
   className?: string
-  input: UseChatHelpers['input']
-  handleInputChange: UseChatHelpers['handleInputChange']
-  handleSubmit: UseChatHelpers['handleSubmit']
+  useChatParams: {
+    input: UseChatHelpers['input']
+    setInput: UseChatHelpers['setInput']
+    handleSubmit: UseChatHelpers['handleSubmit']
+    setMessages: UseChatHelpers['setMessages']
+    messages: UseChatHelpers['messages']
+  }
 }) {
-  const { className, input, handleInputChange, handleSubmit } = props
+  const { chatId, className, useChatParams } = props
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const { conversation } = useConversation(chatId)
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -23,15 +33,39 @@ export default function AppInputMsg(props: {
     }
   }
 
-  const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    handleInputChange(event)
+  const handleClientInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (useChatParams) useChatParams.setInput(event.target.value)
     adjustHeight()
   }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault()
-      handleSubmit()
+      handleClientSubmit()
+    }
+  }
+
+  const handleClientSubmit = async () => {
+    window.history.replaceState({}, '', `/chat/${chatId}`)
+
+    /* ###Thi */ console.log(`👉👉👉 conversation (handleClientSubmit): `, conversation)
+    if (!conversation) {
+      const title = useChatParams.input.slice(0, 20)
+      /* ###Thi */ console.log(`👉👉👉 title: `, title)
+      await createConversation(title, chatId)
+    }
+
+    await addMessage(chatId, {
+      id: uuidv4(),
+      role: 'user',
+      content: useChatParams.input,
+      createdAt: new Date(),
+      chatId
+    })
+
+    if (useChatParams) {
+      // useChatParams.setMessages(prev => [...prev])
+      useChatParams.handleSubmit()
     }
   }
 
@@ -40,12 +74,12 @@ export default function AppInputMsg(props: {
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
       <div></div>
       <div className="flex-1 flex flex-col items-center gap-2">
-        <form onSubmit={handleSubmit} className="flex flex-col p-2 bg-gray-100 rounded-3xl w-full">
+        <form onSubmit={handleClientSubmit} className="flex flex-col p-2 bg-gray-100 rounded-3xl w-full">
           <textarea
             rows={1}
             ref={textareaRef}
-            value={input}
-            onChange={handleInput}
+            value={useChatParams.input}
+            onChange={handleClientInputChange}
             className="bg-transparent resize-none focus-visible:outline-none p-2 min-h-6 max-h-[calc(25dvh)] overflow-auto"
             placeholder="Ask something..."
             onKeyDown={handleKeyDown}

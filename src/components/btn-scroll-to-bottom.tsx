@@ -1,6 +1,6 @@
 import { ChevronDown } from 'lucide-react'
 import React, { RefObject, useEffect, useState } from 'react'
-import { cn } from '../lib/utils'
+import { cn } from '../lib/utils/helpers'
 
 interface ScrollToBottomButtonProps {
   targetRef: RefObject<HTMLElement | null>
