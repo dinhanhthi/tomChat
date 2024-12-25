@@ -1,4 +1,4 @@
-import { cn } from '../../lib/utils/helpers'
+import { cn } from '../../lib/utils'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip'
 
 export default function SimpleTooltip(props: { text: string; children: React.ReactNode; hidden?: boolean }) {

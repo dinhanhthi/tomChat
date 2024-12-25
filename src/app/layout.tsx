@@ -5,7 +5,7 @@ import { AppSidebar } from '../components/app-sidebar'
 import SearchDialog from '../components/search-dialog'
 import { SidebarProvider } from '../components/ui/sidebar'
 import { Toaster } from '../components/ui/sonner'
-import { cn } from '../lib/utils/helpers'
+import { cn } from '../lib/utils'
 import './globals.scss'
 
 const inter = Inter({ subsets: ['latin'] })

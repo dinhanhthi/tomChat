@@ -4,11 +4,11 @@ import FlexSearch, { Id } from 'flexsearch'
 import { useEffect, useState } from 'react'
 import { Conversation } from '../interface'
 
-type SearchableConversation = Omit<Conversation, 'createdAt' | 'updatedAt'>
+export type SearchableConversation = Partial<Conversation>
 
 export const useConversations = (searchQuery = '') => {
   const [searchIndex, setSearchIndex] = useState<FlexSearch.Document<SearchableConversation>>()
-  const [searchResults, setSearchResults] = useState<SearchableConversation[]>()
+  const [searchResults, setSearchResults] = useState<Conversation[]>()
 
   const conversations = useLiveQuery(async () => {
     const convs = await db.conversations.orderBy('updatedAt').reverse().toArray()

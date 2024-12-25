@@ -12,38 +12,20 @@ import { BadgeInfo, BookOpenText, Bug, Github, Lightbulb, ScrollText } from 'luc
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import Logo from '../../public/logo.svg'
+import { useConversations } from '../hooks/useConversations'
+import { filterConversations } from '../lib/utils'
 import SidebarGroupConvs from './sidebar-group-convs'
 import { Button } from './ui/button'
-
-const conversations = [
-  { icon: '🐷', content: 'Create Bar Chart with some example very long line' },
-  { icon: '🐵', content: 'Create Line Chart with some example very long line' },
-  { icon: '🐶', content: 'Create Pie Chart with some example very long line' },
-  { icon: '🐱', content: 'Create Doughnut Chart with some example very long line' },
-  { icon: '🐭', content: 'Create Radar Chart with some example very long line' },
-  { icon: '🐹', content: 'Create Polar Area Chart with some example very long line' },
-  { icon: '🐰', content: 'Create Bubble Chart with some example very long line' },
-  { icon: '🐷', content: 'Create Bar Chart with some example very long line' },
-  { icon: '🐵', content: 'Create Line Chart with some example very long line' },
-  { icon: '🐶', content: 'Create Pie Chart with some example very long line' },
-  { icon: '🐱', content: 'Create Doughnut Chart with some example very long line' },
-  { icon: '🐭', content: 'Create Radar Chart with some example very long line' },
-  { icon: '🐹', content: 'Create Polar Area Chart with some example very long line' },
-  { icon: '🐰', content: 'Create Bubble Chart with some example very long line' },
-  { icon: '🐷', content: 'Create Bar Chart with some example very long line' },
-  { icon: '🐵', content: 'Create Line Chart with some example very long line' },
-  { icon: '🐶', content: 'Create Pie Chart with some example very long line' },
-  { icon: '🐱', content: 'Create Doughnut Chart with some example very long line' },
-  { icon: '🐭', content: 'Create Radar Chart with some example very long line' },
-  { icon: '🐹', content: 'Create Polar Area Chart with some example very long line' },
-  { icon: '🐰', content: 'Create Bubble Chart with some example very long line' }
-]
 
 export function AppSidebar() {
   const router = useRouter()
   const backToHome = () => {
     router.push('/')
   }
+
+  const { conversations } = useConversations()
+  const filteredChats = filterConversations(conversations)
+
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader className="flex h-14 flex-row gap-2 justify-betweens">
@@ -66,8 +48,27 @@ export function AppSidebar() {
       {/* <SearchForm className="pb-2" /> */}
 
       <SidebarContent>
-        <SidebarGroupConvs label="Today" conversations={conversations.slice(0, 4)}></SidebarGroupConvs>
-        <SidebarGroupConvs label="Previous 30 days" conversations={conversations}></SidebarGroupConvs>
+        {filteredChats.today.length > 0 && (
+          <SidebarGroupConvs label="Today" conversations={filteredChats.today}></SidebarGroupConvs>
+        )}
+        {filteredChats.yesterday.length > 0 && (
+          <SidebarGroupConvs label="Yesterday" conversations={filteredChats.yesterday}></SidebarGroupConvs>
+        )}
+        {filteredChats.prev3days.length > 0 && (
+          <SidebarGroupConvs label="Previous 3 days" conversations={filteredChats.prev3days}></SidebarGroupConvs>
+        )}
+        {filteredChats.prev7days.length > 0 && (
+          <SidebarGroupConvs label="Previous 7 days" conversations={filteredChats.prev7days}></SidebarGroupConvs>
+        )}
+        {filteredChats.prev30days.length > 0 && (
+          <SidebarGroupConvs label="Previous 30 days" conversations={filteredChats.prev30days}></SidebarGroupConvs>
+        )}
+        {filteredChats.older.length > 0 && (
+          <SidebarGroupConvs label="Older" conversations={filteredChats.older}></SidebarGroupConvs>
+        )}
+        {!conversations?.length && (
+          <div className="flex flex-row items-center justify-center h-10 text-slate-400">No conversation found!</div>
+        )}
       </SidebarContent>
 
       <SidebarSeparator />

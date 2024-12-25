@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
-import { db } from '../../db/database'
-import { exMessage } from '../../interface'
+import { db } from '../db/database'
+import { exMessage } from '../interface'
 
 export const getConversation = async (chatId: string) => {
   return await db.conversations.get(chatId)

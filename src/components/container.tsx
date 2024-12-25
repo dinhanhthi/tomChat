@@ -1,4 +1,4 @@
-import { cn } from '../lib/utils/helpers'
+import { cn } from '../lib/utils'
 
 export default function Container(props: { children: React.ReactNode; className?: string }) {
   return (

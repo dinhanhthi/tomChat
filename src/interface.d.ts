@@ -1,13 +1,9 @@
 import { Message } from 'ai'
 
-export interface SidebarConversation {
-  icon: string
-  content: string
-}
-
 export interface Conversation {
   id: string
   title: string
+  icon?: string
   description?: string
   messages?: Message[]
   createdAt: Date
