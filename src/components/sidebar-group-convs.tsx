@@ -10,17 +10,27 @@ import {
   useSidebar
 } from '@/components/ui/sidebar'
 import { Archive, MessageCircle, MessageSquareShare, MoreHorizontal, Pencil, Star, Trash2 } from 'lucide-react'
+import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import { toast } from 'sonner'
 import { Conversation } from '../interface'
 import { removeConversation } from '../lib/conversations'
 import { useAlertDialog } from './dialog-confirm'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
+import { useParams, useRouter } from 'next/navigation'
+import { useChatStore } from '../hooks/useChatStore'
 
 export default function SidebarGroupConvs(props: { label: string; conversations?: Conversation[] }) {
   const { label, conversations = [] } = props
   const { isMobile } = useSidebar()
   const { showAlert } = useAlertDialog()
+  const router = useRouter()
+  // Why we need activeId here? Because in `app-input-msg`, when we submit a new message of a very new conversation,
+  // we uses window.history.replaceState() to change the URL to the new conversation's URL. This one
+  // won't update the id in useParams()!
+  const { id } = useParams()
+  const { activeId } = useChatStore();
+  const chatId = id || activeId
 
   const removeChat = (conversation: Conversation) => async () => {
     showAlert({
@@ -30,6 +40,8 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
       confirmClassName: 'bg-danger hover:bg-danger-hover text-white',
       onConfirm: async () => {
         await removeConversation(conversation.id)
+        router.push('/')
+        router.refresh()
         toast(
           <div className="x-prose dark:prose-invert text-sm">
             <ReactMarkdown>{`Chat **${conversation.title}** has been deleted!`}</ReactMarkdown>
@@ -48,14 +60,15 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
             {conversations.map((conversation, index) => (
               <SidebarMenuItem key={index}>
                 <SidebarMenuButton
-                  className="group-data-[collapsible=icon]:opacity-0 text-sm hover:bg-gray-200"
+                  isActive={conversation.id === chatId}
+                  className="group-data-[collapsible=icon]:opacity-0 text-sm hover:bg-[#e9e9e9] data-[active=true]:bg-[#e9e9e9]"
                   asChild
                 >
-                  <a href="#">
+                  <Link href={`/chat/${conversation.id}`}>
                     {conversation.icon && <span>{conversation.icon}</span>}
                     {!conversation.icon && <MessageCircle />}
                     <span className="select-none">{conversation.title}</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

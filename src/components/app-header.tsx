@@ -1,7 +1,7 @@
 'use client'
 
 import { CircleUserRound, Edit, MessageSquareShare, Search, SlidersHorizontal } from 'lucide-react'
-import { usePathname, useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useConversation } from '../hooks/useConversation'
 import { useDialogStore } from './search-dialog'
 import { Button } from './ui/button'
@@ -10,11 +10,10 @@ import { SidebarTrigger } from './ui/sidebar'
 
 export default function AppHeader() {
   const router = useRouter()
-  const pathname = usePathname()
-  const chatId = pathname?.split('/chat/')?.[1]
+  const { id: chatId } = useParams()
   const { setIsOpen } = useDialogStore()
 
-  const { conversation } = useConversation(chatId)
+  const { conversation } = useConversation(chatId as string)
   const chatTitle = conversation?.title
 
   function handleNewClicked() {

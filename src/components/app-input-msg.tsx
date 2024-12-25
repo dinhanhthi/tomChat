@@ -9,6 +9,8 @@ import { addMessage, createConversation } from '../lib/conversations'
 import { cn } from '../lib/utils'
 import Container from './container'
 import { Button } from './ui/button'
+import { useRouter } from 'next/navigation'
+import { useChatStore } from '../hooks/useChatStore'
 
 export default function AppInputMsg(props: {
   chatId: string
@@ -22,6 +24,7 @@ export default function AppInputMsg(props: {
   }
 }) {
   const { chatId, className, useChatParams } = props
+  const { setActiveId } = useChatStore();
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const { conversation } = useConversation(chatId)
@@ -47,10 +50,11 @@ export default function AppInputMsg(props: {
 
   const handleClientSubmit = async () => {
     window.history.replaceState({}, '', `/chat/${chatId}`)
+    setActiveId(chatId)
 
     /* ###Thi */ console.log(`👉👉👉 conversation (handleClientSubmit): `, conversation)
     if (!conversation) {
-      const title = useChatParams.input.slice(0, 20)
+      const title = useChatParams.input.slice(0, 40)
       /* ###Thi */ console.log(`👉👉👉 title: `, title)
       await createConversation(title, chatId)
     }
@@ -64,7 +68,6 @@ export default function AppInputMsg(props: {
     })
 
     if (useChatParams) {
-      // useChatParams.setMessages(prev => [...prev])
       useChatParams.handleSubmit()
     }
   }
