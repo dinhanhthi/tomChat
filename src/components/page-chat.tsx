@@ -12,6 +12,7 @@ import AppInputMsg from './app-input-msg'
 import ScrollToBottomButton from './btn-scroll-to-bottom'
 import Container from './container'
 import MessagePreview from './message-preview'
+import LoadingBar from './loading-bar'
 
 export default function PageChat({ chatId, className }: { chatId: string; className?: string }) {
   const router = useRouter()
@@ -49,7 +50,9 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
           }
           const messages = await getMessages(chatId)
           setMessages(messages)
-          setIsLoading(false)
+          // fake await to simulate loading
+          setTimeout(() => setIsLoading(false), 3000)
+          // setIsLoading(false)
         } else {
           setIsLoading(false)
         }
@@ -68,6 +71,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
 
   return (
     <div className={cn('relative h-full flex flex-col', className)}>
+      <LoadingBar isLoading={isLoading} />
       <div ref={messagesContainerRef} className="overflow-y-auto h-full w-full">
         <Container className="h-full">
           {!isLoading && (
@@ -78,11 +82,11 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
               <div className="min-h-8 shrink-0"></div>
             </div>
           )}
-          {isLoading && (
+          {/* {isLoading && (
             <div className="flex items-center justify-center h-full animate-pulse">
               <LoaderCircle className="w-8 h-8 text-slate-400 animate-spin" />
             </div>
-          )}
+          )} */}
         </Container>
         <ScrollToBottomButton className="absolute bottom-[150px] right-1/2" targetRef={messagesContainerRef} />
       </div>
