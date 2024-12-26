@@ -23,8 +23,6 @@ export default function SearchDialog() {
   const [query, setQuery] = useState('')
   const { conversations } = useConversations(query)
 
-  // /* ###Thi */ console.log(`👉👉👉 conversations: `, conversations);
-
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus()

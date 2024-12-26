@@ -48,7 +48,6 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
             router.refresh()
           }
           const messages = await getMessages(chatId)
-          /* ###Thi */ console.log(`👉👉👉 initialMessages: `, messages)
           setMessages(messages)
           setIsLoading(false)
         } else {
@@ -63,14 +62,6 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
     }
 
     checkConversation()
-
-    // /* ###Thi */ console.log(`👉👉👉 conversation: `, conversation)
-    // /* ###Thi */ console.log(`👉👉👉 initialMessages: `, initialMessages)
-    // if (chatId && !conversation && pathname === `/chat/${chatId}`) {
-    //   /* ###Thi */ console.log(`👉👉👉 not found conv`);
-    //   toast('Conversation not found!')
-    //   router.push('/')
-    // }
   }, [router, chatId])
 
   // const { messages: initialMessages } = useMessages(id as string)
@@ -80,7 +71,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
       <div ref={messagesContainerRef} className="overflow-y-auto h-full w-full">
         <Container className="h-full">
           {!isLoading && (
-            <div className={cn('h-full px-4 pt-8 pb-14 gap-8 flex flex-col scroll-mb-[250px]', className)}>
+            <div className={cn('h-full w-full px-4 pt-8 pb-14 gap-8 flex flex-col scroll-mb-[250px]', className)}>
               {messages.map((msg, i) => (
                 <MessagePreview key={msg.id ?? i} message={msg} />
               ))}
