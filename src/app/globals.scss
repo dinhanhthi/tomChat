@@ -154,3 +154,14 @@
 .katex-display {
   overflow: auto hidden;
 }
+
+// Disable all shadcn focus rings
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+*:focus-within, *:focus-visible {
+  outline: none !important;
+  ring: none !important;
+  ring-offset: none !important;
+  box-shadow: none !important;
+}
