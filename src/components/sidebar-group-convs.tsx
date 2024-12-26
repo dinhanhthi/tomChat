@@ -16,8 +16,8 @@ import {
   MessageSquareShare,
   MoreHorizontal,
   Pencil,
-  Star,
-  StarOff,
+  Pin,
+  PinOff,
   Trash2
 } from 'lucide-react'
 import Link from 'next/link'
@@ -33,7 +33,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 export default function SidebarGroupConvs(props: { label: string; conversations?: Conversation[] }) {
   const { label, conversations = [] } = props
-  const { toggleStar, toggleArchive, isStarred, isArchived } = useUserPreferences()
+  const { togglePin, toggleArchive, isPinned, isArchived } = useUserPreferences()
   const { isMobile } = useSidebar()
   const { showAlert } = useAlertDialog()
   const router = useRouter()
@@ -94,17 +94,17 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
                       <MessageSquareShare className="text-muted-foreground" />
                       <span>Share</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => toggleStar(conversation.id)}>
-                      {isStarred(conversation.id) && (
+                    <DropdownMenuItem onClick={() => togglePin(conversation.id)}>
+                      {isPinned(conversation.id) && (
                         <>
-                          <StarOff className="text-muted-foreground" />
-                          <span>Remove favorite</span>
+                          <PinOff className="text-muted-foreground" />
+                          <span>Unpin</span>
                         </>
                       )}
-                      {!isStarred(conversation.id) && (
+                      {!isPinned(conversation.id) && (
                         <>
-                          <Star className="h-5 w-5 text-muted-foreground" />
-                          <span>Favorite</span>
+                          <Pin className="h-5 w-5 text-muted-foreground" />
+                          <span>Pin</span>
                         </>
                       )}
                     </DropdownMenuItem>

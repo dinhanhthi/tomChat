@@ -9,7 +9,7 @@ export interface Conversation {
   createdAt: Date
   updatedAt: Date
   usage?: Usage
-  favorite?: boolean
+  pinned?: boolean
   archived?: boolean
 }
 

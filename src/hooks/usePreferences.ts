@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 interface UserPreferences {
-  starredChatIds: string[]
+  pinnedChatIds: string[]
   archivedChatIds: string[]
   theme?: string
 }
@@ -9,38 +9,34 @@ interface UserPreferences {
 export function useUserPreferences() {
   const [preferences, setPreferences] = useState<UserPreferences>(() => {
     const stored = localStorage.getItem('userPreferences')
-    return stored ? JSON.parse(stored) : { starredChatIds: [], archivedChatIds: [] }
+    return stored ? JSON.parse(stored) : { pinnedChatIds: [], archivedChatIds: [] }
   })
 
   useEffect(() => {
     localStorage.setItem('userPreferences', JSON.stringify(preferences))
   }, [preferences])
 
-  const toggleStar = (chatId: string) => {
+  const togglePin = (chatId: string) => {
     setPreferences(prev => {
-      const starred = prev.starredChatIds
-      const newStarred = starred.includes(chatId)
-        ? starred.filter(id => id !== chatId)
-        : [...starred, chatId]
-      return { ...prev, starredChatIds: newStarred }
+      const pinned = prev.pinnedChatIds
+      const newPinned = pinned.includes(chatId) ? pinned.filter(id => id !== chatId) : [...pinned, chatId]
+      return { ...prev, pinnedChatIds: newPinned }
     })
   }
 
   const toggleArchive = (chatId: string) => {
     setPreferences(prev => {
       const archived = prev.archivedChatIds
-      const newArchived = archived.includes(chatId)
-        ? archived.filter(id => id !== chatId)
-        : [...archived, chatId]
+      const newArchived = archived.includes(chatId) ? archived.filter(id => id !== chatId) : [...archived, chatId]
       return { ...prev, archivedChatIds: newArchived }
     })
   }
 
   return {
     preferences,
-    toggleStar,
+    togglePin,
     toggleArchive,
-    isStarred: (id: string) => preferences.starredChatIds.includes(id),
-    isArchived: (id: string) => preferences.archivedChatIds.includes(id)
+    isPinned: (id: string) => preferences.pinnedChatIds?.includes(id),
+    isArchived: (id: string) => preferences.archivedChatIds?.includes(id)
   }
 }
