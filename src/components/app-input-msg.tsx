@@ -11,6 +11,7 @@ import Container from './container'
 import { Button } from './ui/button'
 import { useRouter } from 'next/navigation'
 import { useChatStore } from '../hooks/useChatStore'
+import { generateTitleFromUserMessage } from '../app/actions'
 
 export default function AppInputMsg(props: {
   chatId: string
@@ -52,10 +53,8 @@ export default function AppInputMsg(props: {
     window.history.replaceState({}, '', `/chat/${chatId}`)
     setActiveId(chatId)
 
-    /* ###Thi */ console.log(`👉👉👉 conversation (handleClientSubmit): `, conversation)
     if (!conversation) {
-      const title = useChatParams.input.slice(0, 40)
-      /* ###Thi */ console.log(`👉👉👉 title: `, title)
+      const title = await generateTitleFromUserMessage(useChatParams.input)
       await createConversation(title, chatId)
     }
 
