@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { Conversation } from '../interface'
+import { Chat } from '../interface'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -64,7 +64,7 @@ function getMonthYearString(date: Date): string {
   return date.toLocaleString('en-US', { month: 'long', year: 'numeric' })
 }
 
-export function filterConversations(conversations: Conversation[] = []): Map<string, Conversation[]> {
+export function filterChats(chats: Chat[] = []): Map<string, Chat[]> {
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const currentYear = now.getFullYear()
@@ -80,31 +80,31 @@ export function filterConversations(conversations: Conversation[] = []): Map<str
   prev7days.setDate(today.getDate() - 7)
   prev30days.setDate(today.getDate() - 30)
 
-  const groups = new Map<string, Conversation[]>()
+  const groups = new Map<string, Chat[]>()
 
   groups.set(
     'today',
-    conversations.filter(conv => new Date(conv.updatedAt) >= today)
+    chats.filter(conv => new Date(conv.updatedAt) >= today)
   )
   groups.set(
     'yesterday',
-    conversations.filter(conv => new Date(conv.updatedAt) >= yesterday && new Date(conv.updatedAt) < today)
+    chats.filter(conv => new Date(conv.updatedAt) >= yesterday && new Date(conv.updatedAt) < today)
   )
   groups.set(
     'prev3days',
-    conversations.filter(conv => new Date(conv.updatedAt) >= prev3days && new Date(conv.updatedAt) < yesterday)
+    chats.filter(conv => new Date(conv.updatedAt) >= prev3days && new Date(conv.updatedAt) < yesterday)
   )
   groups.set(
     'prev7days',
-    conversations.filter(conv => new Date(conv.updatedAt) >= prev7days && new Date(conv.updatedAt) < prev3days)
+    chats.filter(conv => new Date(conv.updatedAt) >= prev7days && new Date(conv.updatedAt) < prev3days)
   )
   groups.set(
     'prev30days',
-    conversations.filter(conv => new Date(conv.updatedAt) >= prev30days && new Date(conv.updatedAt) < prev7days)
+    chats.filter(conv => new Date(conv.updatedAt) >= prev30days && new Date(conv.updatedAt) < prev7days)
   )
 
   // Group by months for current year
-  conversations.forEach(conv => {
+  chats.forEach(conv => {
     const date = new Date(conv.updatedAt)
     if (date.getFullYear() === currentYear && date < prev30days) {
       const key = getMonthYearString(date)
@@ -113,8 +113,8 @@ export function filterConversations(conversations: Conversation[] = []): Map<str
     }
   })
 
-  // Group by years for older conversations
-  conversations.forEach(conv => {
+  // Group by years for older chats
+  chats.forEach(conv => {
     const date = new Date(conv.updatedAt)
     if (date.getFullYear() < currentYear) {
       const key = date.getFullYear().toString()

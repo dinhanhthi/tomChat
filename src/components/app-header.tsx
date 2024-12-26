@@ -2,8 +2,8 @@
 
 import { CircleUserRound, Edit, MessageSquareShare, Search, SlidersHorizontal } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
+import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
-import { useConversation } from '../hooks/useConversation'
 import { useDialogStore } from './search-dialog'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
@@ -15,8 +15,8 @@ export default function AppHeader() {
   const { id } = useParams()
   const { activeId } = useChatStore()
   const chatId = id || activeId
-  const { conversation } = useConversation(chatId as string)
-  const chatTitle = conversation?.title
+  const { chat } = useChatClient(chatId as string)
+  const chatTitle = chat?.title
 
   return (
     <header className="flex flex-row justify-between items-center pl-2 pr-4 h-14 shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b border-slate-200 w-full">

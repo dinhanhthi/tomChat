@@ -1,16 +1,16 @@
 import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db/database'
-import { Conversation, exMessage } from '../interface'
+import { Chat, exMessage } from '../interface'
 
-export const getConversation = async (chatId: string) => {
-  return await db.conversations.get(chatId)
+export const getChat = async (chatId: string) => {
+  return await db.chats.get(chatId)
 }
 
-export const createConversation = async (title: string, chatId?: string) => {
+export const createChat = async (title: string, chatId?: string) => {
   const id = chatId ?? uuidv4()
   const now = new Date()
 
-  await db.conversations.add({
+  await db.chats.add({
     id,
     title,
     createdAt: now,
@@ -20,14 +20,14 @@ export const createConversation = async (title: string, chatId?: string) => {
   return id
 }
 
-export const removeConversation = async (chatId: string) => {
-  await db.conversations.delete(chatId)
+export const removeChat = async (chatId: string) => {
+  await db.chats.delete(chatId)
   await db.messages.where('chatId').equals(chatId).delete()
   return chatId
 }
 
-export const updateConversationMetadata = async (chatId: string, metadata: Partial<Conversation>) => {
-  return await db.conversations.update(chatId, metadata)
+export const updateChatMetadata = async (chatId: string, metadata: Partial<Chat>) => {
+  return await db.chats.update(chatId, metadata)
 }
 
 export const addMessage = async (chatId: string, message: exMessage) => {
@@ -38,7 +38,7 @@ export const addMessage = async (chatId: string, message: exMessage) => {
     message.chatId = chatId
   }
   await db.messages.add(message)
-  await db.conversations.update(chatId, {
+  await db.chats.update(chatId, {
     updatedAt: new Date()
   })
   return message

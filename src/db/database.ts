@@ -1,19 +1,19 @@
 import Dexie from 'dexie'
-import { Conversation, exMessage } from '../interface'
+import { Chat, exMessage } from '../interface'
 
 export class ChatDatabase extends Dexie {
-  conversations!: Dexie.Table<Conversation, string>
+  chats!: Dexie.Table<Chat, string>
   messages!: Dexie.Table<exMessage, string>
 
   constructor() {
     super('ChatDatabase')
 
     this.version(1).stores({
-      conversations: 'id, title, description, messages, createdAt, updatedAt, usage',
+      chats: 'id, title, description, messages, createdAt, updatedAt, usage',
       messages: 'id, content, role, createdAt, chatId, usage'
     })
 
-    this.conversations = this.table('conversations')
+    this.chats = this.table('chats')
     this.messages = this.table('messages')
   }
 }

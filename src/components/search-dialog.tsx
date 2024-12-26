@@ -3,7 +3,7 @@
 import { X } from 'lucide-react'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { create } from 'zustand'
-import { useConversations } from '../hooks/useConversations'
+import { useChats } from '../hooks/useChats'
 import { Button } from './ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from './ui/dialog'
 
@@ -21,7 +21,7 @@ export default function SearchDialog() {
   const { isOpen, setIsOpen } = useDialogStore()
   const inputRef = useRef<HTMLInputElement>(null)
   const [query, setQuery] = useState('')
-  const { conversations } = useConversations(query)
+  const { chats } = useChats(query)
 
   useEffect(() => {
     if (inputRef.current) {

@@ -1,8 +1,11 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/database'
 
-export const useConversation = (chatId: string, includeMessage?: boolean) => {
-  const conversation = useLiveQuery(async () => (chatId ? await db.conversations.get(chatId) : undefined), [chatId])
+/**
+ * It's different from useChat() of AI SDK.
+ */
+export const useChatClient = (chatId: string, includeMessage?: boolean) => {
+  const chat = useLiveQuery(async () => (chatId ? await db.chats.get(chatId) : undefined), [chatId])
 
   const messages =
     includeMessage && chatId
@@ -12,5 +15,5 @@ export const useConversation = (chatId: string, includeMessage?: boolean) => {
         )
       : []
 
-  return { conversation, messages }
+  return { chat, messages }
 }

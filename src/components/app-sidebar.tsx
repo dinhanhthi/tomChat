@@ -13,9 +13,9 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Logo from '../../public/logo.svg'
-import { useConversations } from '../hooks/useConversations'
-import { filterConversations } from '../lib/utils'
-import SidebarGroupConvs from './sidebar-group-convs'
+import { useChats } from '../hooks/useChats'
+import { filterChats } from '../lib/utils'
+import SidebarGroupChats from './sidebar-group-chats'
 import { Button } from './ui/button'
 
 const SPECIAL_LABELS: Record<string, string> = {
@@ -34,14 +34,14 @@ export function AppSidebar() {
     router.push('/')
   }
 
-  const { conversations } = useConversations()
-  const filteredChats = filterConversations(conversations)
+  const { chats } = useChats()
+  const filteredChats = filterChats(chats)
 
   useEffect(() => {
-    if (conversations) {
+    if (chats) {
       setIsLoading(false)
     }
-  }, [conversations])
+  }, [chats])
 
   const getLabel = (key: string) => {
     return SPECIAL_LABELS[key] || key
@@ -72,13 +72,10 @@ export function AppSidebar() {
         {!isLoading && (
           <>
             {Array.from(filteredChats).map(
-              ([key, conversations]) =>
-                conversations.length > 0 && (
-                  <SidebarGroupConvs key={key} label={getLabel(key)} conversations={conversations} />
-                )
+              ([key, chats]) => chats.length > 0 && <SidebarGroupChats key={key} label={getLabel(key)} chats={chats} />
             )}
 
-            {!conversations?.length && (
+            {!chats?.length && (
               <div className="flex items-center justify-center text-slate-400 h-full px-6">No chat saved!</div>
             )}
           </>

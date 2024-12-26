@@ -6,9 +6,9 @@ import { useRef } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 import { v4 as uuidv4 } from 'uuid'
 import { generateTitleFromUserMessage } from '../app/actions'
+import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
-import { useConversation } from '../hooks/useConversation'
-import { addMessage, createConversation } from '../lib/conversations'
+import { addMessage, createChat } from '../lib/chats'
 import { cn } from '../lib/utils'
 import Container from './container'
 import { Button } from './ui/button'
@@ -28,18 +28,10 @@ export default function AppInputMsg(props: {
   const { setActiveId } = useChatStore()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const { conversation } = useConversation(chatId)
-
-  // const adjustHeight = () => {
-  //   if (textareaRef.current) {
-  //     textareaRef.current.style.height = 'auto'
-  //     textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`
-  //   }
-  // }
+  const { chat } = useChatClient(chatId)
 
   const handleClientInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (useChatParams) useChatParams.setInput(event.target.value)
-    // adjustHeight()
   }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -53,9 +45,9 @@ export default function AppInputMsg(props: {
     window.history.replaceState({}, '', `/chat/${chatId}`)
     setActiveId(chatId)
 
-    if (!conversation) {
+    if (!chat) {
       const title = await generateTitleFromUserMessage(useChatParams.input)
-      await createConversation(title, chatId)
+      await createChat(title, chatId)
     }
 
     await addMessage(chatId, {
@@ -69,8 +61,6 @@ export default function AppInputMsg(props: {
     if (useChatParams) {
       useChatParams.handleSubmit()
     }
-
-    // adjustHeight()
   }
 
   return (

@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useScrollToBottom } from '../hooks/useScrollToBottom'
-import { addMessage, getConversation, getMessages } from '../lib/conversations'
+import { addMessage, getChat, getMessages } from '../lib/chats'
 import { cn } from '../lib/utils'
 import AppInputMsg from './app-input-msg'
 import ScrollToBottomButton from './btn-scroll-to-bottom'
@@ -37,13 +37,13 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
   })
 
   useEffect(() => {
-    const checkConversation = async () => {
+    const checkChat = async () => {
       try {
         if (pathname === `/chat/${chatId}`) {
-          const conversation = await getConversation(chatId)
-          if (!conversation) {
+          const chat = await getChat(chatId)
+          if (!chat) {
             setIsLoading(false)
-            toast('Conversation not found!')
+            toast('Chat not found!')
             router.push('/')
             router.refresh()
           }
@@ -54,14 +54,14 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
           setIsLoading(false)
         }
       } catch (error) {
-        toast('There is an unknown error when loading the conversation you want!')
+        toast('There is an unknown error when loading the chat you want!')
         setIsLoading(false)
         router.push('/')
         router.refresh()
       }
     }
 
-    checkConversation()
+    checkChat()
   }, [router, chatId])
 
   return (
