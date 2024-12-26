@@ -7,7 +7,7 @@ interface LoadingBarProps {
   height?: number
 }
 
-const LoadingBar = ({ isLoading, className, color = 'bg-sky-600', height = 2 }: LoadingBarProps) => {
+const LoadingBar = ({ isLoading, className, color = 'bg-sky-700', height = 2 }: LoadingBarProps) => {
   const [progress, setProgress] = useState(0)
   const [show, setShow] = useState(true)
 
@@ -40,7 +40,7 @@ const LoadingBar = ({ isLoading, className, color = 'bg-sky-600', height = 2 }: 
   if (!show) return null
 
   return (
-    <div className={`absolute top-0 left-0 w-full bg-gray-200 ${className}`} style={{ height }}>
+    <div className={`absolute top-0 left-0 w-full bg-transparent ${className}`} style={{ height }}>
       <div
         className={`h-full ${color} transition-all duration-300 ease-out`}
         style={{

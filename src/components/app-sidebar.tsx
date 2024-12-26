@@ -18,6 +18,14 @@ import { filterConversations } from '../lib/utils'
 import SidebarGroupConvs from './sidebar-group-convs'
 import { Button } from './ui/button'
 
+const SPECIAL_LABELS: Record<string, string> = {
+  today: 'Today',
+  yesterday: 'Yesterday',
+  prev3days: 'Previous 3 days',
+  prev7days: 'Previous 7 days',
+  prev30days: 'Previous 30 days'
+}
+
 export function AppSidebar() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
@@ -34,6 +42,10 @@ export function AppSidebar() {
       setIsLoading(false)
     }
   }, [conversations])
+
+  const getLabel = (key: string) => {
+    return SPECIAL_LABELS[key] || key
+  }
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -59,24 +71,13 @@ export function AppSidebar() {
       <SidebarContent>
         {!isLoading && (
           <>
-            {filteredChats.today.length > 0 && (
-              <SidebarGroupConvs label="Today" conversations={filteredChats.today}></SidebarGroupConvs>
+            {Array.from(filteredChats).map(
+              ([key, conversations]) =>
+                conversations.length > 0 && (
+                  <SidebarGroupConvs key={key} label={getLabel(key)} conversations={conversations} />
+                )
             )}
-            {filteredChats.yesterday.length > 0 && (
-              <SidebarGroupConvs label="Yesterday" conversations={filteredChats.yesterday}></SidebarGroupConvs>
-            )}
-            {filteredChats.prev3days.length > 0 && (
-              <SidebarGroupConvs label="Previous 3 days" conversations={filteredChats.prev3days}></SidebarGroupConvs>
-            )}
-            {filteredChats.prev7days.length > 0 && (
-              <SidebarGroupConvs label="Previous 7 days" conversations={filteredChats.prev7days}></SidebarGroupConvs>
-            )}
-            {filteredChats.prev30days.length > 0 && (
-              <SidebarGroupConvs label="Previous 30 days" conversations={filteredChats.prev30days}></SidebarGroupConvs>
-            )}
-            {filteredChats.older.length > 0 && (
-              <SidebarGroupConvs label="Older" conversations={filteredChats.older}></SidebarGroupConvs>
-            )}
+
             {!conversations?.length && (
               <div className="flex items-center justify-center text-slate-400 h-full px-6">No chat saved!</div>
             )}

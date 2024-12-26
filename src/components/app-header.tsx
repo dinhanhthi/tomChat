@@ -28,7 +28,10 @@ export default function AppHeader() {
             className="group-data-[collapsible=icon]:opacity-0"
           />
           <Button
-            onClick={() => router.push('/')}
+            onClick={() => {
+              router.push('/')
+              router.refresh()
+            }}
             variant="ghost"
             size="iconBig"
             tooltip="New chat"

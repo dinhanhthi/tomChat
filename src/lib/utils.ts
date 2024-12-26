@@ -60,45 +60,68 @@ function convertMathDisplayStyle(text: string): string {
   return result
 }
 
-export function filterConversations(conversations: Conversation[] = []) {
-  const group: Record<'today' | 'yesterday' | 'prev3days' | 'prev7days' | 'prev30days' | 'older', Conversation[]> = {
-    today: [],
-    yesterday: [],
-    prev3days: [],
-    prev7days: [],
-    prev30days: [],
-    older: []
-  }
+function getMonthYearString(date: Date): string {
+  return date.toLocaleString('en-US', { month: 'long', year: 'numeric' })
+}
 
+export function filterConversations(conversations: Conversation[] = []): Map<string, Conversation[]> {
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  group['today'] = conversations.filter(conv => new Date(conv.updatedAt) >= today)
+  const currentYear = now.getFullYear()
 
+  // Initialize time-based groups
   const yesterday = new Date(today)
-  yesterday.setDate(yesterday.getDate() - 1)
-  group['yesterday'] = conversations.filter(
-    conv => new Date(conv.updatedAt) >= yesterday && new Date(conv.updatedAt) < today
-  )
-
   const prev3days = new Date(today)
-  prev3days.setDate(today.getDate() - 3)
-  group['prev3days'] = conversations.filter(
-    conv => new Date(conv.updatedAt) >= prev3days && new Date(conv.updatedAt) < yesterday
-  )
-
   const prev7days = new Date(today)
-  prev7days.setDate(today.getDate() - 7)
-  group['prev7days'] = conversations.filter(
-    conv => new Date(conv.updatedAt) >= prev7days && new Date(conv.updatedAt) < prev3days
-  )
-
   const prev30days = new Date(today)
+
+  yesterday.setDate(today.getDate() - 1)
+  prev3days.setDate(today.getDate() - 3)
+  prev7days.setDate(today.getDate() - 7)
   prev30days.setDate(today.getDate() - 30)
-  group['prev30days'] = conversations.filter(
-    conv => new Date(conv.updatedAt) >= prev30days && new Date(conv.updatedAt) < prev7days
+
+  const groups = new Map<string, Conversation[]>()
+
+  groups.set(
+    'today',
+    conversations.filter(conv => new Date(conv.updatedAt) >= today)
+  )
+  groups.set(
+    'yesterday',
+    conversations.filter(conv => new Date(conv.updatedAt) >= yesterday && new Date(conv.updatedAt) < today)
+  )
+  groups.set(
+    'prev3days',
+    conversations.filter(conv => new Date(conv.updatedAt) >= prev3days && new Date(conv.updatedAt) < yesterday)
+  )
+  groups.set(
+    'prev7days',
+    conversations.filter(conv => new Date(conv.updatedAt) >= prev7days && new Date(conv.updatedAt) < prev3days)
+  )
+  groups.set(
+    'prev30days',
+    conversations.filter(conv => new Date(conv.updatedAt) >= prev30days && new Date(conv.updatedAt) < prev7days)
   )
 
-  group['older'] = conversations.filter(conv => new Date(conv.updatedAt) < prev30days)
+  // Group by months for current year
+  conversations.forEach(conv => {
+    const date = new Date(conv.updatedAt)
+    if (date.getFullYear() === currentYear && date < prev30days) {
+      const key = getMonthYearString(date)
+      if (!groups.has(key)) groups.set(key, [])
+      groups.get(key)?.push(conv)
+    }
+  })
 
-  return group
+  // Group by years for older conversations
+  conversations.forEach(conv => {
+    const date = new Date(conv.updatedAt)
+    if (date.getFullYear() < currentYear) {
+      const key = date.getFullYear().toString()
+      if (!groups.has(key)) groups.set(key, [])
+      groups.get(key)?.push(conv)
+    }
+  })
+
+  return groups
 }
