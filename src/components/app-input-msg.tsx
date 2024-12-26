@@ -12,6 +12,7 @@ import { Button } from './ui/button'
 import { useRouter } from 'next/navigation'
 import { useChatStore } from '../hooks/useChatStore'
 import { generateTitleFromUserMessage } from '../app/actions'
+import TextareaAutosize from 'react-textarea-autosize'
 
 export default function AppInputMsg(props: {
   chatId: string
@@ -30,16 +31,16 @@ export default function AppInputMsg(props: {
 
   const { conversation } = useConversation(chatId)
 
-  const adjustHeight = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto'
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`
-    }
-  }
+  // const adjustHeight = () => {
+  //   if (textareaRef.current) {
+  //     textareaRef.current.style.height = 'auto'
+  //     textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`
+  //   }
+  // }
 
   const handleClientInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (useChatParams) useChatParams.setInput(event.target.value)
-    adjustHeight()
+    // adjustHeight()
   }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -69,6 +70,8 @@ export default function AppInputMsg(props: {
     if (useChatParams) {
       useChatParams.handleSubmit()
     }
+
+    // adjustHeight()
   }
 
   return (
@@ -76,20 +79,24 @@ export default function AppInputMsg(props: {
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
       <div></div>
       <div className="flex-1 flex flex-col items-center gap-2">
-        <form onSubmit={handleClientSubmit} className="flex flex-col p-2 bg-gray-100 rounded-3xl w-full">
-          <textarea
+        <form onSubmit={handleClientSubmit} className="flex flex-col bg-gray-100 rounded-3xl w-full overflow-hidden">
+          <TextareaAutosize
             rows={1}
+            autoComplete='off'
+            tabIndex={0}
+            autoCorrect='off'
             ref={textareaRef}
             value={useChatParams.input}
             onChange={handleClientInputChange}
-            className="bg-transparent resize-none focus-visible:outline-none p-2 min-h-6 max-h-[calc(25dvh)] overflow-auto"
+            className="bg-transparent resize-none focus-visible:outline-none p-2 pl-4 pt-4 min-h-6 max-h-[calc(25dvh)] overflow-auto"
             placeholder="Ask something..."
             onKeyDown={handleKeyDown}
             autoFocus
           />
-          <div className="flex flex-row justify-between gap-4 items-center">
+          <div className="flex flex-row justify-between gap-4 items-center p-2 pt-0">
             <div className="flex flex-row items-center">
               <Button
+                onClick={e => {e.preventDefault(); e.stopPropagation()}}
                 className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl rounded-bl-2xl"
                 variant="ghost"
                 size="iconBig"
@@ -99,6 +106,7 @@ export default function AppInputMsg(props: {
                 <Paperclip />
               </Button>
               <Button
+                onClick={e => {e.preventDefault(); e.stopPropagation()}}
                 className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl"
                 variant="ghost"
                 size="iconBig"
