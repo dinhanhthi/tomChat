@@ -25,9 +25,6 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
   const { isMobile } = useSidebar()
   const { showAlert } = useAlertDialog()
   const router = useRouter()
-  // Why we need activeId here? Because in `app-input-msg`, when we submit a new message of a very new conversation,
-  // we uses window.history.replaceState() to change the URL to the new conversation's URL. This one
-  // won't update the id in useParams()!
   const { id } = useParams()
   const { activeId } = useChatStore();
   const chatId = id || activeId
@@ -41,7 +38,6 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
       onConfirm: async () => {
         await removeConversation(conversation.id)
         router.push('/')
-        router.refresh()
         toast(
           <div className="x-prose dark:prose-invert text-sm">
             <ReactMarkdown>{`Chat **${conversation.title}** has been deleted!`}</ReactMarkdown>
@@ -56,7 +52,7 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
       {conversations.length > 0 && (
         <SidebarGroup>
           <SidebarGroupLabel className="sticky top-0 bg-sidebar z-20 text-sidebar-primary">{label}</SidebarGroupLabel>
-          <SidebarMenu className="gap-0">
+          <SidebarMenu className="gap-1">
             {conversations.map((conversation, index) => (
               <SidebarMenuItem key={index}>
                 <SidebarMenuButton

@@ -7,19 +7,16 @@ import { useDialogStore } from './search-dialog'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { SidebarTrigger } from './ui/sidebar'
+import { useChatStore } from '../hooks/useChatStore'
 
 export default function AppHeader() {
   const router = useRouter()
-  const { id: chatId } = useParams()
   const { setIsOpen } = useDialogStore()
-
+  const { id } = useParams()
+  const { activeId } = useChatStore();
+  const chatId = id || activeId
   const { conversation } = useConversation(chatId as string)
   const chatTitle = conversation?.title
-
-  function handleNewClicked() {
-    router.push('/')
-    router.refresh()
-  }
 
   return (
     <header className="flex flex-row justify-between items-center pl-2 pr-4 h-14 shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b border-slate-200 w-full">
@@ -30,7 +27,7 @@ export default function AppHeader() {
             tooltipPosition="bottom"
             className="group-data-[collapsible=icon]:opacity-0"
           />
-          <Button onClick={handleNewClicked} variant="ghost" size="iconBig" tooltip="New chat" tooltipPosition="bottom">
+          <Button onClick={() => router.push('/')} variant="ghost" size="iconBig" tooltip="New chat" tooltipPosition="bottom">
             <Edit />
           </Button>
         </div>

@@ -55,9 +55,9 @@ export function AlertDialogProvider({ children }: { children: React.ReactNode })
       {children}
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
         <AlertDialogContent className="!rounded-[2rem]">
-          <AlertDialogHeader>
-            <AlertDialogTitle>{options.title || 'Confirm Action'}</AlertDialogTitle>
-            <Separator className="my-4" />
+          <AlertDialogHeader className='gap-2'>
+            <AlertDialogTitle className='text-lg'>{options.title || 'Confirm Action'}</AlertDialogTitle>
+            {/* <Separator className="my-4" /> */}
             <AlertDialogDescription asChild>
               <div className="prose dark:prose-invert">
                 <ReactMarkdown>{options.description || 'Are you sure you want to continue?'}</ReactMarkdown>

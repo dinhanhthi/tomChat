@@ -3,9 +3,9 @@
 import { X } from 'lucide-react'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { create } from 'zustand'
+import { useConversations } from '../hooks/useConversations'
 import { Button } from './ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from './ui/dialog'
-import { useConversations } from '../hooks/useConversations'
 
 interface DialogStore {
   isOpen: boolean
@@ -60,7 +60,7 @@ export default function SearchDialog() {
               onChange={e => handleOnchangeInput(e)}
               onKeyDown={e => handleKeyDown(e)}
             />
-            <Button variant="ghost" size="icon" className='rounded-full group'>
+            <Button onClick={() => setIsOpen(false)} variant="ghost" size="icon" className="rounded-full group">
               <X className="h-4 w-4 opacity-50 group-hover:opacity-100 text-slate-800" />
             </Button>
           </div>
