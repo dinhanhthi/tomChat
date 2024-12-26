@@ -13,7 +13,6 @@ import {
 import React, { createContext, useContext, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { cn } from '../lib/utils'
-import { Separator } from './ui/separator'
 
 interface AlertDialogOptions {
   title?: string
@@ -55,8 +54,8 @@ export function AlertDialogProvider({ children }: { children: React.ReactNode })
       {children}
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
         <AlertDialogContent className="!rounded-[2rem]">
-          <AlertDialogHeader className='gap-2'>
-            <AlertDialogTitle className='text-lg'>{options.title || 'Confirm Action'}</AlertDialogTitle>
+          <AlertDialogHeader className="gap-2">
+            <AlertDialogTitle className="text-lg">{options.title || 'Confirm Action'}</AlertDialogTitle>
             {/* <Separator className="my-4" /> */}
             <AlertDialogDescription asChild>
               <div className="prose dark:prose-invert">

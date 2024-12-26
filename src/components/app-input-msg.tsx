@@ -3,16 +3,15 @@
 import { UseChatHelpers } from 'ai/react/dist'
 import { Globe, Paperclip, Send } from 'lucide-react'
 import { useRef } from 'react'
+import TextareaAutosize from 'react-textarea-autosize'
 import { v4 as uuidv4 } from 'uuid'
+import { generateTitleFromUserMessage } from '../app/actions'
+import { useChatStore } from '../hooks/useChatStore'
 import { useConversation } from '../hooks/useConversation'
 import { addMessage, createConversation } from '../lib/conversations'
 import { cn } from '../lib/utils'
 import Container from './container'
 import { Button } from './ui/button'
-import { useRouter } from 'next/navigation'
-import { useChatStore } from '../hooks/useChatStore'
-import { generateTitleFromUserMessage } from '../app/actions'
-import TextareaAutosize from 'react-textarea-autosize'
 
 export default function AppInputMsg(props: {
   chatId: string
@@ -26,7 +25,7 @@ export default function AppInputMsg(props: {
   }
 }) {
   const { chatId, className, useChatParams } = props
-  const { setActiveId } = useChatStore();
+  const { setActiveId } = useChatStore()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const { conversation } = useConversation(chatId)
@@ -82,9 +81,9 @@ export default function AppInputMsg(props: {
         <form onSubmit={handleClientSubmit} className="flex flex-col bg-gray-100 rounded-3xl w-full overflow-hidden">
           <TextareaAutosize
             rows={1}
-            autoComplete='off'
+            autoComplete="off"
             tabIndex={0}
-            autoCorrect='off'
+            autoCorrect="off"
             ref={textareaRef}
             value={useChatParams.input}
             onChange={handleClientInputChange}
@@ -96,7 +95,10 @@ export default function AppInputMsg(props: {
           <div className="flex flex-row justify-between gap-4 items-center p-2 pt-0">
             <div className="flex flex-row items-center">
               <Button
-                onClick={e => {e.preventDefault(); e.stopPropagation()}}
+                onClick={e => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                }}
                 className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl rounded-bl-2xl"
                 variant="ghost"
                 size="iconBig"
@@ -106,7 +108,10 @@ export default function AppInputMsg(props: {
                 <Paperclip />
               </Button>
               <Button
-                onClick={e => {e.preventDefault(); e.stopPropagation()}}
+                onClick={e => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                }}
                 className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl"
                 variant="ghost"
                 size="iconBig"

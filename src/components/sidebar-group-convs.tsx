@@ -11,14 +11,14 @@ import {
 } from '@/components/ui/sidebar'
 import { Archive, MessageCircle, MessageSquareShare, MoreHorizontal, Pencil, Star, Trash2 } from 'lucide-react'
 import Link from 'next/link'
+import { useParams, useRouter } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import { toast } from 'sonner'
+import { useChatStore } from '../hooks/useChatStore'
 import { Conversation } from '../interface'
 import { removeConversation } from '../lib/conversations'
 import { useAlertDialog } from './dialog-confirm'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
-import { useParams, useRouter } from 'next/navigation'
-import { useChatStore } from '../hooks/useChatStore'
 
 export default function SidebarGroupConvs(props: { label: string; conversations?: Conversation[] }) {
   const { label, conversations = [] } = props
@@ -26,7 +26,7 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
   const { showAlert } = useAlertDialog()
   const router = useRouter()
   const { id } = useParams()
-  const { activeId } = useChatStore();
+  const { activeId } = useChatStore()
   const chatId = id || activeId
 
   const removeChat = (conversation: Conversation) => async () => {
