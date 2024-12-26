@@ -9,12 +9,23 @@ import {
   SidebarMenuItem,
   useSidebar
 } from '@/components/ui/sidebar'
-import { Archive, MessageCircle, MessageSquareShare, MoreHorizontal, Pencil, Star, Trash2 } from 'lucide-react'
+import {
+  Archive,
+  ArchiveX,
+  MessageCircle,
+  MessageSquareShare,
+  MoreHorizontal,
+  Pencil,
+  Star,
+  StarOff,
+  Trash2
+} from 'lucide-react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import { toast } from 'sonner'
 import { useChatStore } from '../hooks/useChatStore'
+import { useUserPreferences } from '../hooks/usePreferences'
 import { Conversation } from '../interface'
 import { removeConversation } from '../lib/conversations'
 import { useAlertDialog } from './dialog-confirm'
@@ -22,6 +33,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 export default function SidebarGroupConvs(props: { label: string; conversations?: Conversation[] }) {
   const { label, conversations = [] } = props
+  const { toggleStar, toggleArchive, isStarred, isArchived } = useUserPreferences()
   const { isMobile } = useSidebar()
   const { showAlert } = useAlertDialog()
   const router = useRouter()
@@ -68,7 +80,7 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
                 </SidebarMenuButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction showOnHover>
+                    <SidebarMenuAction showOnHover tooltip="Options">
                       <MoreHorizontal />
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>
@@ -82,17 +94,37 @@ export default function SidebarGroupConvs(props: { label: string; conversations?
                       <MessageSquareShare className="text-muted-foreground" />
                       <span>Share</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Star className="text-muted-foreground" />
-                      <span>Favorite</span>
+                    <DropdownMenuItem onClick={() => toggleStar(conversation.id)}>
+                      {isStarred(conversation.id) && (
+                        <>
+                          <StarOff className="text-muted-foreground" />
+                          <span>Remove favorite</span>
+                        </>
+                      )}
+                      {!isStarred(conversation.id) && (
+                        <>
+                          <Star className="h-5 w-5 text-muted-foreground" />
+                          <span>Favorite</span>
+                        </>
+                      )}
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Pencil className="text-muted-foreground" />
                       <span>Rename</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Archive className="text-muted-foreground" />
-                      <span>Archive</span>
+                    <DropdownMenuItem onClick={() => toggleArchive(conversation.id)}>
+                      {isArchived(conversation.id) && (
+                        <>
+                          <ArchiveX className="text-muted-foreground" />
+                          <span>Unarchived</span>
+                        </>
+                      )}
+                      {!isArchived(conversation.id) && (
+                        <>
+                          <Archive className="text-muted-foreground" />
+                          <span>Archive</span>
+                        </>
+                      )}
                     </DropdownMenuItem>
                     {/* <DropdownMenuSeparator /> */}
                     <DropdownMenuItem onClick={removeChat(conversation)} className="text-danger hover:!text-danger">

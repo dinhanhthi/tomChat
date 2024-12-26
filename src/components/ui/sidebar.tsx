@@ -482,11 +482,12 @@ const SidebarMenuAction = React.forwardRef<
   React.ComponentProps<'button'> & {
     asChild?: boolean
     showOnHover?: boolean
+    tooltip?: string | React.ComponentProps<typeof TooltipContent>
   }
->(({ className, asChild = false, showOnHover = false, ...props }, ref) => {
+>(({ className, asChild = false, showOnHover = false, tooltip, ...props }, ref) => {
   const Comp = asChild ? Slot : 'button'
 
-  return (
+  const button = (
     <Comp
       ref={ref}
       data-sidebar="menu-action"
@@ -504,6 +505,23 @@ const SidebarMenuAction = React.forwardRef<
       )}
       {...props}
     />
+  )
+
+  if (!tooltip) {
+    return button
+  }
+
+  if (typeof tooltip === 'string') {
+    tooltip = {
+      children: tooltip
+    }
+  }
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipContent side="top" align="center" {...tooltip} />
+    </Tooltip>
   )
 })
 SidebarMenuAction.displayName = 'SidebarMenuAction'
