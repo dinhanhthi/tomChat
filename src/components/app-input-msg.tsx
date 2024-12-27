@@ -66,9 +66,12 @@ export default function AppInputMsg(props: {
   return (
     <Container className={cn('flex flex-row gap-4 md:gap-5 lg:gap-6 pt-4', className)}>
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
-      <div></div>
-      <div className="flex-1 flex flex-col items-center gap-2">
-        <form onSubmit={handleClientSubmit} className="flex flex-col bg-gray-100 rounded-3xl w-full overflow-hidden">
+      <div className="w-0"></div>
+      <div className="flex x-flex-1 flex-col items-center gap-2">
+        <form
+          onSubmit={handleClientSubmit}
+          className="flex x-flex-1 flex-col bg-gray-100 rounded-3xl w-full overflow-hidden"
+        >
           <TextareaAutosize
             rows={1}
             autoComplete="off"
@@ -121,7 +124,7 @@ export default function AppInputMsg(props: {
             </Button>
           </div>
         </form>
-        <div className="text-[0.7rem] text-muted-foreground">Usage of this chat: $0.5, tokens: 100.</div>
+        <div className="text-[0.7rem] text-muted-foreground select-none">Usage of this chat: $0.5, tokens: 100.</div>
       </div>
     </Container>
   )

@@ -19,13 +19,14 @@ export const metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className)}>
+      {/* There is an overflow problem here, cannot find the solution except putting overflow-hidden here! */}
+      <body className={cn(inter.className, 'overflow-hidden')}>
         <AlertDialogProvider>
           <SidebarProvider>
             <AppSidebar />
-            <main className="flex flex-col h-svh flex-1 bg-background min-w-0">
+            <main className="flex flex-col h-svh x-flex-1 bg-background">
               <AppHeader />
-              <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
+              <div className="x-flex-1">{children}</div>
             </main>
             <SearchDialog />
           </SidebarProvider>

@@ -20,7 +20,7 @@ export default function AppHeader() {
 
   return (
     <header className="flex flex-row justify-between items-center pl-2 pr-4 h-14 shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b border-slate-200 w-full">
-      <div className="flex items-center gap-2 flex-1 min-w-0">
+      <div className="flex items-center gap-2 x-flex-1">
         <div className="flex items-center">
           <SidebarTrigger
             tooltip="Toggle sidebar (⌘+B)"
@@ -43,7 +43,7 @@ export default function AppHeader() {
         {chatTitle && (
           <>
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <div className="truncate flex-1 min-w-0 pr-4 text-[1.05rem]">{chatTitle}</div>
+            <div className="truncate x-flex-1 pr-4 text-[1.05rem]">{chatTitle}</div>
           </>
         )}
       </div>

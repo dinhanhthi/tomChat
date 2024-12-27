@@ -67,7 +67,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
   return (
     <div className={cn('relative h-full flex flex-col', className)}>
       <LoadingBar isLoading={isLoading} />
-      <div ref={messagesContainerRef} className="overflow-y-auto h-full w-full">
+      <div ref={messagesContainerRef} className="overflow-y-auto x-flex-1">
         <Container className="h-full">
           {!isLoading && (
             <div className={cn('h-full w-full px-4 pt-8 pb-14 gap-8 flex flex-col scroll-mb-[250px]', className)}>

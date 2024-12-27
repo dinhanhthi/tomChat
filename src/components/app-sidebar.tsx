@@ -48,7 +48,7 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar collapsible="offcanvas">
+    <Sidebar className='x-min-hw-0' collapsible="offcanvas">
       <SidebarHeader className="flex h-14 flex-row gap-2 justify-betweens">
         <div className="flex items-center flex-row gap-2 flex-1">
           <button onClick={backToHome} className="flex flex-row whitespace-nowrap flex-nowrap items-center">
