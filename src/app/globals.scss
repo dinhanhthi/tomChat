@@ -66,6 +66,12 @@
     --card-foreground: 0 0% 3.9%;
     --danger: theme(colors.red.500);
     --danger-hover: theme(colors.red.600);
+    --info: theme(colors.blue.500);
+    --info-hover: theme(colors.blue.600);
+    --warning: theme(colors.yellow.500);
+    --warning-hover: theme(colors.yellow.600);
+    --success: theme(colors.green.500);
+    --success-hover: theme(colors.green.600);
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
     --primary: 0 0% 9%;
@@ -103,6 +109,12 @@
     --card-foreground: 0 0% 98%;
     --danger: theme(colors.red.400);
     --danger-hover: theme(colors.red.500);
+    --info: theme(colors.blue.400);
+    --info-hover: theme(colors.blue.500);
+    --warning: theme(colors.yellow.400);
+    --warning-hover: theme(colors.yellow.500);
+    --success: theme(colors.green.400);
+    --success-hover: theme(colors.green.500);
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;

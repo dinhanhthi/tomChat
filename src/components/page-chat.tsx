@@ -3,10 +3,10 @@
 import { useChat } from 'ai/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
 import { useScrollToBottom } from '../hooks/useScrollToBottom'
 import { addMessage, getChat, getMessages } from '../lib/chats'
 import { cn } from '../lib/utils'
+import { xtoast } from '../lib/xtoast'
 import AppInputMsg from './app-input-msg'
 import ScrollToBottomButton from './btn-scroll-to-bottom'
 import Container from './container'
@@ -33,6 +33,9 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
           totalTokens: options.usage.totalTokens
         }
       })
+    },
+    onError: error => {
+      xtoast.error(`Error when sending the message: **${error instanceof Error ? error.message : 'Unknown error!'}**`)
     }
   })
 
@@ -43,7 +46,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
           const chat = await getChat(chatId)
           if (!chat) {
             setIsLoading(false)
-            toast('Chat not found!')
+            xtoast.error('Chat not found!')
             router.push('/')
             router.refresh()
           }
@@ -54,7 +57,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
           setIsLoading(false)
         }
       } catch (error) {
-        toast('There is an unknown error when loading the chat you want!')
+        xtoast.error('There is an unknown error when loading the chat you want!')
         setIsLoading(false)
         router.push('/')
         router.refresh()

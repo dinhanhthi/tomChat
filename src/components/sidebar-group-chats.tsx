@@ -30,6 +30,7 @@ import { Chat } from '../interface'
 import { removeChat } from '../lib/chats'
 import { useAlertDialog } from './dialog-confirm'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
+import { xtoast } from '../lib/xtoast'
 
 export default function SidebarGroupChats(props: { label: string; chats?: Chat[] }) {
   const { label, chats = [] } = props
@@ -50,11 +51,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
       onConfirm: async () => {
         await removeChat(chat.id)
         router.push('/')
-        toast(
-          <div className="x-prose dark:prose-invert text-sm">
-            <ReactMarkdown>{`Chat **${chat.title}** has been deleted!`}</ReactMarkdown>
-          </div>
-        )
+        xtoast.info(`Chat **${chat.title}** has been deleted!`)
       }
     })
   }

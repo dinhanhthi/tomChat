@@ -19,6 +19,12 @@ module.exports = {
       colors: {
         danger: 'var(--danger)',
         'danger-hover': 'var(--danger-hover)',
+        success: 'var(--success)',
+        'success-hover': 'var(--success-hover)',
+        warning: 'var(--warning)',
+        'warning-hover': 'var(--warning-hover)',
+        info: 'var(--info)',
+        'info-hover': 'var(--info-hover)',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

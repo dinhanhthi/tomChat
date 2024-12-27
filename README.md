@@ -50,6 +50,7 @@ yarn test
 
 ## Notes
 
+- Instead of using `toast`, use `xtoast` instead!
 - To change the print width rules: change in 3 places:
   - `.vscode/settings.json/prettier.printWidth`
   - `.vscode/settings.json/editor.rulers`

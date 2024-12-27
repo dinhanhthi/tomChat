@@ -10,6 +10,7 @@ import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
 import { addMessage, createChat } from '../lib/chats'
 import { cn } from '../lib/utils'
+import { xtoast } from '../lib/xtoast'
 import Container from './container'
 import { Button } from './ui/button'
 
@@ -45,21 +46,31 @@ export default function AppInputMsg(props: {
     window.history.replaceState({}, '', `/chat/${chatId}`)
     setActiveId(chatId)
 
-    if (!chat) {
-      const title = await generateTitleFromUserMessage(useChatParams.input)
-      await createChat(title, chatId)
-    }
+    try {
+      if (useChatParams) {
+        if (!chat) {
+          const title = await generateTitleFromUserMessage(useChatParams.input).catch(e => {
+            const errMsg = `Error when generating the title for this chat: ${e instanceof Error ? e.message : 'Unknown error!'}. Using a part of the user input instead.`
+            xtoast.warning(errMsg)
+            return useChatParams.input.slice(0, 50)
+          })
+          await createChat(title, chatId)
+        }
 
-    await addMessage(chatId, {
-      id: uuidv4(),
-      role: 'user',
-      content: useChatParams.input,
-      createdAt: new Date(),
-      chatId
-    })
+        useChatParams.handleSubmit()
 
-    if (useChatParams) {
-      useChatParams.handleSubmit()
+        await addMessage(chatId, {
+          id: uuidv4(),
+          role: 'user',
+          content: useChatParams.input,
+          createdAt: new Date(),
+          chatId
+        })
+      }
+    } catch (error) {
+      xtoast.error(
+        `${error instanceof Error ? error.message : 'There is an unknown error when submitting a new message!'}`
+      )
     }
   }
 
