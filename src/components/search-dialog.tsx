@@ -41,11 +41,24 @@ export default function SearchDialog() {
     }
   }
 
+  // Add keyboard shortcut cmd/ctrl + k to open the search dialog
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        setIsOpen(true)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className="shadow-[0_14px_62px_0_rgba(0,0,0,0.25)] md:min-w-[680px] md:max-w-[680px] !rounded-2xl !p-0"
-        overlayClassName="bg-transparent"
+        className="shadow-[0_14px_62px_0_rgba(0,0,0,0.25)] md:min-w-[680px] md:max-w-[680px] !rounded-[3rem] !p-0 !top-[10%]"
+        overlayClassName="bg-black/30"
         hideCloseBtn={true}
       >
         <DialogTitle className="hidden">Hidden Title</DialogTitle>
