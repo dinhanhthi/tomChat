@@ -1,7 +1,7 @@
 import { Inter } from 'next/font/google'
 
 import AppHeader from '../components/app-header'
-import { AppSidebar } from '../components/app-sidebar'
+import AppSidebar from '../components/app-sidebar'
 import { AlertDialogProvider } from '../components/dialog-confirm'
 import SearchDialog from '../components/search-dialog'
 import { SidebarProvider } from '../components/ui/sidebar'

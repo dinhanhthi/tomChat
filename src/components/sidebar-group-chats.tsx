@@ -22,15 +22,14 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import ReactMarkdown from 'react-markdown'
-import { toast } from 'sonner'
 import { useChatStore } from '../hooks/useChatStore'
 import { useUserPreferences } from '../hooks/usePreferences'
 import { Chat } from '../interface'
 import { removeChat } from '../lib/chats'
-import { useAlertDialog } from './dialog-confirm'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { xtoast } from '../lib/xtoast'
+import { useAlertDialog } from './dialog-confirm'
+import OverflowTooltip from './overflow-tooltip'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 
 export default function SidebarGroupChats(props: { label: string; chats?: Chat[] }) {
   const { label, chats = [] } = props
@@ -72,7 +71,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                   <Link href={`/chat/${chat.id}`}>
                     {chat.icon && <span>{chat.icon}</span>}
                     {!chat.icon && <MessageCircle />}
-                    <span className="select-none">{chat.title}</span>
+                    <OverflowTooltip className="select-none" text={chat.title}></OverflowTooltip>
                   </Link>
                 </SidebarMenuButton>
                 <DropdownMenu>

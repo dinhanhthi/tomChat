@@ -8,6 +8,7 @@ import { addMessage, getChat, getMessages } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import AppInputMsg from './app-input-msg'
+import XChatBrand from './brand'
 import ScrollToBottomButton from './btn-scroll-to-bottom'
 import Container from './container'
 import LoadingBar from './loading-bar'
@@ -67,6 +68,15 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
     checkChat()
   }, [router, chatId])
 
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      })
+    }
+  }, [messages])
+
   return (
     <div className={cn('relative h-full flex flex-col', className)}>
       <LoadingBar isLoading={isLoading} />
@@ -77,6 +87,11 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
               {messages.map((msg, i) => (
                 <MessagePreview key={msg.id ?? i} message={msg} />
               ))}
+              {!messages.length && (
+                <div className="flex flex-col items-center gap-4 x-flex-1 justify-center opacity-40">
+                  <XChatBrand size="lg" className='grayscale' />
+                </div>
+              )}
               <div className="min-h-8 shrink-0"></div>
             </div>
           )}

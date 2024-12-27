@@ -9,12 +9,11 @@ import {
   SidebarSeparator
 } from '@/components/ui/sidebar'
 import { BadgeInfo, BookOpenText, Bug, Github, Lightbulb, LoaderCircle, ScrollText } from 'lucide-react'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import Logo from '../../public/logo.svg'
 import { useChats } from '../hooks/useChats'
 import { filterChats } from '../lib/utils'
+import XChatBrand from './brand'
 import SidebarGroupChats from './sidebar-group-chats'
 import { Button } from './ui/button'
 
@@ -26,7 +25,7 @@ const SPECIAL_LABELS: Record<string, string> = {
   prev30days: 'Previous 30 days'
 }
 
-export function AppSidebar() {
+export default function AppSidebar() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
 
@@ -48,14 +47,11 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar className='x-min-hw-0' collapsible="offcanvas">
+    <Sidebar className="x-min-hw-0" collapsible="offcanvas">
       <SidebarHeader className="flex h-14 flex-row gap-2 justify-betweens">
-        <div className="flex items-center flex-row gap-2 flex-1">
-          <button onClick={backToHome} className="flex flex-row whitespace-nowrap flex-nowrap items-center">
-            <div className="p-2 rounded-lg">
-              <Image src={Logo} alt="xChat" width={20} height={20} className="shrink-0" />
-            </div>
-            <div className="text-sidebar-primary text-sm font-medium">xChat</div>
+        <div className="flex items-center flex-row gap-2 flex-1 px-2">
+          <button onClick={backToHome}>
+            <XChatBrand />
           </button>
           <div className="text-[0.6rem] text-slate-600 font-mono border border-slate-300 rounded-lg px-2">v0.0.0</div>
         </div>

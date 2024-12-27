@@ -4,6 +4,7 @@ import { CircleUserRound, Edit, MessageSquareShare, Search, SlidersHorizontal } 
 import { useParams, useRouter } from 'next/navigation'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
+import OverflowTooltip from './overflow-tooltip'
 import { useDialogStore } from './search-dialog'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
@@ -43,7 +44,9 @@ export default function AppHeader() {
         {chatTitle && (
           <>
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <div className="truncate x-flex-1 pr-4 text-[1.05rem]">{chatTitle}</div>
+            <div className="truncate x-flex-1 pr-4 text-[1.05rem]">
+              <OverflowTooltip text={chatTitle}></OverflowTooltip>
+            </div>
           </>
         )}
       </div>
