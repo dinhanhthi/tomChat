@@ -64,7 +64,7 @@ export default function AppInputMsg(props: {
   }
 
   return (
-    <Container className={cn('flex flex-row gap-4 md:gap-5 lg:gap-6 pt-2', className)}>
+    <Container className={cn('flex flex-row gap-4 md:gap-5 lg:gap-6 pt-4', className)}>
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
       <div></div>
       <div className="flex-1 flex flex-col items-center gap-2">
