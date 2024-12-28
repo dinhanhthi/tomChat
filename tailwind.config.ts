@@ -17,6 +17,7 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)'
       },
       colors: {
+        principal: 'var(--principal)',
         danger: 'var(--danger)',
         'danger-hover': 'var(--danger-hover)',
         success: 'var(--success)',

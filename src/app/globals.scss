@@ -60,6 +60,7 @@
 
 @layer base {
   :root {
+    --principal: theme(colors.sky.600);
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -103,6 +104,7 @@
     --sidebar-ring: 240 5% 64.9%; // 217.2 91.2% 59.8%;
   }
   .dark {
+    --principal: theme(colors.sky.400);
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;

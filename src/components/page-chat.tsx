@@ -95,8 +95,13 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
                 <MessagePreview key={msg.id ?? i} message={msg} />
               ))}
               {!messages.length && (
-                <div className="flex flex-col items-center gap-4 x-flex-1 justify-center opacity-40">
-                  <XChatBrand size="lg" className="grayscale select-none" wrap={true} />
+                <div className="flex flex-col items-center gap-4 x-flex-1 justify-center opacity-30">
+                  <XChatBrand
+                    size={32}
+                    className="grayscale select-none gap-2"
+                    textClassName="text-2xl font-bold opacity-80"
+                    wrap={true}
+                  />
                 </div>
               )}
 

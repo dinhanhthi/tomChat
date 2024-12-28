@@ -134,7 +134,7 @@ export default function AppInputMsg(props: {
             <Button
               onClick={() => (useChatParams.isLoading ? handleStopMessage() : handleClientSubmit())}
               className={cn(
-                'hover:bg-transparent flex items-center hover:bg-gray-800 hover:text-white h-8 w-8 justify-center text-white bg-gray-700 rounded-full',
+                'flex items-center hover:bg-principal hover:text-white h-8 w-8 justify-center text-white bg-principal rounded-full',
                 {
                   '[&_svg]:size-[15px]': useChatParams.isLoading,
                   '[&_svg]:size-[18px]': !useChatParams.isLoading
