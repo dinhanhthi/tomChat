@@ -1,7 +1,7 @@
 'use client'
 
 import { UseChatHelpers } from 'ai/react/dist'
-import { Globe, Paperclip, Send } from 'lucide-react'
+import { Globe, Paperclip, Send, Square } from 'lucide-react'
 import { useRef } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 import { v4 as uuidv4 } from 'uuid'
@@ -23,6 +23,8 @@ export default function AppInputMsg(props: {
     handleSubmit: UseChatHelpers['handleSubmit']
     setMessages: UseChatHelpers['setMessages']
     messages: UseChatHelpers['messages']
+    isLoading: UseChatHelpers['isLoading']
+    stop: UseChatHelpers['stop']
   }
 }) {
   const { chatId, className, useChatParams } = props
@@ -74,6 +76,10 @@ export default function AppInputMsg(props: {
     }
   }
 
+  const handleStopMessage = () => {
+    if (useChatParams.stop) useChatParams.stop()
+  }
+
   return (
     <Container className={cn('flex flex-row gap-4 md:gap-5 lg:gap-6 pt-4', className)}>
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
@@ -96,7 +102,7 @@ export default function AppInputMsg(props: {
             onKeyDown={handleKeyDown}
             autoFocus
           />
-          <div className="flex flex-row justify-between gap-4 items-center p-2 pt-0">
+          <div className="flex flex-row justify-between gap-4 items-center p-2 pr-3 pt-0">
             <div className="flex flex-row items-center">
               <Button
                 onClick={e => {
@@ -126,12 +132,19 @@ export default function AppInputMsg(props: {
               </Button>
             </div>
             <Button
-              className="hover:bg-transparent hover:text-sky-500 [&_svg]:size-[22px] rounded-xl"
-              type="submit"
+              onClick={() => (useChatParams.isLoading ? handleStopMessage() : handleClientSubmit())}
+              className={cn(
+                'hover:bg-transparent flex items-center hover:bg-gray-800 hover:text-white h-8 w-8 justify-center text-white bg-gray-700 rounded-full',
+                {
+                  '[&_svg]:size-[15px]': useChatParams.isLoading,
+                  '[&_svg]:size-[18px]': !useChatParams.isLoading
+                }
+              )}
               variant="ghost"
               size="iconBig"
             >
-              <Send />
+              {!useChatParams.isLoading && <Send className="-rotate-45 mt-1" />}
+              {useChatParams.isLoading && <Square className="fill-white" />}
             </Button>
           </div>
         </form>

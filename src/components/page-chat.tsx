@@ -2,8 +2,7 @@
 
 import { useChat } from 'ai/react'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { useScrollToBottom } from '../hooks/useScrollToBottom'
+import { useEffect, useRef, useState } from 'react'
 import { addMessage, getChat, getMessages } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
@@ -17,13 +16,20 @@ import MessagePreview from './message-preview'
 export default function PageChat({ chatId, className }: { chatId: string; className?: string }) {
   const router = useRouter()
   const pathname = usePathname()
-  const [messagesContainerRef, _messagesEndRef] = useScrollToBottom<HTMLDivElement>()
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
   const [isLoading, setIsLoading] = useState(true)
-  // let initialMessages: exMessage[] = []
 
   // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
-  const { messages, setMessages, input, setInput, handleSubmit } = useChat({
-    // initialMessages,
+  const {
+    messages,
+    setMessages,
+    input,
+    setInput,
+    handleSubmit,
+    isLoading: isAnswering,
+    stop
+  } = useChat({
     onFinish: async (message, options) => {
       await addMessage(chatId, {
         ...message,
@@ -39,6 +45,16 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
       xtoast.error(`Error when sending the message: **${error instanceof Error ? error.message : 'Unknown error!'}**`)
     }
   })
+
+  const scrollToBottom = (smooth: boolean = true) => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' })
+    }
+  }
+
+  useEffect(() => {
+    scrollToBottom(false)
+  }, [messages])
 
   useEffect(() => {
     const checkChat = async () => {
@@ -68,15 +84,6 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
     checkChat()
   }, [router, chatId])
 
-  useEffect(() => {
-    if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTo({
-        top: messagesContainerRef.current.scrollHeight,
-        behavior: 'smooth'
-      })
-    }
-  }, [messages])
-
   return (
     <div className={cn('relative h-full flex flex-col', className)}>
       <LoadingBar isLoading={isLoading} />
@@ -89,10 +96,15 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
               ))}
               {!messages.length && (
                 <div className="flex flex-col items-center gap-4 x-flex-1 justify-center opacity-40">
-                  <XChatBrand size="lg" className='grayscale' />
+                  <XChatBrand size="lg" className="grayscale select-none" wrap={true} />
                 </div>
               )}
-              <div className="min-h-8 shrink-0"></div>
+
+              {isAnswering && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
+                <div className="text-muted-foreground italic text-sm">AI is thinking...</div>
+              )}
+
+              <div ref={messagesEndRef} className="min-h-8 h-8 min-w-8 shrink-0"></div>
             </div>
           )}
         </Container>
@@ -101,7 +113,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
       <AppInputMsg
         chatId={chatId}
         className="pb-2"
-        useChatParams={{ input, setInput, handleSubmit, setMessages, messages }}
+        useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading: isAnswering, stop }}
       />
     </div>
   )
