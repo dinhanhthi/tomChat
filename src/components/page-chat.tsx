@@ -18,7 +18,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
   const pathname = usePathname()
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isPageLoading, setIsPageLoading] = useState(true)
 
   // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
   const {
@@ -27,7 +27,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
     input,
     setInput,
     handleSubmit,
-    isLoading: isAnswering,
+    isLoading,
     stop
   } = useChat({
     onFinish: async (message, options) => {
@@ -62,20 +62,20 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
         if (pathname === `/chat/${chatId}`) {
           const chat = await getChat(chatId)
           if (!chat) {
-            setIsLoading(false)
+            setIsPageLoading(false)
             xtoast.error('Chat not found!')
             router.push('/')
             router.refresh()
           }
           const messages = await getMessages(chatId)
           setMessages(messages)
-          setIsLoading(false)
+          setIsPageLoading(false)
         } else {
-          setIsLoading(false)
+          setIsPageLoading(false)
         }
       } catch (error) {
         xtoast.error('There is an unknown error when loading the chat you want!')
-        setIsLoading(false)
+        setIsPageLoading(false)
         router.push('/')
         router.refresh()
       }
@@ -86,14 +86,16 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
 
   return (
     <div className={cn('relative h-full flex flex-col', className)}>
-      <LoadingBar isLoading={isLoading} />
+      <LoadingBar isLoading={isPageLoading} />
       <div ref={messagesContainerRef} className="overflow-y-auto x-flex-1">
         <Container className="h-full">
-          {!isLoading && (
+          {!isPageLoading && (
             <div className={cn('h-full w-full px-4 pt-8 pb-14 gap-8 flex flex-col scroll-mb-[250px]', className)}>
-              {messages.map((msg, i) => (
-                <MessagePreview key={msg.id ?? i} message={msg} />
-              ))}
+              {messages
+                .filter(msg => !!msg.content)
+                .map((msg, i) => (
+                  <MessagePreview key={msg.id ?? i} message={msg} isLoading={isLoading} />
+                ))}
               {!messages.length && (
                 <div className="flex flex-col items-center gap-4 x-flex-1 justify-center opacity-30">
                   <XChatBrand
@@ -105,7 +107,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
                 </div>
               )}
 
-              {isAnswering && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
+              {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
                 <div className="text-muted-foreground italic text-sm">AI is thinking...</div>
               )}
 
@@ -118,7 +120,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
       <AppInputMsg
         chatId={chatId}
         className="pb-2"
-        useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading: isAnswering, stop }}
+        useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading, stop }}
       />
     </div>
   )

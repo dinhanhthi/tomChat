@@ -18,6 +18,7 @@ import {
   Pencil,
   Pin,
   PinOff,
+  Settings2,
   Trash2
 } from 'lucide-react'
 import Link from 'next/link'
@@ -77,7 +78,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <SidebarMenuAction showOnHover tooltip="Options">
-                      <MoreHorizontal />
+                      <Settings2 />
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>
                   </DropdownMenuTrigger>

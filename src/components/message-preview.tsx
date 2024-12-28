@@ -1,4 +1,5 @@
 import { Message } from 'ai'
+import { UseChatHelpers } from 'ai/react/dist'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Copy, RefreshCw, Volume2 } from 'lucide-react'
 import Image from 'next/image'
@@ -15,10 +16,11 @@ import { Button } from './ui/button'
 interface MessagePreviewProps {
   className?: string
   message: Message
+  isLoading: UseChatHelpers['isLoading']
 }
 
 export default function MessagePreview(props: MessagePreviewProps) {
-  const { message, className } = props
+  const { message, className, isLoading } = props
   const isUser = message.role === 'user'
 
   return (
@@ -52,7 +54,7 @@ export default function MessagePreview(props: MessagePreviewProps) {
           >
             {processMarkdownString(message.content)}
           </RemarkMarkdown>
-          {!isUser && (
+          {!isUser && !isLoading && (
             <div className="flex flex-row items-center ml-auto text-muted-foreground">
               <Button variant="ghost" size="icon" tooltip="Read aloud" tooltipPosition="bottom">
                 <Volume2 />
