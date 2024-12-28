@@ -2,7 +2,15 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '../lib/utils'
 
-const OverflowTooltip = ({ text, className }: { text: string, className?: string }) => {
+const OverflowTooltip = ({
+  text,
+  className,
+  position
+}: {
+  text: string
+  className?: string
+  position?: 'top' | 'right' | 'bottom' | 'left'
+}) => {
   const textRef = useRef<HTMLDivElement>(null)
   const [isOverflowed, setIsOverflowed] = useState(false)
 
@@ -27,14 +35,14 @@ const OverflowTooltip = ({ text, className }: { text: string, className?: string
   }
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={1}>
       <Tooltip>
         <TooltipTrigger asChild>
           <div ref={textRef} className={cn('truncate', className)}>
             {text}
           </div>
         </TooltipTrigger>
-        <TooltipContent>{text}</TooltipContent>
+        <TooltipContent side={position}>{text}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   )

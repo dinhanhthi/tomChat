@@ -45,7 +45,7 @@ export default function AppHeader() {
           <>
             <Separator orientation="vertical" className="mr-2 h-4" />
             <div className="truncate x-flex-1 pr-4 text-[1.05rem]">
-              <OverflowTooltip text={chatTitle}></OverflowTooltip>
+              <OverflowTooltip text={chatTitle} position="bottom"></OverflowTooltip>
             </div>
           </>
         )}

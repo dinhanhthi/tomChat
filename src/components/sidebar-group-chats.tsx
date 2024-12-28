@@ -71,7 +71,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                   <Link href={`/chat/${chat.id}`}>
                     {chat.icon && <span>{chat.icon}</span>}
                     {!chat.icon && <MessageCircle />}
-                    <OverflowTooltip className="select-none" text={chat.title}></OverflowTooltip>
+                    <OverflowTooltip className="select-none" text={chat.title} position="right"></OverflowTooltip>
                   </Link>
                 </SidebarMenuButton>
                 <DropdownMenu>
