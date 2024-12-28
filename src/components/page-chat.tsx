@@ -66,6 +66,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
             xtoast.error('Chat not found!')
             router.push('/')
             router.refresh()
+            setMessages([])
           }
           const messages = await getMessages(chatId)
           setMessages(messages)
@@ -78,11 +79,19 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
         setIsPageLoading(false)
         router.push('/')
         router.refresh()
+        setMessages([])
       }
     }
 
     checkChat()
   }, [router, chatId])
+
+  // Fix: Clear messages when navigating to the home page (we need this because sometimes it doesn't clear the messages)
+  useEffect(() => {
+    if (pathname === '/') {
+      setMessages([])
+    }
+  }, [pathname])
 
   return (
     <div className={cn('relative h-full flex flex-col', className)}>
