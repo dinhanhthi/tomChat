@@ -20,16 +20,20 @@ export default function XChatBrand({
       className={cn(
         'flex items-center',
         {
-          'flex-row whitespace-nowrap flex-nowrap': !wrap,
+          'flex-row flex-nowrap whitespace-nowrap': !wrap,
           'flex-col': wrap
         },
         className
       )}
     >
       <Image src={Logo} alt="xChat" width={size} height={size} className="shrink-0" />
-      <div className={cn('text-sidebar-primary font-medium', textClassName, {
-        'text-principal': colored
-      })}>xChat</div>
+      <div
+        className={cn('font-medium text-sidebar-primary', textClassName, {
+          'text-principal': colored
+        })}
+      >
+        xChat
+      </div>
     </div>
   )
 }

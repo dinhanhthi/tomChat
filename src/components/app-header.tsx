@@ -20,8 +20,8 @@ export default function AppHeader() {
   const chatTitle = chat?.title
 
   return (
-    <header className="flex flex-row justify-between items-center pl-2 pr-4 h-14 shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b border-slate-200 w-full">
-      <div className="flex items-center gap-2 x-flex-1">
+    <header className="flex h-14 w-full shrink-0 flex-row items-center justify-between border-b border-slate-200 pl-2 pr-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+      <div className="x-flex-1 flex items-center gap-2">
         <div className="flex items-center">
           <SidebarTrigger
             tooltip="Toggle sidebar (⌘+B)"
@@ -44,8 +44,8 @@ export default function AppHeader() {
         {chatTitle && (
           <>
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <div className="truncate x-flex-1 pr-4 text-[1.05rem]">
-              <OverflowTooltip text={chatTitle} position="bottom"></OverflowTooltip>
+            <div className="x-flex-1 truncate pr-4 text-[1.05rem]">
+              <OverflowTooltip text={chatTitle} position="bottom" delayDuration={1}></OverflowTooltip>
             </div>
           </>
         )}

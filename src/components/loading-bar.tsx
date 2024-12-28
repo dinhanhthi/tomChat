@@ -40,7 +40,7 @@ const LoadingBar = ({ isLoading, className, color = 'bg-principal', height = 2 }
   if (!show) return null
 
   return (
-    <div className={`absolute top-0 left-0 w-full bg-transparent ${className}`} style={{ height }}>
+    <div className={`absolute left-0 top-0 w-full bg-transparent ${className}`} style={{ height }}>
       <div
         className={`h-full ${color} transition-all duration-300 ease-out`}
         style={{

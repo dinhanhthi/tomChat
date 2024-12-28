@@ -79,13 +79,13 @@ export default function AppInputMsg(props: {
   }
 
   return (
-    <Container className={cn('flex flex-row gap-4 md:gap-5 lg:gap-6 pt-4', className)}>
+    <Container className={cn('flex flex-row gap-4 pt-4 md:gap-5 lg:gap-6', className)}>
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
       <div className="w-0"></div>
-      <div className="flex x-flex-1 flex-col items-center gap-2">
+      <div className="x-flex-1 flex flex-col items-center gap-2">
         <form
           onSubmit={handleClientSubmit}
-          className="flex x-flex-1 flex-col bg-gray-100 rounded-3xl w-full overflow-hidden"
+          className="x-flex-1 flex w-full flex-col overflow-hidden rounded-3xl bg-gray-100"
         >
           <TextareaAutosize
             rows={1}
@@ -95,19 +95,19 @@ export default function AppInputMsg(props: {
             ref={textareaRef}
             value={useChatParams.input}
             onChange={handleClientInputChange}
-            className="bg-transparent resize-none focus-visible:outline-none p-2 pl-4 pt-4 min-h-6 max-h-[calc(25dvh)] overflow-auto"
+            className="max-h-[calc(25dvh)] min-h-6 resize-none overflow-auto bg-transparent p-2 pl-4 pt-4 focus-visible:outline-none"
             placeholder="Ask something..."
             onKeyDown={handleKeyDown}
             autoFocus
           />
-          <div className="flex flex-row justify-between gap-4 items-center p-2 pr-3 pt-0">
+          <div className="flex flex-row items-center justify-between gap-4 p-2 pr-3 pt-0">
             <div className="flex flex-row items-center">
               <Button
                 onClick={e => {
                   e.preventDefault()
                   e.stopPropagation()
                 }}
-                className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl rounded-bl-2xl"
+                className="rounded-xl rounded-bl-2xl hover:bg-gray-200 [&_svg]:size-[22px]"
                 variant="ghost"
                 size="iconBig"
                 tooltip="Attach files"
@@ -120,7 +120,7 @@ export default function AppInputMsg(props: {
                   e.preventDefault()
                   e.stopPropagation()
                 }}
-                className="hover:bg-gray-200 [&_svg]:size-[22px] rounded-xl"
+                className="rounded-xl hover:bg-gray-200 [&_svg]:size-[22px]"
                 variant="ghost"
                 size="iconBig"
                 tooltip="Search the web"
@@ -135,7 +135,7 @@ export default function AppInputMsg(props: {
             {!useChatParams.isLoading && <SendButton submitForm={handleClientSubmit} input={useChatParams.input} />}
           </div>
         </form>
-        <div className="text-[0.7rem] text-muted-foreground select-none">Usage of this chat: $0.5, tokens: 100.</div>
+        <div className="select-none text-[0.7rem] text-muted-foreground">Usage of this chat: $0.5, tokens: 100.</div>
       </div>
     </Container>
   )

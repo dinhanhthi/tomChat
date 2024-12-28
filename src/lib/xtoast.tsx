@@ -3,12 +3,12 @@ import ReactMarkdown from 'react-markdown'
 import { toast } from 'sonner'
 
 const wrapMessage = (message: string, type?: 'info' | 'error' | 'success' | 'warning') => (
-  <div className="flex items-start flex-row gap-4">
-    {type === 'info' && <Info size={24} className="text-info shrink-0" />}
-    {type === 'error' && <OctagonAlert size={24} className="text-danger shrink-0" />}
-    {type === 'success' && <CircleCheckBig size={24} className="text-success shrink-0" />}
-    {type === 'warning' && <TriangleAlert size={24} className="text-warning shrink-0" />}
-    <div className="x-prose dark:prose-invert text-sm">
+  <div className="flex flex-row items-start gap-4">
+    {type === 'info' && <Info size={24} className="shrink-0 text-info" />}
+    {type === 'error' && <OctagonAlert size={24} className="shrink-0 text-danger" />}
+    {type === 'success' && <CircleCheckBig size={24} className="shrink-0 text-success" />}
+    {type === 'warning' && <TriangleAlert size={24} className="shrink-0 text-warning" />}
+    <div className="x-prose text-sm dark:prose-invert">
       <ReactMarkdown>{message}</ReactMarkdown>
     </div>
   </div>

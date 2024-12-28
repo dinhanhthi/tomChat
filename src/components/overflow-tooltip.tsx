@@ -5,11 +5,13 @@ import { cn } from '../lib/utils'
 const OverflowTooltip = ({
   text,
   className,
-  position
+  position,
+  delayDuration = 1
 }: {
   text: string
   className?: string
   position?: 'top' | 'right' | 'bottom' | 'left'
+  delayDuration?: number
 }) => {
   const textRef = useRef<HTMLDivElement>(null)
   const [isOverflowed, setIsOverflowed] = useState(false)
@@ -35,7 +37,7 @@ const OverflowTooltip = ({
   }
 
   return (
-    <TooltipProvider delayDuration={1}>
+    <TooltipProvider delayDuration={delayDuration}>
       <Tooltip>
         <TooltipTrigger asChild>
           <div ref={textRef} className={cn('truncate', className)}>

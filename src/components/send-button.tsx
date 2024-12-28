@@ -9,12 +9,12 @@ function PureSendButton({ submitForm, input }: { submitForm: () => void; input: 
         e.preventDefault()
         submitForm()
       }}
-      className="flex items-center hover:bg-principal hover:text-white h-8 w-8 justify-center text-white bg-principal rounded-full [&_svg]:size-[15px]"
+      className="flex h-8 w-8 items-center justify-center rounded-full bg-principal text-white hover:bg-principal hover:text-white [&_svg]:size-[15px]"
       variant="ghost"
       size="iconBig"
       disabled={input === ''}
     >
-      <Send className="-rotate-45 mt-1" />
+      <Send className="mt-1 -rotate-45" />
     </Button>
   )
 }

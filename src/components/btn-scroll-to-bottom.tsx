@@ -40,7 +40,7 @@ const ScrollToBottomButton: React.FC<ScrollToBottomButtonProps> = ({ targetRef, 
     <button
       onClick={scrollToBottom}
       className={cn(
-        'absolute z-50 bottom-4 right-0 bg-white text-slate-500 p-1 rounded-full shadow-sm hover:shadow-lg transition-all duration-200 w-fit border border-slate-100',
+        'absolute bottom-4 right-0 z-50 w-fit rounded-full border border-slate-100 bg-white p-1 text-slate-500 shadow-sm transition-all duration-200 hover:shadow-lg',
         className
       )}
       aria-label="Scroll to bottom"

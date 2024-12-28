@@ -21,15 +21,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
   const [isPageLoading, setIsPageLoading] = useState(true)
 
   // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
-  const {
-    messages,
-    setMessages,
-    input,
-    setInput,
-    handleSubmit,
-    isLoading,
-    stop
-  } = useChat({
+  const { messages, setMessages, input, setInput, handleSubmit, isLoading, stop } = useChat({
     onFinish: async (message, options) => {
       await addMessage(chatId, {
         ...message,
@@ -94,22 +86,22 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
   }, [pathname])
 
   return (
-    <div className={cn('relative h-full flex flex-col', className)}>
+    <div className={cn('relative flex h-full flex-col', className)}>
       <LoadingBar isLoading={isPageLoading} />
-      <div ref={messagesContainerRef} className="overflow-y-auto x-flex-1">
+      <div ref={messagesContainerRef} className="x-flex-1 overflow-y-auto">
         <Container className="h-full">
           {!isPageLoading && (
-            <div className={cn('h-full w-full px-4 pt-8 pb-14 gap-8 flex flex-col scroll-mb-[250px]', className)}>
+            <div className={cn('flex h-full w-full scroll-mb-[250px] flex-col gap-8 px-4 pb-14 pt-8', className)}>
               {messages
                 .filter(msg => !!msg.content)
                 .map((msg, i) => (
                   <MessagePreview key={msg.id ?? i} message={msg} isLoading={isLoading} />
                 ))}
               {!messages.length && (
-                <div className="flex flex-col items-center gap-4 x-flex-1 justify-center opacity-30">
+                <div className="x-flex-1 flex flex-col items-center justify-center gap-4 opacity-30">
                   <XChatBrand
                     size={32}
-                    className="grayscale select-none gap-2"
+                    className="select-none gap-2 grayscale"
                     textClassName="text-2xl font-bold opacity-80"
                     wrap={true}
                   />
@@ -117,10 +109,10 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
               )}
 
               {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
-                <div className="text-muted-foreground italic text-sm is-typing">I'm thinking, please wait</div>
+                <div className="is-typing text-sm italic text-muted-foreground">I'm thinking, please wait</div>
               )}
 
-              <div ref={messagesEndRef} className="min-h-8 h-8 min-w-8 shrink-0"></div>
+              <div ref={messagesEndRef} className="h-8 min-h-8 min-w-8 shrink-0"></div>
             </div>
           )}
         </Container>

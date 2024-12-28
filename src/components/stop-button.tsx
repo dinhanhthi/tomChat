@@ -18,12 +18,12 @@ function PureStopButton({
         stop()
         setMessages(messages => sanitizeUIMessages(messages))
       }}
-      className="flex items-center hover:bg-principal hover:text-white h-8 w-8 justify-center text-white bg-principal rounded-full [&_svg]:size-[15px] relative"
+      className="relative flex h-8 w-8 items-center justify-center rounded-full bg-principal text-white hover:bg-principal hover:text-white [&_svg]:size-[15px]"
       variant="ghost"
       size="iconBig"
     >
-      <Square className="fill-white z-20" />
-      <div className="animate-ping absolute z-10 w-2/3 h-2/3 bg-principal rounded-full"></div>
+      <Square className="z-20 fill-white" />
+      <div className="absolute z-10 h-2/3 w-2/3 animate-ping rounded-full bg-principal"></div>
     </Button>
   )
 }

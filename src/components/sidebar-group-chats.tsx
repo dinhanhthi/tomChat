@@ -60,19 +60,24 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
     <>
       {chats.length > 0 && (
         <SidebarGroup>
-          <SidebarGroupLabel className="sticky top-0 bg-sidebar z-20 text-sidebar-primary">{label}</SidebarGroupLabel>
+          <SidebarGroupLabel className="sticky top-0 z-20 bg-sidebar text-sidebar-primary">{label}</SidebarGroupLabel>
           <SidebarMenu className="gap-1">
             {chats.map((chat, index) => (
               <SidebarMenuItem key={index}>
                 <SidebarMenuButton
                   isActive={chat.id === chatId}
-                  className="group-data-[collapsible=icon]:opacity-0 text-sm hover:bg-[#e9e9e9] data-[active=true]:bg-[#e9e9e9]"
+                  className="text-sm hover:bg-[#e9e9e9] data-[active=true]:bg-[#e9e9e9] group-data-[collapsible=icon]:opacity-0"
                   asChild
                 >
                   <Link href={`/chat/${chat.id}`}>
                     {chat.icon && <span>{chat.icon}</span>}
                     {!chat.icon && <MessageCircle />}
-                    <OverflowTooltip className="select-none" text={chat.title} position="right"></OverflowTooltip>
+                    <OverflowTooltip
+                      className="select-none"
+                      text={chat.title}
+                      position="right"
+                      delayDuration={500}
+                    ></OverflowTooltip>
                   </Link>
                 </SidebarMenuButton>
                 <DropdownMenu>

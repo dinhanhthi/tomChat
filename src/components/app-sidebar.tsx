@@ -48,12 +48,12 @@ export default function AppSidebar() {
 
   return (
     <Sidebar className="x-min-hw-0" collapsible="offcanvas">
-      <SidebarHeader className="flex h-14 flex-row gap-2 justify-betweens">
-        <div className="flex items-center flex-row gap-2 flex-1 px-2">
+      <SidebarHeader className="justify-betweens flex h-14 flex-row gap-2">
+        <div className="flex flex-1 flex-row items-center gap-2 px-2">
           <button onClick={backToHome}>
-            <XChatBrand size={24} className='gap-1.5' wrap={false} colored={true} />
+            <XChatBrand size={24} className="gap-1.5" wrap={false} colored={true} />
           </button>
-          <div className="text-[0.6rem] text-slate-600 font-mono border border-slate-300 rounded-lg px-2">v0.0.0</div>
+          <div className="rounded-lg border border-slate-300 px-2 font-mono text-[0.6rem] text-slate-600">v0.0.0</div>
         </div>
         <Button variant="ghost" size="iconBig" tooltip="Source code" tooltipPosition="bottom">
           <Github />
@@ -70,13 +70,13 @@ export default function AppSidebar() {
             )}
 
             {!chats?.length && (
-              <div className="flex items-center justify-center text-slate-400 h-full px-6">No chat saved!</div>
+              <div className="flex h-full items-center justify-center px-6 text-slate-400">No chat saved!</div>
             )}
           </>
         )}
         {isLoading && (
-          <div className="flex items-center justify-center h-full animate-pulse">
-            <LoaderCircle className="w-8 h-8 text-slate-400 animate-spin" />
+          <div className="flex h-full animate-pulse items-center justify-center">
+            <LoaderCircle className="h-8 w-8 animate-spin text-slate-400" />
           </div>
         )}
       </SidebarContent>

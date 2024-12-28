@@ -24,7 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <AlertDialogProvider>
           <SidebarProvider>
             <AppSidebar />
-            <main className="flex flex-col h-svh x-flex-1 bg-background">
+            <main className="x-flex-1 flex h-svh flex-col bg-background">
               <AppHeader />
               <div className="x-flex-1">{children}</div>
             </main>
