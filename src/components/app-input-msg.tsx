@@ -1,7 +1,7 @@
 'use client'
 
 import { UseChatHelpers } from 'ai/react/dist'
-import { Globe, Paperclip, Send, Square } from 'lucide-react'
+import { Globe, Paperclip } from 'lucide-react'
 import { useRef } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 import { v4 as uuidv4 } from 'uuid'
@@ -12,6 +12,8 @@ import { addMessage, createChat } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import Container from './container'
+import SendButton from './send-button'
+import StopButton from './stop-button'
 import { Button } from './ui/button'
 
 export default function AppInputMsg(props: {
@@ -76,10 +78,6 @@ export default function AppInputMsg(props: {
     }
   }
 
-  const handleStopMessage = () => {
-    if (useChatParams.stop) useChatParams.stop()
-  }
-
   return (
     <Container className={cn('flex flex-row gap-4 md:gap-5 lg:gap-6 pt-4', className)}>
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
@@ -131,21 +129,10 @@ export default function AppInputMsg(props: {
                 <Globe />
               </Button>
             </div>
-            <Button
-              onClick={() => (useChatParams.isLoading ? handleStopMessage() : handleClientSubmit())}
-              className={cn(
-                'flex items-center hover:bg-principal hover:text-white h-8 w-8 justify-center text-white bg-principal rounded-full',
-                {
-                  '[&_svg]:size-[15px]': useChatParams.isLoading,
-                  '[&_svg]:size-[18px]': !useChatParams.isLoading
-                }
-              )}
-              variant="ghost"
-              size="iconBig"
-            >
-              {!useChatParams.isLoading && <Send className="-rotate-45 mt-1" />}
-              {useChatParams.isLoading && <Square className="fill-white" />}
-            </Button>
+            {useChatParams.isLoading && (
+              <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />
+            )}
+            {!useChatParams.isLoading && <SendButton submitForm={handleClientSubmit} input={useChatParams.input} />}
           </div>
         </form>
         <div className="text-[0.7rem] text-muted-foreground select-none">Usage of this chat: $0.5, tokens: 100.</div>

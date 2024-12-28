@@ -51,7 +51,7 @@ export default function AppSidebar() {
       <SidebarHeader className="flex h-14 flex-row gap-2 justify-betweens">
         <div className="flex items-center flex-row gap-2 flex-1 px-2">
           <button onClick={backToHome}>
-            <XChatBrand size={20} className='gap-1.5' wrap={false} colored={true} />
+            <XChatBrand size={24} className='gap-1.5' wrap={false} colored={true} />
           </button>
           <div className="text-[0.6rem] text-slate-600 font-mono border border-slate-300 rounded-lg px-2">v0.0.0</div>
         </div>
@@ -61,8 +61,6 @@ export default function AppSidebar() {
       </SidebarHeader>
 
       <SidebarSeparator />
-
-      {/* <SearchForm className="pb-2" /> */}
 
       <SidebarContent>
         {!isLoading && (

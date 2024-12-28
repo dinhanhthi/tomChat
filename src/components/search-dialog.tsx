@@ -73,8 +73,8 @@ export default function SearchDialog() {
               onChange={e => handleOnchangeInput(e)}
               onKeyDown={e => handleKeyDown(e)}
             />
-            <Button onClick={() => setIsOpen(false)} variant="ghost" size="icon" className="rounded-full group">
-              <X className="h-4 w-4 opacity-50 group-hover:opacity-100 text-slate-800" />
+            <Button onClick={() => setIsOpen(false)} variant="ghost" size="iconBig" className="rounded-full group">
+              <X className="opacity-50 group-hover:opacity-100 text-slate-800" />
             </Button>
           </div>
         </div>
