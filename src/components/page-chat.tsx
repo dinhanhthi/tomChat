@@ -117,7 +117,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
               )}
 
               {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
-                <div className="text-muted-foreground italic text-sm">AI is thinking...</div>
+                <div className="text-muted-foreground italic text-sm is-typing">I'm thinking, please wait</div>
               )}
 
               <div ref={messagesEndRef} className="min-h-8 h-8 min-w-8 shrink-0"></div>
