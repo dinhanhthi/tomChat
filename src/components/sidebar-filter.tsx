@@ -3,45 +3,23 @@ import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Switch } from '@/components/ui/switch'
 import { Archive, Clock2, ListFilter, Pin } from 'lucide-react'
-import React from 'react'
+import { useUserPreferences } from '../hooks/usePreferences'
 
-export interface SidebarFilterProps {
+export interface SidebarFilterSettings {
   showPinned: boolean
   showArchived: boolean
   sortByCreatedDate: boolean
 }
 
-interface FilterButtonProps {
-  onFilterChange: (filters: SidebarFilterProps) => void
+export const defaultSidebarFilter: SidebarFilterSettings = {
+  showPinned: false,
+  showArchived: false,
+  sortByCreatedDate: false
 }
 
-const FilterButton: React.FC<FilterButtonProps> = ({ onFilterChange }) => {
-  const [showPinned, setShowPinned] = React.useState(false)
-  const [showArchived, setShowArchived] = React.useState(false)
-  const [sortByCreatedDate, setSortByCreatedDate] = React.useState(false)
-
-  const handleFilterChange = (key: string, value: boolean) => {
-    const newFilters = {
-      showPinned,
-      showArchived,
-      sortByCreatedDate,
-      [key]: value
-    }
-
-    switch (key) {
-      case 'showPinned':
-        setShowPinned(value)
-        break
-      case 'showArchived':
-        setShowArchived(value)
-        break
-      case 'sortByCreatedDate':
-        setSortByCreatedDate(value)
-        break
-    }
-
-    onFilterChange(newFilters)
-  }
+export default function FilterButton() {
+  const { settings, updateSidebarFilterSettings } = useUserPreferences()
+  const { showPinned, showArchived, sortByCreatedDate } = settings.sidebarFilterSettings
 
   return (
     <Popover>
@@ -52,39 +30,39 @@ const FilterButton: React.FC<FilterButtonProps> = ({ onFilterChange }) => {
       </PopoverTrigger>
       <PopoverContent className="w-64 p-1" align="start">
         <div className="space-y-0">
-          <div className="flex items-center justify-between hover:bg-secondary p-2 rounded-md">
-            <Label htmlFor="pinned" className='flex items-center flex-row gap-2'>
-              <Pin className='w-4 h-4 opacity-70' />
+          <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
+            <Label htmlFor="pinned" className="flex flex-row items-center gap-2">
+              <Pin className="h-4 w-4 opacity-70" />
               Show pinned chats
             </Label>
             <Switch
               id="pinned"
               checked={showPinned}
-              onCheckedChange={checked => handleFilterChange('showPinned', checked)}
+              onCheckedChange={checked => updateSidebarFilterSettings({ showPinned: checked })}
             />
           </div>
 
-          <div className="flex items-center justify-between hover:bg-secondary p-2 rounded-md">
-            <Label htmlFor="archived" className='flex items-center flex-row gap-2'>
-              <Archive className='w-4 h-4 opacity-70' />
+          <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
+            <Label htmlFor="archived" className="flex flex-row items-center gap-2">
+              <Archive className="h-4 w-4 opacity-70" />
               Show archived chats
             </Label>
             <Switch
               id="archived"
               checked={showArchived}
-              onCheckedChange={checked => handleFilterChange('showArchived', checked)}
+              onCheckedChange={checked => updateSidebarFilterSettings({ showArchived: checked })}
             />
           </div>
 
-          <div className="flex items-center justify-between hover:bg-secondary p-2 rounded-md">
-            <Label htmlFor="sortByCreatedDate" className='flex items-center flex-row gap-2'>
-              <Clock2 className='w-4 h-4 opacity-70' />
+          <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
+            <Label htmlFor="sortByCreatedDate" className="flex flex-row items-center gap-2">
+              <Clock2 className="h-4 w-4 opacity-70" />
               Sort by created date
             </Label>
             <Switch
               id="sortByCreatedDate"
               checked={sortByCreatedDate}
-              onCheckedChange={checked => handleFilterChange('sortByCreatedDate', checked)}
+              onCheckedChange={checked => updateSidebarFilterSettings({ sortByCreatedDate: checked })}
             />
           </div>
         </div>
@@ -92,5 +70,3 @@ const FilterButton: React.FC<FilterButtonProps> = ({ onFilterChange }) => {
     </Popover>
   )
 }
-
-export default FilterButton

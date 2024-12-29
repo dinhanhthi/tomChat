@@ -65,7 +65,11 @@ function getMonthYearString(date: Date): string {
   return date.toLocaleString('en-US', { month: 'long', year: 'numeric' })
 }
 
-export function filterChats(chats: Chat[] = []): Map<string, Chat[]> {
+/**
+ * Group chats by dates into: today, yesterday, past 3 days, past 7 days, past 30 days, months in current year, 
+ * and years before current year
+ */
+export function groupChatsByDates(chats: Chat[] = []): Map<string, Chat[]> {
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const currentYear = now.getFullYear()

@@ -12,9 +12,10 @@ import { BadgeInfo, BookOpenText, Bug, Lightbulb, ScrollText } from 'lucide-reac
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChats } from '../hooks/useChats'
-import { filterChats } from '../lib/utils'
+import { useUserPreferences } from '../hooks/usePreferences'
+import { groupChatsByDates } from '../lib/utils'
 import XChatBrand from './brand'
-import FilterButton, { SidebarFilterProps } from './sidebar-filter'
+import FilterButton from './sidebar-filter'
 import SidebarGroupChats, { SidebarGroupChatsSkeleton } from './sidebar-group-chats'
 import { Button } from './ui/button'
 
@@ -29,13 +30,14 @@ const SPECIAL_LABELS: Record<string, string> = {
 export default function AppSidebar() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
+  const { togglePin, toggleArchive, isPinned, isArchived, updateSidebarFilterSettings, settings } = useUserPreferences()
 
   const backToHome = () => {
     router.push('/')
   }
 
   const { chats } = useChats()
-  const filteredChats = filterChats(chats)
+  const filteredChats = groupChatsByDates(chats)
 
   useEffect(() => {
     if (chats) {
@@ -47,24 +49,6 @@ export default function AppSidebar() {
     return SPECIAL_LABELS[key] || key
   }
 
-  const handleFilterChange = ({ showPinned, showArchived, sortByCreatedDate }: SidebarFilterProps) => {
-    let filters = [...(chats || [])]
-
-    if (showPinned) {
-      filters = filters.filter(chat => chat.pinned)
-    }
-
-    if (showArchived) {
-      filters = filters.filter(chat => chat.archived)
-    }
-
-    if (sortByCreatedDate) {
-      filters.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-    }
-
-    /* ###Thi */ console.log(`👉👉👉 filtered chats: `, filters)
-  }
-
   return (
     <Sidebar className="x-min-hw-0" collapsible="offcanvas">
       <SidebarHeader className="justify-betweens flex h-14 flex-row gap-2">
@@ -74,7 +58,7 @@ export default function AppSidebar() {
           </button>
           <div className="rounded-lg border border-slate-300 px-2 font-mono text-[0.6rem] text-slate-600">v0.0.0</div>
         </div>
-        <FilterButton onFilterChange={handleFilterChange} />
+        <FilterButton />
       </SidebarHeader>
 
       <SidebarSeparator />

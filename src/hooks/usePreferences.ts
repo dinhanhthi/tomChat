@@ -1,42 +1,65 @@
-import { useEffect, useState } from 'react'
+'use client'
 
-interface UserPreferences {
+import { useEffect, useState } from 'react'
+import { defaultSidebarFilter, SidebarFilterSettings } from '../components/sidebar-filter'
+
+interface UserSettings {
   pinnedChatIds: string[]
   archivedChatIds: string[]
+  sidebarFilterSettings: SidebarFilterSettings
   theme?: string
 }
 
+const defaultSettings: UserSettings = {
+  pinnedChatIds: [],
+  archivedChatIds: [],
+  sidebarFilterSettings: defaultSidebarFilter,
+  theme: 'light'
+}
+
 export function useUserPreferences() {
-  const [preferences, setPreferences] = useState<UserPreferences>(() => {
-    const stored = localStorage.getItem('userPreferences')
-    return stored ? JSON.parse(stored) : { pinnedChatIds: [], archivedChatIds: [] }
-  })
+  const [settings, setSettings] = useState<UserSettings>(defaultSettings)
 
   useEffect(() => {
-    localStorage.setItem('userPreferences', JSON.stringify(preferences))
-  }, [preferences])
+    const stored = localStorage.getItem('userSettings')
+    // /* ###Thi */ console.log(`👉👉👉 stored: `, stored)
+    if (stored) {
+      setSettings(JSON.parse(stored))
+    }
+  }, [])
+
+  const updateSettings = (newSettings: Partial<UserSettings>) => {
+    const updated = { ...settings, ...newSettings }
+    setSettings(updated)
+    localStorage.setItem('userSettings', JSON.stringify(updated))
+  }
 
   const togglePin = (chatId: string) => {
-    setPreferences(prev => {
-      const pinned = prev.pinnedChatIds
-      const newPinned = pinned.includes(chatId) ? pinned.filter(id => id !== chatId) : [...pinned, chatId]
-      return { ...prev, pinnedChatIds: newPinned }
-    })
+    const newPinnedIds = settings.pinnedChatIds.includes(chatId)
+      ? settings.pinnedChatIds.filter(id => id !== chatId)
+      : [...settings.pinnedChatIds, chatId]
+    updateSettings({ pinnedChatIds: newPinnedIds })
   }
 
   const toggleArchive = (chatId: string) => {
-    setPreferences(prev => {
-      const archived = prev.archivedChatIds
-      const newArchived = archived.includes(chatId) ? archived.filter(id => id !== chatId) : [...archived, chatId]
-      return { ...prev, archivedChatIds: newArchived }
+    const newArchivedIds = settings.archivedChatIds.includes(chatId)
+      ? settings.archivedChatIds.filter(id => id !== chatId)
+      : [...settings.archivedChatIds, chatId]
+    updateSettings({ archivedChatIds: newArchivedIds })
+  }
+
+  const updateSidebarFilterSettings = (filters: Partial<SidebarFilterSettings>) => {
+    updateSettings({
+      sidebarFilterSettings: { ...settings.sidebarFilterSettings, ...filters }
     })
   }
 
   return {
-    preferences,
+    settings,
     togglePin,
     toggleArchive,
-    isPinned: (id: string) => preferences.pinnedChatIds?.includes(id),
-    isArchived: (id: string) => preferences.archivedChatIds?.includes(id)
+    isPinned: (id: string) => settings.pinnedChatIds?.includes(id),
+    isArchived: (id: string) => settings.archivedChatIds?.includes(id),
+    updateSidebarFilterSettings
   }
 }
