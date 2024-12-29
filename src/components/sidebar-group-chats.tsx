@@ -31,6 +31,7 @@ import { xtoast } from '../lib/xtoast'
 import { useAlertDialog } from './dialog-confirm'
 import OverflowTooltip from './overflow-tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
+import { Skeleton } from './ui/skeleton'
 
 export default function SidebarGroupChats(props: { label: string; chats?: Chat[] }) {
   const { label, chats = [] } = props
@@ -76,7 +77,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                       className="select-none"
                       text={chat.title}
                       position="right"
-                      delayDuration={500}
+                      delayDuration={700}
                     ></OverflowTooltip>
                   </Link>
                 </SidebarMenuButton>
@@ -149,5 +150,21 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
         </SidebarGroup>
       )}
     </>
+  )
+}
+
+export function SidebarGroupChatsSkeleton() {
+  return (
+    <div className='p-4 flex flex-col w-full gap-4'>
+      <Skeleton className='h-3 w-1/4 bg-slate-200 rounded-xl' />
+      <div className='flex flex-col gap-4 w-full'>
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div key={index} className='flex flex-row items-center gap-2'>
+            <Skeleton className='h-5 w-5 bg-slate-200 rounded-full' />
+            <Skeleton className='h-4 w-full bg-slate-200 rounded-xl' />
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }

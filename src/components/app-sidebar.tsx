@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react'
 import { useChats } from '../hooks/useChats'
 import { filterChats } from '../lib/utils'
 import XChatBrand from './brand'
-import SidebarGroupChats from './sidebar-group-chats'
+import SidebarGroupChats, { SidebarGroupChatsSkeleton } from './sidebar-group-chats'
 import { Button } from './ui/button'
 
 const SPECIAL_LABELS: Record<string, string> = {
@@ -75,8 +75,9 @@ export default function AppSidebar() {
           </>
         )}
         {isLoading && (
-          <div className="flex h-full animate-pulse items-center justify-center">
-            <LoaderCircle className="h-8 w-8 animate-spin text-slate-400" />
+          <div className="h-full flex flex-col gap-4">
+            <SidebarGroupChatsSkeleton />
+            <SidebarGroupChatsSkeleton />
           </div>
         )}
       </SidebarContent>
