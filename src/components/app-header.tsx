@@ -1,29 +1,63 @@
 'use client'
 
 import { CircleUserRound, Edit, MessageSquareShare, Search, SlidersHorizontal } from 'lucide-react'
+import { useParams, useRouter } from 'next/navigation'
+import { useChatClient } from '../hooks/useChatClient'
+import { useChatStore } from '../hooks/useChatStore'
+import OverflowTooltip from './overflow-tooltip'
+import { useDialogStore } from './search-dialog'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { SidebarTrigger } from './ui/sidebar'
 
 export default function AppHeader() {
+  const router = useRouter()
+  const { setIsOpen } = useDialogStore()
+  const { id } = useParams()
+  const { activeId } = useChatStore()
+  const chatId = id || activeId
+  const { chat } = useChatClient(chatId as string)
+  const chatTitle = chat?.title
+
   return (
-    <header className="flex flex-row justify-between items-center pl-2 pr-4 h-14 shrink-0 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b border-slate-200">
-      <div className="flex items-center gap-2">
+    <header className="flex h-14 w-full shrink-0 flex-row items-center justify-between border-b border-slate-200 pl-2 pr-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+      <div className="x-flex-1 flex items-center gap-2">
         <div className="flex items-center">
           <SidebarTrigger
             tooltip="Toggle sidebar (⌘+B)"
             tooltipPosition="bottom"
             className="group-data-[collapsible=icon]:opacity-0"
           />
-          <Button variant="ghost" size="iconBig" tooltip="New chat" tooltipPosition="bottom">
+          <Button
+            onClick={() => {
+              router.push('/')
+              router.refresh()
+            }}
+            variant="ghost"
+            size="iconBig"
+            tooltip="New chat"
+            tooltipPosition="bottom"
+          >
             <Edit />
           </Button>
         </div>
-        <Separator orientation="vertical" className="mr-2 h-4" />
-        <div className="flex items-center gap-2">Some useful title</div>
+        {chatTitle && (
+          <>
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <div className="x-flex-1 truncate pr-4 text-[1.05rem]">
+              <OverflowTooltip text={chatTitle} position="bottom" delayDuration={1}></OverflowTooltip>
+            </div>
+          </>
+        )}
       </div>
       <div className="flex flex-row items-center gap-2">
-        <Button variant="ghost" size="iconBig" tooltip="Search chat (⌘+K)" tooltipPosition="bottom">
+        <Button
+          onClick={() => setIsOpen(true)}
+          variant="ghost"
+          size="iconBig"
+          tooltip="Search chat (⌘+K)"
+          tooltipPosition="bottom"
+        >
           <Search />
         </Button>
         <Button variant="ghost" size="iconBig" tooltip="Share this chat" tooltipPosition="bottom">

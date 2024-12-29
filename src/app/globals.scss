@@ -21,14 +21,13 @@
 
 @layer base {
   .x-code {
-    @apply break-words rounded-md text-gray-600 bg-gray-100 p-[1px_4px_2px_4px]
-    font-mono font-normal before:content-[''] after:content-[''];
+    @apply break-words rounded-md bg-gray-100 p-[1px_4px_2px_4px] font-mono font-normal text-gray-600 before:content-[''] after:content-[''];
   }
   .x-headings {
-    @apply mt-0;
+    @apply mt-4;
   }
   .x-h1 {
-    @apply text-2xl mb-4 font-bold;
+    @apply mb-4 text-2xl font-bold;
   }
   .x-prose {
     @apply prose max-w-none leading-normal;
@@ -38,17 +37,42 @@
     @apply prose-hr:my-6;
 
     pre {
-      @apply p-0 m-0 bg-transparent;
+      @apply m-0 bg-transparent p-0;
     }
+
+    & > *:first-child {
+      @apply mt-0;
+    }
+
+    & > *:last-child {
+      @apply mb-0;
+    }
+  }
+
+  .x-flex-1 {
+    @apply min-h-0 min-w-0 flex-1;
+  }
+
+  .x-min-hw-0 {
+    @apply min-h-0 min-w-0;
   }
 }
 
 @layer base {
   :root {
+    --principal: theme(colors.sky.600);
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
+    --danger: theme(colors.red.500);
+    --danger-hover: theme(colors.red.600);
+    --info: theme(colors.blue.500);
+    --info-hover: theme(colors.blue.600);
+    --warning: theme(colors.yellow.500);
+    --warning-hover: theme(colors.yellow.600);
+    --success: theme(colors.green.500);
+    --success-hover: theme(colors.green.600);
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
     --primary: 0 0% 9%;
@@ -77,13 +101,22 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 240 5% 64.9%; // 217.2 91.2% 59.8%; 
+    --sidebar-ring: 240 5% 64.9%; // 217.2 91.2% 59.8%;
   }
   .dark {
+    --principal: theme(colors.sky.400);
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
+    --danger: theme(colors.red.400);
+    --danger-hover: theme(colors.red.500);
+    --info: theme(colors.blue.400);
+    --info-hover: theme(colors.blue.500);
+    --warning: theme(colors.yellow.400);
+    --warning-hover: theme(colors.yellow.500);
+    --success: theme(colors.green.400);
+    --success-hover: theme(colors.green.500);
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
@@ -142,4 +175,41 @@
 
 .katex-display {
   overflow: auto hidden;
+}
+
+// Disable all shadcn focus rings
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+*:focus-within,
+*:focus-visible {
+  outline: none !important;
+  ring: none !important;
+  ring-offset: none !important;
+  box-shadow: none !important;
+}
+
+.is-typing::after {
+  content: '...';
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  animation: ellipsis-dot 1s infinite 0.3s;
+  animation-fill-mode: forwards;
+  width: 1.25em;
+}
+
+@keyframes ellipsis-dot {
+  25% {
+    content: '';
+  }
+  50% {
+    content: '.';
+  }
+  75% {
+    content: '..';
+  }
+  100% {
+    content: '...';
+  }
 }

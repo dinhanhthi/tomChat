@@ -1,4 +1,6 @@
 import { Message } from 'ai'
+import { UseChatHelpers } from 'ai/react/dist'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Copy, RefreshCw, Volume2 } from 'lucide-react'
 import Image from 'next/image'
 import RemarkMarkdown from 'react-markdown'
@@ -14,55 +16,59 @@ import { Button } from './ui/button'
 interface MessagePreviewProps {
   className?: string
   message: Message
+  isLoading: UseChatHelpers['isLoading']
 }
 
 export default function MessagePreview(props: MessagePreviewProps) {
-  const { message, className } = props
+  const { message, className, isLoading } = props
   const isUser = message.role === 'user'
 
   return (
-    <article
-      className={cn(
-        'flex flex-row items-start gap-4 md:gap-5 lg:gap-6',
-        {
-          'ml-auto p-4 bg-gray-100 rounded-2xl': isUser
-        },
-        className
-      )}
-    >
-      {!isUser && (
-        <div className="rounded-full p-2 border border-slate-300 flex items-center justify-center">
-          <Image src={LogoOpenAI} alt="OpenAI" width={20} height={20} className="shrink-0 !m-0" />
-        </div>
-      )}
-      <div className="flex-1 flex flex-col gap-2">
-        <RemarkMarkdown
-          className={cn('x-prose [&>*]:last:mb-0', {
-            '[&>*]:first:mt-1.5': !isUser,
-            '[&>*]:first:mt-0': isUser
-          })}
-          remarkPlugins={[remarkMath, remarkGfm]}
-          rehypePlugins={[rehypeKatex, rehypeHighlight]}
-          components={{
-            pre: Pre
-          }}
-        >
-          {processMarkdownString(message.content)}
-        </RemarkMarkdown>
+    <AnimatePresence>
+      <motion.article
+        className={cn(
+          'flex w-full flex-row items-start gap-4 md:gap-5 lg:gap-6',
+          {
+            'ml-auto max-w-[70%] rounded-2xl bg-gray-100 p-4': isUser
+          },
+          className
+        )}
+        initial={{ y: 5, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+      >
         {!isUser && (
-          <div className="flex flex-row items-center ml-auto text-muted-foreground">
-            <Button variant="ghost" size="icon" tooltip="Read aloud" tooltipPosition="bottom">
-              <Volume2 />
-            </Button>
-            <Button variant="ghost" size="icon" tooltip="Copy" tooltipPosition="bottom">
-              <Copy />
-            </Button>
-            <Button variant="ghost" size="icon" tooltip="Try again" tooltipPosition="bottom">
-              <RefreshCw />
-            </Button>
+          <div className="flex shrink-0 items-center justify-center rounded-full border border-slate-300 p-2">
+            <Image src={LogoOpenAI} alt="OpenAI" width={20} height={20} className="!m-0 shrink-0" />
           </div>
         )}
-      </div>
-    </article>
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <RemarkMarkdown
+            className={cn('x-prose text-[0.97rem]', {
+              'first:mt-2': !isUser
+            })}
+            remarkPlugins={[remarkMath, remarkGfm]}
+            rehypePlugins={[rehypeKatex, rehypeHighlight]}
+            components={{
+              pre: Pre
+            }}
+          >
+            {processMarkdownString(message.content)}
+          </RemarkMarkdown>
+          {!isUser && !isLoading && (
+            <div className="ml-auto flex flex-row items-center text-muted-foreground">
+              <Button variant="ghost" size="icon" tooltip="Read aloud" tooltipPosition="bottom">
+                <Volume2 />
+              </Button>
+              <Button variant="ghost" size="icon" tooltip="Copy" tooltipPosition="bottom">
+                <Copy />
+              </Button>
+              <Button variant="ghost" size="icon" tooltip="Try again" tooltipPosition="bottom">
+                <RefreshCw />
+              </Button>
+            </div>
+          )}
+        </div>
+      </motion.article>
+    </AnimatePresence>
   )
 }

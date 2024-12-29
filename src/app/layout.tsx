@@ -1,8 +1,11 @@
 import { Inter } from 'next/font/google'
 
 import AppHeader from '../components/app-header'
-import { AppSidebar } from '../components/app-sidebar'
+import AppSidebar from '../components/app-sidebar'
+import { AlertDialogProvider } from '../components/dialog-confirm'
+import SearchDialog from '../components/search-dialog'
 import { SidebarProvider } from '../components/ui/sidebar'
+import { Toaster } from '../components/ui/sonner'
 import { cn } from '../lib/utils'
 import './globals.scss'
 
@@ -16,14 +19,19 @@ export const metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className)}>
-        <SidebarProvider>
-          <AppSidebar />
-          <main className="flex flex-col h-svh flex-1 bg-background">
-            <AppHeader />
-            <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
-          </main>
-        </SidebarProvider>
+      {/* There is an overflow problem here, cannot find the solution except putting overflow-hidden here! */}
+      <body className={cn(inter.className, 'overflow-hidden')}>
+        <AlertDialogProvider>
+          <SidebarProvider>
+            <AppSidebar />
+            <main className="x-flex-1 flex h-svh flex-col bg-background">
+              <AppHeader />
+              <div className="x-flex-1">{children}</div>
+            </main>
+            <SearchDialog />
+          </SidebarProvider>
+        </AlertDialogProvider>
+        <Toaster position="top-center" />
       </body>
     </html>
   )
