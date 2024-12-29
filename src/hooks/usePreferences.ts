@@ -22,7 +22,6 @@ export function useUserPreferences() {
 
   useEffect(() => {
     const stored = localStorage.getItem('userSettings')
-    // /* ###Thi */ console.log(`👉👉👉 stored: `, stored)
     if (stored) {
       setSettings(JSON.parse(stored))
     }
@@ -54,12 +53,15 @@ export function useUserPreferences() {
     })
   }
 
+  const sidebarFilterSettings = settings.sidebarFilterSettings
+
   return {
     settings,
     togglePin,
     toggleArchive,
     isPinned: (id: string) => settings.pinnedChatIds?.includes(id),
     isArchived: (id: string) => settings.archivedChatIds?.includes(id),
+    sidebarFilterSettings,
     updateSidebarFilterSettings
   }
 }
