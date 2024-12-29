@@ -29,7 +29,7 @@ export default function XChatBrand({
       <Image src={Logo} alt="xChat" width={size} height={size} className="shrink-0" />
       <div
         className={cn('font-medium text-sidebar-primary', textClassName, {
-          'text-principal': colored
+          'text-primary': colored
         })}
       >
         xChat

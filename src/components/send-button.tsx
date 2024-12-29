@@ -9,7 +9,7 @@ function PureSendButton({ submitForm, input }: { submitForm: () => void; input: 
         e.preventDefault()
         submitForm()
       }}
-      className="flex h-8 w-8 items-center justify-center rounded-full bg-principal text-white hover:bg-principal hover:text-white [&_svg]:size-[15px]"
+      className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white hover:bg-primary hover:text-white [&_svg]:size-[15px]"
       variant="ghost"
       size="iconBig"
       disabled={input === ''}
