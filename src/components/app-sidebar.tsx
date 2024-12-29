@@ -8,12 +8,13 @@ import {
   SidebarRail,
   SidebarSeparator
 } from '@/components/ui/sidebar'
-import { BadgeInfo, BookOpenText, Bug, Github, Lightbulb, LoaderCircle, ScrollText } from 'lucide-react'
+import { BadgeInfo, BookOpenText, Bug, Lightbulb, ScrollText } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChats } from '../hooks/useChats'
 import { filterChats } from '../lib/utils'
 import XChatBrand from './brand'
+import FilterButton, { SidebarFilterProps } from './sidebar-filter'
 import SidebarGroupChats, { SidebarGroupChatsSkeleton } from './sidebar-group-chats'
 import { Button } from './ui/button'
 
@@ -46,6 +47,24 @@ export default function AppSidebar() {
     return SPECIAL_LABELS[key] || key
   }
 
+  const handleFilterChange = ({ showPinned, showArchived, sortByCreatedDate }: SidebarFilterProps) => {
+    let filters = [...(chats || [])]
+
+    if (showPinned) {
+      filters = filters.filter(chat => chat.pinned)
+    }
+
+    if (showArchived) {
+      filters = filters.filter(chat => chat.archived)
+    }
+
+    if (sortByCreatedDate) {
+      filters.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    }
+
+    /* ###Thi */ console.log(`👉👉👉 filtered chats: `, filters)
+  }
+
   return (
     <Sidebar className="x-min-hw-0" collapsible="offcanvas">
       <SidebarHeader className="justify-betweens flex h-14 flex-row gap-2">
@@ -55,9 +74,7 @@ export default function AppSidebar() {
           </button>
           <div className="rounded-lg border border-slate-300 px-2 font-mono text-[0.6rem] text-slate-600">v0.0.0</div>
         </div>
-        <Button variant="ghost" size="iconBig" tooltip="Source code" tooltipPosition="bottom">
-          <Github />
-        </Button>
+        <FilterButton onFilterChange={handleFilterChange} />
       </SidebarHeader>
 
       <SidebarSeparator />
@@ -75,7 +92,7 @@ export default function AppSidebar() {
           </>
         )}
         {isLoading && (
-          <div className="h-full flex flex-col gap-4">
+          <div className="flex h-full flex-col gap-4">
             <SidebarGroupChatsSkeleton />
             <SidebarGroupChatsSkeleton />
           </div>
