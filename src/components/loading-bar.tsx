@@ -7,7 +7,7 @@ interface LoadingBarProps {
   height?: number
 }
 
-const LoadingBar = ({ isLoading, className, color = 'bg-principal', height = 2 }: LoadingBarProps) => {
+const LoadingBar = ({ isLoading, className, color = 'bg-primary', height = 2 }: LoadingBarProps) => {
   const [progress, setProgress] = useState(0)
   const [show, setShow] = useState(true)
 

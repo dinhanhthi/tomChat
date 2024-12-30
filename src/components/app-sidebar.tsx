@@ -8,12 +8,14 @@ import {
   SidebarRail,
   SidebarSeparator
 } from '@/components/ui/sidebar'
-import { BadgeInfo, BookOpenText, Bug, Github, Lightbulb, LoaderCircle, ScrollText } from 'lucide-react'
+import { BadgeInfo, BookOpenText, Bug, Lightbulb, ScrollText } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChats } from '../hooks/useChats'
-import { filterChats } from '../lib/utils'
+import { useFilterSettings } from '../hooks/useFilterSettings'
+import { useUserPreferences } from '../hooks/usePreferences'
 import XChatBrand from './brand'
+import FilterButton from './sidebar-filter'
 import SidebarGroupChats, { SidebarGroupChatsSkeleton } from './sidebar-group-chats'
 import { Button } from './ui/button'
 
@@ -28,13 +30,19 @@ const SPECIAL_LABELS: Record<string, string> = {
 export default function AppSidebar() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
-
-  const backToHome = () => {
-    router.push('/')
-  }
-
+  const { isArchived, isPinned } = useUserPreferences()
+  const { settings, updateSettings } = useFilterSettings()
   const { chats } = useChats()
-  const filteredChats = filterChats(chats)
+
+  const filteredChats = (chats || []).filter(chat => {
+    if (settings.showPinned) return isPinned(chat.id)
+    if (settings.showArchived) return isArchived(chat.id)
+    return !isArchived(chat.id) // Default view: non-archived chats
+  })
+
+  const sortedChats = settings.sortByCreatedDate
+    ? [...filteredChats].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    : filteredChats
 
   useEffect(() => {
     if (chats) {
@@ -46,6 +54,10 @@ export default function AppSidebar() {
     return SPECIAL_LABELS[key] || key
   }
 
+  const backToHome = () => {
+    router.push('/')
+  }
+
   return (
     <Sidebar className="x-min-hw-0" collapsible="offcanvas">
       <SidebarHeader className="justify-betweens flex h-14 flex-row gap-2">
@@ -55,9 +67,7 @@ export default function AppSidebar() {
           </button>
           <div className="rounded-lg border border-slate-300 px-2 font-mono text-[0.6rem] text-slate-600">v0.0.0</div>
         </div>
-        <Button variant="ghost" size="iconBig" tooltip="Source code" tooltipPosition="bottom">
-          <Github />
-        </Button>
+        <FilterButton settings={settings} onSettingsChange={updateSettings} />
       </SidebarHeader>
 
       <SidebarSeparator />
@@ -65,17 +75,29 @@ export default function AppSidebar() {
       <SidebarContent>
         {!isLoading && (
           <>
-            {Array.from(filteredChats).map(
-              ([key, chats]) => chats.length > 0 && <SidebarGroupChats key={key} label={getLabel(key)} chats={chats} />
-            )}
-
+            {sortedChats.length && <SidebarGroupChats label="Filtered Chats" chats={sortedChats} />}
+            {/* {chats?.length && !isFilterEnabled && (
+              <>
+                {processedChats instanceof Map &&
+                  Array.from(processedChats).map(
+                    ([key, chats]) =>
+                      chats.length > 0 && (
+                        <SidebarGroupChats 
+                          key={`${key}-${JSON.stringify(filterSettings)}`} 
+                          label={getLabel(key)} 
+                          chats={chats} 
+                        />
+                      )
+                  )}
+              </>
+            )} */}
             {!chats?.length && (
               <div className="flex h-full items-center justify-center px-6 text-slate-400">No chat saved!</div>
             )}
           </>
         )}
         {isLoading && (
-          <div className="h-full flex flex-col gap-4">
+          <div className="flex h-full flex-col gap-4">
             <SidebarGroupChatsSkeleton />
             <SidebarGroupChatsSkeleton />
           </div>

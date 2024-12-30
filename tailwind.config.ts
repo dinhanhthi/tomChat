@@ -17,7 +17,6 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)'
       },
       colors: {
-        principal: 'var(--principal)',
         danger: 'var(--danger)',
         'danger-hover': 'var(--danger-hover)',
         success: 'var(--success)',
@@ -37,7 +36,7 @@ module.exports = {
           foreground: 'hsl(var(--popover-foreground))'
         },
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
+          DEFAULT: 'var(--primary)',
           foreground: 'hsl(var(--primary-foreground))'
         },
         secondary: {
