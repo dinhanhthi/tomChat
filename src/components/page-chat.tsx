@@ -120,7 +120,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
       </div>
       <AppInputMsg
         chatId={chatId}
-        className="pb-2"
+        className="pb-4"
         useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading, stop }}
       />
     </div>

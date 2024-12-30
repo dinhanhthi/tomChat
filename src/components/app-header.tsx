@@ -1,14 +1,16 @@
 'use client'
 
-import { CircleUserRound, Edit, MessageSquareShare, Search, SlidersHorizontal } from 'lucide-react'
+import { CircleUserRound, Edit, MessageSquareShare, Search } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
+import { TokenIcon } from '../icons/TokenIcon'
 import OverflowTooltip from './overflow-tooltip'
 import { useDialogStore } from './search-dialog'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { SidebarTrigger } from './ui/sidebar'
+import SimpleTooltip from './ui/simple-tooltip'
 
 export default function AppHeader() {
   const router = useRouter()
@@ -51,6 +53,16 @@ export default function AppHeader() {
         )}
       </div>
       <div className="flex flex-row items-center gap-2">
+        <SimpleTooltip text="Usage of this chat">
+          <div className="flex flex-row divide-x divide-slate-300 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs select-none">
+            <div className="flex flex-row flex-nowrap items-center gap-0.5 whitespace-nowrap pr-1.5 text-gray-600">
+              <TokenIcon className="h-4 w-4" />
+              <span>1.2K</span>
+            </div>
+
+            <div className="pl-1.5 text-primary">$15.00</div>
+          </div>
+        </SimpleTooltip>
         <Button
           onClick={() => setIsOpen(true)}
           variant="ghost"
@@ -63,9 +75,9 @@ export default function AppHeader() {
         <Button variant="ghost" size="iconBig" tooltip="Share this chat" tooltipPosition="bottom">
           <MessageSquareShare />
         </Button>
-        <Button variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
+        {/* <Button variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
           <SlidersHorizontal />
-        </Button>
+        </Button> */}
         <Button variant="ghost" size="iconBig" tooltip="Profile" tooltipPosition="bottom">
           <CircleUserRound />
         </Button>
