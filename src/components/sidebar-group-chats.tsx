@@ -155,13 +155,13 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
 
 export function SidebarGroupChatsSkeleton() {
   return (
-    <div className='p-4 flex flex-col w-full gap-4'>
-      <Skeleton className='h-3 w-1/4 bg-slate-200 rounded-xl' />
-      <div className='flex flex-col gap-4 w-full'>
+    <div className="flex w-full flex-col gap-4 p-4">
+      <Skeleton className="h-3 w-1/4 rounded-xl bg-slate-200" />
+      <div className="flex w-full flex-col gap-4">
         {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index} className='flex flex-row items-center gap-2'>
-            <Skeleton className='h-5 w-5 bg-slate-200 rounded-full' />
-            <Skeleton className='h-4 w-full bg-slate-200 rounded-xl' />
+          <div key={index} className="flex flex-row items-center gap-2">
+            <Skeleton className="h-5 w-5 rounded-full bg-slate-200" />
+            <Skeleton className="h-4 w-full rounded-xl bg-slate-200" />
           </div>
         ))}
       </div>

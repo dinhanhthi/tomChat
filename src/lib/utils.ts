@@ -66,7 +66,7 @@ function getMonthYearString(date: Date): string {
 }
 
 /**
- * Group chats by dates into: today, yesterday, past 3 days, past 7 days, past 30 days, months in current year, 
+ * Group chats by dates into: today, yesterday, past 3 days, past 7 days, past 30 days, months in current year,
  * and years before current year
  */
 export function groupChatsByDates(chats: Chat[] = []): Map<string, Chat[]> {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { defaultSidebarFilter, SidebarFilterSettings } from '../components/sidebar-filter'
 
 interface UserSettings {
@@ -54,11 +54,14 @@ export function useUserPreferences() {
     updateSettings({ archivedChatIds: newArchivedIds })
   }
 
-  const updateSidebarFilterSettings = useCallback((filters: Partial<SidebarFilterSettings>) => {
-    updateSettings({
-      sidebarFilterSettings: { ...settings.sidebarFilterSettings, ...filters }
-    })
-  }, [settings.sidebarFilterSettings, updateSettings])
+  const updateSidebarFilterSettings = useCallback(
+    (filters: Partial<SidebarFilterSettings>) => {
+      updateSettings({
+        sidebarFilterSettings: { ...settings.sidebarFilterSettings, ...filters }
+      })
+    },
+    [settings.sidebarFilterSettings, updateSettings]
+  )
 
   const sidebarFilterSettings = settings.sidebarFilterSettings
 
