@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { defaultSidebarFilter, SidebarFilterSettings } from '../components/sidebar-filter'
 
 interface UserSettings {
@@ -20,18 +20,25 @@ const defaultSettings: UserSettings = {
 export function useUserPreferences() {
   const [settings, setSettings] = useState<UserSettings>(defaultSettings)
 
-  useEffect(() => {
+  const loadSettings = useCallback(() => {
     const stored = localStorage.getItem('userSettings')
     if (stored) {
-      setSettings(JSON.parse(stored))
+      const parsedSettings = JSON.parse(stored)
+      setSettings(parsedSettings)
     }
   }, [])
 
-  const updateSettings = (newSettings: Partial<UserSettings>) => {
-    const updated = { ...settings, ...newSettings }
-    setSettings(updated)
-    localStorage.setItem('userSettings', JSON.stringify(updated))
-  }
+  useEffect(() => {
+    loadSettings()
+  }, [loadSettings])
+
+  const updateSettings = useCallback((newSettings: Partial<UserSettings>) => {
+    setSettings(current => {
+      const updated = { ...current, ...newSettings }
+      localStorage.setItem('userSettings', JSON.stringify(updated))
+      return updated
+    })
+  }, [])
 
   const togglePin = (chatId: string) => {
     const newPinnedIds = settings.pinnedChatIds.includes(chatId)
@@ -47,11 +54,11 @@ export function useUserPreferences() {
     updateSettings({ archivedChatIds: newArchivedIds })
   }
 
-  const updateSidebarFilterSettings = (filters: Partial<SidebarFilterSettings>) => {
+  const updateSidebarFilterSettings = useCallback((filters: Partial<SidebarFilterSettings>) => {
     updateSettings({
       sidebarFilterSettings: { ...settings.sidebarFilterSettings, ...filters }
     })
-  }
+  }, [settings.sidebarFilterSettings, updateSettings])
 
   const sidebarFilterSettings = settings.sidebarFilterSettings
 

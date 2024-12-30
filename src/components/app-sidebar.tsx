@@ -10,10 +10,10 @@ import {
 } from '@/components/ui/sidebar'
 import { BadgeInfo, BookOpenText, Bug, Lightbulb, ScrollText } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useChats } from '../hooks/useChats'
+import { useFilterSettings } from '../hooks/useFilterSettings'
 import { useUserPreferences } from '../hooks/usePreferences'
-import { groupChatsByDates } from '../lib/utils'
 import XChatBrand from './brand'
 import FilterButton from './sidebar-filter'
 import SidebarGroupChats, { SidebarGroupChatsSkeleton } from './sidebar-group-chats'
@@ -30,46 +30,19 @@ const SPECIAL_LABELS: Record<string, string> = {
 export default function AppSidebar() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
-  const { sidebarFilterSettings: filterSettings, isArchived, isPinned, settings } = useUserPreferences()
-
+  const { isArchived, isPinned } = useUserPreferences()
+  const { settings, updateSettings } = useFilterSettings()
   const { chats } = useChats()
 
-  const isFilterEnabled = filterSettings.showPinned || filterSettings.showArchived || filterSettings.sortByCreatedDate
+  const filteredChats = (chats || []).filter(chat => {
+    if (settings.showPinned) return isPinned(chat.id)
+    if (settings.showArchived) return isArchived(chat.id)
+    return !isArchived(chat.id) // Default view: non-archived chats
+  })
 
-  const backToHome = () => {
-    router.push('/')
-  }
-
-  const processedChats = useMemo(() => {
-    if (!isFilterEnabled) {
-      return groupChatsByDates(chats)
-    }
-
-    let filteredChats = [...(chats || [])]
-    /* ###Thi */ console.log(`👉👉👉 filteredChats: `, filteredChats)
-    // /* ###Thi */ console.log(`👉👉👉 isArchived: `, isArchived)
-    /* ###Thi */ console.log(`👉👉👉 settings.archivedChatIds: `, settings.archivedChatIds);
-
-    // Apply filters
-    if (filterSettings.showPinned) {
-      filteredChats = filteredChats.filter(chat => isPinned(chat.id))
-    }
-
-    if (filterSettings.showArchived) {
-      filteredChats = filteredChats.filter(chat => isArchived(chat.id))
-    }
-
-    // Apply sorting
-    if (filterSettings.sortByCreatedDate) {
-      filteredChats.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    } else {
-      filteredChats.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-    }
-
-    /* ###Thi */ console.log(`👉👉👉 filteredChats: `, filteredChats)
-
-    return { filtered: filteredChats }
-  }, [chats, filterSettings, isFilterEnabled])
+  const sortedChats = settings.sortByCreatedDate
+    ? [...filteredChats].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    : filteredChats
 
   useEffect(() => {
     if (chats) {
@@ -81,6 +54,10 @@ export default function AppSidebar() {
     return SPECIAL_LABELS[key] || key
   }
 
+  const backToHome = () => {
+    router.push('/')
+  }
+
   return (
     <Sidebar className="x-min-hw-0" collapsible="offcanvas">
       <SidebarHeader className="justify-betweens flex h-14 flex-row gap-2">
@@ -90,36 +67,30 @@ export default function AppSidebar() {
           </button>
           <div className="rounded-lg border border-slate-300 px-2 font-mono text-[0.6rem] text-slate-600">v0.0.0</div>
         </div>
-        <FilterButton />
+        <FilterButton settings={settings} onSettingsChange={updateSettings} />
       </SidebarHeader>
 
       <SidebarSeparator />
 
       <SidebarContent>
         {!isLoading && (
-          // <>
-          //   {Array.from(groupedChats).map(
-          //     ([key, chats]) => chats.length > 0 && <SidebarGroupChats key={key} label={getLabel(key)} chats={chats} />
-          //   )}
-
-          //   {!chats?.length && (
-          //     <div className="flex h-full items-center justify-center px-6 text-slate-400">No chat saved!</div>
-          //   )}
-          // </>
-
           <>
-            {chats?.length && isFilterEnabled && 'filtered' in processedChats && (
-              <SidebarGroupChats label="Filtered Chats" chats={processedChats.filtered} />
-            )}
-            {chats?.length && !isFilterEnabled && (
+            {sortedChats.length && <SidebarGroupChats label="Filtered Chats" chats={sortedChats} />}
+            {/* {chats?.length && !isFilterEnabled && (
               <>
                 {processedChats instanceof Map &&
                   Array.from(processedChats).map(
                     ([key, chats]) =>
-                      chats.length > 0 && <SidebarGroupChats key={key} label={getLabel(key)} chats={chats} />
+                      chats.length > 0 && (
+                        <SidebarGroupChats 
+                          key={`${key}-${JSON.stringify(filterSettings)}`} 
+                          label={getLabel(key)} 
+                          chats={chats} 
+                        />
+                      )
                   )}
               </>
-            )}
+            )} */}
             {!chats?.length && (
               <div className="flex h-full items-center justify-center px-6 text-slate-400">No chat saved!</div>
             )}

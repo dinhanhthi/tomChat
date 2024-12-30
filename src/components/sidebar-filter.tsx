@@ -3,7 +3,7 @@ import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Switch } from '@/components/ui/switch'
 import { Archive, Clock2, ListFilter, Pin } from 'lucide-react'
-import { useUserPreferences } from '../hooks/usePreferences'
+import { FilterSettings } from '../hooks/useFilterSettings'
 
 export interface SidebarFilterSettings {
   showPinned: boolean
@@ -17,10 +17,12 @@ export const defaultSidebarFilter: SidebarFilterSettings = {
   sortByCreatedDate: false
 }
 
-export default function FilterButton() {
-  const { settings, updateSidebarFilterSettings } = useUserPreferences()
-  const { showPinned, showArchived, sortByCreatedDate } = settings.sidebarFilterSettings
+interface FilterButtonProps {
+  settings: FilterSettings
+  onSettingsChange: (settings: Partial<FilterSettings>) => void
+}
 
+export default function FilterButton({ settings, onSettingsChange }: FilterButtonProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -37,8 +39,8 @@ export default function FilterButton() {
             </Label>
             <Switch
               id="pinned"
-              checked={showPinned}
-              onCheckedChange={checked => updateSidebarFilterSettings({ showPinned: checked })}
+              checked={settings.showPinned}
+              onCheckedChange={checked => onSettingsChange({ showPinned: checked })}
             />
           </div>
 
@@ -49,8 +51,8 @@ export default function FilterButton() {
             </Label>
             <Switch
               id="archived"
-              checked={showArchived}
-              onCheckedChange={checked => updateSidebarFilterSettings({ showArchived: checked })}
+              checked={settings.showArchived}
+              onCheckedChange={checked => onSettingsChange({ showArchived: checked })}
             />
           </div>
 
@@ -61,8 +63,8 @@ export default function FilterButton() {
             </Label>
             <Switch
               id="sortByCreatedDate"
-              checked={sortByCreatedDate}
-              onCheckedChange={checked => updateSidebarFilterSettings({ sortByCreatedDate: checked })}
+              checked={settings.sortByCreatedDate}
+              onCheckedChange={checked => onSettingsChange({ sortByCreatedDate: checked })}
             />
           </div>
         </div>
