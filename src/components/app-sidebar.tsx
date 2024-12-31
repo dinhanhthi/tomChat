@@ -30,21 +30,9 @@ export default function AppSidebar() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const { settings, updateSettings } = useFilterSettings()
-  const { chats } = useChats()
+  const { chats } = useChats('', settings)
 
-  /**
-   * By default, show all chats that are not archived
-   */
-  const filteredChats = (chats || []).filter(chat => {
-    if (settings.showArchived && settings.showPinned) return chat.archived && chat.pinned
-    if (settings.showArchived) return chat.archived
-    if (settings.showPinned) return chat.pinned && !chat.archived
-    return !chat.archived
-  })
-
-  const sortedChats = settings.sortByCreatedDate
-    ? [...filteredChats].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    : filteredChats
+  // Remove filteredChats and sortedChats since filtering is now handled at DB level
 
   useEffect(() => {
     if (chats) {
@@ -77,24 +65,21 @@ export default function AppSidebar() {
       <SidebarContent>
         {!isLoading && (
           <>
-            {!!sortedChats.length && <SidebarGroupChats label="Filtered Chats" chats={sortedChats} />}
-            {/* {chats?.length && !isFilterEnabled && (
-              <>
-                {processedChats instanceof Map &&
-                  Array.from(processedChats).map(
-                    ([key, chats]) =>
-                      chats.length > 0 && (
-                        <SidebarGroupChats 
-                          key={`${key}-${JSON.stringify(filterSettings)}`} 
-                          label={getLabel(key)} 
-                          chats={chats} 
-                        />
-                      )
-                  )}
-              </>
-            )} */}
+            {!!chats?.length && (
+              <SidebarGroupChats 
+                label={
+                  settings.showArchived && settings.showPinned ? "Pinned Archived Chats" :
+                  settings.showArchived ? "Archived Chats" :
+                  settings.showPinned ? "Pinned Chats" : 
+                  "Recent Chats"
+                } 
+                chats={chats} 
+              />
+            )}
             {!chats?.length && (
-              <div className="flex h-full items-center justify-center px-6 text-slate-400">No chat saved!</div>
+              <div className="flex h-full items-center justify-center px-6 text-slate-400">
+                No chat saved!
+              </div>
             )}
           </>
         )}

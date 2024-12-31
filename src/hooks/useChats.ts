@@ -6,20 +6,41 @@ import { Chat } from '../interface'
 
 export type SearchableChat = Partial<Chat>
 
-export const useChats = (searchQuery = '') => {
+interface FilterSettings {
+  showPinned?: boolean
+  showArchived?: boolean
+  sortByCreatedDate?: boolean
+}
+
+export const useChats = (searchQuery = '', settings?: FilterSettings) => {
   const [searchIndex, setSearchIndex] = useState<FlexSearch.Document<SearchableChat>>()
   const [searchResults, setSearchResults] = useState<Chat[]>()
 
   const chats = useLiveQuery(async () => {
-    const _chats = await db.chats.orderBy('updatedAt').reverse().toArray()
-    const chatsWithMessages = await Promise.all(
+    const chatTable = db.chats
+    
+    const filteredChats = chatTable.filter(conv => {
+      if (!settings?.showArchived && conv.archived) return false;
+      if (!settings?.showPinned && conv.pinned) return false;
+      return true;
+    })
+
+    // Apply sorting and get results
+    const sortBy = settings?.sortByCreatedDate ? 'createdAt' : 'updatedAt'
+    const _chats = (await filteredChats.toArray()).sort((a, b) => {
+      const dateA = new Date(a[sortBy]).getTime()
+      const dateB = new Date(b[sortBy]).getTime()
+      return dateB - dateA
+    })
+
+    // Fetch messages for each chat
+    return await Promise.all(
       _chats.map(async chat => ({
         ...chat,
         messages: await db.messages.where('chatId').equals(chat.id).toArray()
       }))
     )
-    return chatsWithMessages
-  })
+  }, [settings])
 
   useEffect(() => {
     if (!chats) return
