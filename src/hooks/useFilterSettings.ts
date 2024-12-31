@@ -3,14 +3,12 @@ import { useEffect, useState } from 'react'
 const FILTER_SETTINGS_KEY = 'chat-filter-settings'
 
 export interface FilterSettings {
-  showPinned: boolean
   showArchived: boolean
   sortByCreatedDate: boolean
 }
 
 export const useFilterSettings = () => {
   const [settings, setSettings] = useState<FilterSettings>({
-    showPinned: false,
     showArchived: false,
     sortByCreatedDate: false
   })

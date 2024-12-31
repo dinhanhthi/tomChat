@@ -9,8 +9,8 @@ export class ChatDatabase extends Dexie {
     super('ChatDatabase')
 
     this.version(1).stores({
-      chats: 'id, title, description, messages, createdAt, updatedAt, usage',
-      messages: 'id, content, role, createdAt, chatId, usage'
+      chats: 'id, title, description, pinned, archived',
+      messages: 'id, content, chatId'
     })
 
     this.chats = this.table('chats')

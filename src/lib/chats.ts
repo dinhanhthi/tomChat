@@ -48,3 +48,7 @@ export const getMessages = async (chatId: string) => {
   const messages = await db.messages.where('chatId').equals(chatId).sortBy('createdAt')
   return messages ?? []
 }
+
+export async function toggleChatStatus(id: string, field: 'pinned' | 'archived', value: boolean) {
+  return await db.chats.update(id, { [field]: value })
+}

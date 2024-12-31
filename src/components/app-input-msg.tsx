@@ -85,7 +85,7 @@ export default function AppInputMsg(props: {
       <div className="x-flex-1 flex flex-col items-center gap-2">
         <form
           onSubmit={handleClientSubmit}
-          className="x-flex-1 flex w-full flex-col overflow-hidden rounded-3xl border border-gray-200 bg-gray-100"
+          className="x-flex-1 flex w-full flex-col overflow-hidden rounded-3xl border-gray-200 bg-gray-100"
         >
           <TextareaAutosize
             rows={1}
