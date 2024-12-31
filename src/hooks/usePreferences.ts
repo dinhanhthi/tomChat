@@ -1,19 +1,16 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import { defaultSidebarFilter, SidebarFilterSettings } from '../components/sidebar-filter'
 
 interface UserSettings {
   pinnedChatIds: string[]
   archivedChatIds: string[]
-  sidebarFilterSettings: SidebarFilterSettings
   theme?: string
 }
 
 const defaultSettings: UserSettings = {
   pinnedChatIds: [],
   archivedChatIds: [],
-  sidebarFilterSettings: defaultSidebarFilter,
   theme: 'light'
 }
 
@@ -54,24 +51,11 @@ export function useUserPreferences() {
     updateSettings({ archivedChatIds: newArchivedIds })
   }
 
-  const updateSidebarFilterSettings = useCallback(
-    (filters: Partial<SidebarFilterSettings>) => {
-      updateSettings({
-        sidebarFilterSettings: { ...settings.sidebarFilterSettings, ...filters }
-      })
-    },
-    [settings.sidebarFilterSettings, updateSettings]
-  )
-
-  const sidebarFilterSettings = settings.sidebarFilterSettings
-
   return {
     settings,
     togglePin,
     toggleArchive,
     isPinned: (id: string) => settings.pinnedChatIds?.includes(id),
-    isArchived: (id: string) => settings.archivedChatIds?.includes(id),
-    sidebarFilterSettings,
-    updateSidebarFilterSettings
+    isArchived: (id: string) => settings.archivedChatIds?.includes(id)
   }
 }
