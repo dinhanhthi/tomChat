@@ -87,25 +87,26 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                       position="right"
                       delayDuration={700}
                     ></OverflowTooltip>
-                    {/* {chat.pinned && (
-                      <Pin className="absolute right-1 top-2 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 data-[state=open]:opacity-0 z-10" />
-                    )} */}
                   </Link>
                 </SidebarMenuButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction showOnHover tooltip="Options">
+                    <SidebarMenuAction showOnHover tooltip="Options" className="z-20 bg-[#e9e9e9]">
                       <Settings2 />
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>
-                    {/* {chat.pinned && (
-                        <Pin className="absolute right-1 top-1.5 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
-                      )} */}
                   </DropdownMenuTrigger>
+                  {chat.pinned && !chat.archived && (
+                    <Pin className="absolute right-1 top-1.5 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
+                  )}
+                  {chat.archived && (
+                    <Archive className="absolute right-1 top-1.5 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
+                  )}
                   <DropdownMenuContent
                     className="w-fit rounded-lg"
                     side={isMobile ? 'bottom' : 'right'}
                     align={isMobile ? 'end' : 'start'}
+                    onCloseAutoFocus={e => e.preventDefault()}
                   >
                     <DropdownMenuItem>
                       <MessageSquareShare className="text-muted-foreground" />
