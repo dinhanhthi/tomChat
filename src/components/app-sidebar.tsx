@@ -75,7 +75,7 @@ export default function AppSidebar() {
       <SidebarContent>
         {!isLoading && (
           <>
-            {sortedChats.length && <SidebarGroupChats label="Filtered Chats" chats={sortedChats} />}
+            {!!sortedChats.length && <SidebarGroupChats label="Filtered Chats" chats={sortedChats} />}
             {/* {chats?.length && !isFilterEnabled && (
               <>
                 {processedChats instanceof Map &&

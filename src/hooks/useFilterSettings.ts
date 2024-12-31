@@ -12,7 +12,7 @@ export const useFilterSettings = () => {
   const [settings, setSettings] = useState<FilterSettings>({
     showPinned: false,
     showArchived: false,
-    sortByCreatedDate: true
+    sortByCreatedDate: false
   })
 
   useEffect(() => {

@@ -5,18 +5,6 @@ import { Switch } from '@/components/ui/switch'
 import { Archive, Clock2, ListFilter, Pin } from 'lucide-react'
 import { FilterSettings } from '../hooks/useFilterSettings'
 
-export interface SidebarFilterSettings {
-  showPinned: boolean
-  showArchived: boolean
-  sortByCreatedDate: boolean
-}
-
-export const defaultSidebarFilter: SidebarFilterSettings = {
-  showPinned: false,
-  showArchived: false,
-  sortByCreatedDate: false
-}
-
 interface FilterButtonProps {
   settings: FilterSettings
   onSettingsChange: (settings: Partial<FilterSettings>) => void
