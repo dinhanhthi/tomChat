@@ -3,14 +3,9 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import FlexSearch, { Id } from 'flexsearch'
 import { useEffect, useState } from 'react'
 import { Chat } from '../interface'
+import { FilterSettings } from './useFilterSettings'
 
 export type SearchableChat = Partial<Chat>
-
-interface FilterSettings {
-  showPinned?: boolean
-  showArchived?: boolean
-  sortByCreatedDate?: boolean
-}
 
 export const useChats = (searchQuery = '', settings?: FilterSettings) => {
   const [searchIndex, setSearchIndex] = useState<FlexSearch.Document<SearchableChat>>()
@@ -20,8 +15,7 @@ export const useChats = (searchQuery = '', settings?: FilterSettings) => {
     const chatTable = db.chats
     
     const filteredChats = chatTable.filter(conv => {
-      if (!settings?.showArchived && conv.archived) return false;
-      if (!settings?.showPinned && conv.pinned) return false;
+      if (!settings?.showArchived && conv.archived) return false
       return true;
     })
 

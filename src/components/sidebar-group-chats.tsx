@@ -87,6 +87,9 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                       position="right"
                       delayDuration={700}
                     ></OverflowTooltip>
+                    {/* {chat.pinned && (
+                      <Pin className="absolute right-1 top-2 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 data-[state=open]:opacity-0 z-10" />
+                    )} */}
                   </Link>
                 </SidebarMenuButton>
                 <DropdownMenu>
@@ -95,6 +98,9 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                       <Settings2 />
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>
+                    {/* {chat.pinned && (
+                        <Pin className="absolute right-1 top-1.5 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
+                      )} */}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     className="w-fit rounded-lg"
