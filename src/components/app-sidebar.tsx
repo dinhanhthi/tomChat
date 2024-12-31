@@ -13,7 +13,6 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChats } from '../hooks/useChats'
 import { useFilterSettings } from '../hooks/useFilterSettings'
-import { useUserPreferences } from '../hooks/usePreferences'
 import XChatBrand from './brand'
 import FilterButton from './sidebar-filter'
 import SidebarGroupChats, { SidebarGroupChatsSkeleton } from './sidebar-group-chats'
@@ -30,14 +29,17 @@ const SPECIAL_LABELS: Record<string, string> = {
 export default function AppSidebar() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
-  const { isArchived, isPinned } = useUserPreferences()
   const { settings, updateSettings } = useFilterSettings()
   const { chats } = useChats()
 
+  /**
+   * By default, show all chats that are not archived
+   */
   const filteredChats = (chats || []).filter(chat => {
-    if (settings.showPinned) return isPinned(chat.id)
-    if (settings.showArchived) return isArchived(chat.id)
-    return !isArchived(chat.id) // Default view: non-archived chats
+    if (settings.showArchived && settings.showPinned) return chat.archived && chat.pinned
+    if (settings.showArchived) return chat.archived
+    if (settings.showPinned) return chat.pinned && !chat.archived
+    return !chat.archived
   })
 
   const sortedChats = settings.sortByCreatedDate

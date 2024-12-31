@@ -24,9 +24,8 @@ import {
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useChatStore } from '../hooks/useChatStore'
-import { useUserPreferences } from '../hooks/usePreferences'
 import { Chat } from '../interface'
-import { removeChat } from '../lib/chats'
+import { removeChat, toggleChatStatus } from '../lib/chats'
 import { xtoast } from '../lib/xtoast'
 import { useAlertDialog } from './dialog-confirm'
 import OverflowTooltip from './overflow-tooltip'
@@ -35,7 +34,6 @@ import { Skeleton } from './ui/skeleton'
 
 export default function SidebarGroupChats(props: { label: string; chats?: Chat[] }) {
   const { label, chats = [] } = props
-  const { togglePin, toggleArchive, isPinned, isArchived } = useUserPreferences()
   const { isMobile } = useSidebar()
   const { showAlert } = useAlertDialog()
   const router = useRouter()
@@ -55,6 +53,16 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
         xtoast.info(`Chat **${chat.title}** has been deleted!`)
       }
     })
+  }
+
+  const handleTogglePin = async (e: React.MouseEvent, chat: Chat) => {
+    e.stopPropagation()
+    await toggleChatStatus(chat.id, 'pinned', !chat.pinned)
+  }
+
+  const handleToggleArchive = async (e: React.MouseEvent, chat: Chat) => {
+    e.stopPropagation()
+    await toggleChatStatus(chat.id, 'archived', !chat.archived)
   }
 
   return (
@@ -97,14 +105,14 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                       <MessageSquareShare className="text-muted-foreground" />
                       <span>Share</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => togglePin(chat.id)}>
-                      {isPinned(chat.id) && (
+                    <DropdownMenuItem onClick={e => handleTogglePin(e, chat)}>
+                      {chat.pinned && (
                         <>
                           <PinOff className="text-muted-foreground" />
                           <span>Unpin</span>
                         </>
                       )}
-                      {!isPinned(chat.id) && (
+                      {!chat.pinned && (
                         <>
                           <Pin className="h-5 w-5 text-muted-foreground" />
                           <span>Pin</span>
@@ -115,14 +123,14 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                       <Pencil className="text-muted-foreground" />
                       <span>Rename</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => toggleArchive(chat.id)}>
-                      {isArchived(chat.id) && (
+                    <DropdownMenuItem onClick={e => handleToggleArchive(e, chat)}>
+                      {chat.archived && (
                         <>
                           <ArchiveX className="text-muted-foreground" />
                           <span>Unarchived</span>
                         </>
                       )}
-                      {!isArchived(chat.id) && (
+                      {!chat.archived && (
                         <>
                           <Archive className="text-muted-foreground" />
                           <span>Archive</span>
