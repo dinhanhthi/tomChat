@@ -4,13 +4,11 @@ const FILTER_SETTINGS_KEY = 'chat-filter-settings'
 
 export interface FilterSettings {
   showArchived: boolean
-  sortByCreatedDate: boolean
 }
 
 export const useFilterSettings = () => {
   const [settings, setSettings] = useState<FilterSettings>({
-    showArchived: false,
-    sortByCreatedDate: false
+    showArchived: false
   })
 
   useEffect(() => {

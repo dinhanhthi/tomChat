@@ -13,17 +13,14 @@ export const useChats = (searchQuery = '', settings?: FilterSettings) => {
 
   const chats = useLiveQuery(async () => {
     const chatTable = db.chats
-    
-    const filteredChats = chatTable.filter(conv => {
-      if (!settings?.showArchived && conv.archived) return false
-      return true;
-    })
 
-    // Apply sorting and get results
-    const sortBy = settings?.sortByCreatedDate ? 'createdAt' : 'updatedAt'
+    const filteredChats = settings?.showArchived
+      ? chatTable.where('archived').equals('true')
+      : chatTable.where('archived').equals('false')
+
     const _chats = (await filteredChats.toArray()).sort((a, b) => {
-      const dateA = new Date(a[sortBy]).getTime()
-      const dateB = new Date(b[sortBy]).getTime()
+      const dateA = new Date(a['updatedAt']).getTime()
+      const dateB = new Date(b['updatedAt']).getTime()
       return dateB - dateA
     })
 

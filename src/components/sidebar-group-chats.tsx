@@ -57,12 +57,12 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
 
   const handleTogglePin = async (e: React.MouseEvent, chat: Chat) => {
     e.stopPropagation()
-    await toggleChatStatus(chat.id, 'pinned', !chat.pinned)
+    await toggleChatStatus(chat.id, 'pinned', chat.pinned === 'true' ? 'false' : 'true')
   }
 
   const handleToggleArchive = async (e: React.MouseEvent, chat: Chat) => {
     e.stopPropagation()
-    await toggleChatStatus(chat.id, 'archived', !chat.archived)
+    await toggleChatStatus(chat.id, 'archived', chat.archived === 'true' ? 'false' : 'true')
   }
 
   return (
@@ -96,10 +96,10 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>
                   </DropdownMenuTrigger>
-                  {chat.pinned && !chat.archived && (
+                  {chat.pinned === 'true' && chat.archived !== 'true' && (
                     <Pin className="absolute right-1 top-1.5 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
                   )}
-                  {chat.archived && (
+                  {chat.archived === 'true' && (
                     <Archive className="absolute right-1 top-1.5 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
                   )}
                   <DropdownMenuContent
@@ -113,13 +113,13 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                       <span>Share</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={e => handleTogglePin(e, chat)}>
-                      {chat.pinned && (
+                      {chat.pinned === 'true' && (
                         <>
                           <PinOff className="text-muted-foreground" />
                           <span>Unpin</span>
                         </>
                       )}
-                      {!chat.pinned && (
+                      {chat.pinned !== 'false' && (
                         <>
                           <Pin className="h-5 w-5 text-muted-foreground" />
                           <span>Pin</span>
@@ -131,13 +131,13 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                       <span>Rename</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={e => handleToggleArchive(e, chat)}>
-                      {chat.archived && (
+                      {chat.archived === 'true' && (
                         <>
                           <ArchiveX className="text-muted-foreground" />
                           <span>Unarchived</span>
                         </>
                       )}
-                      {!chat.archived && (
+                      {chat.archived !== 'true' && (
                         <>
                           <Archive className="text-muted-foreground" />
                           <span>Archive</span>
