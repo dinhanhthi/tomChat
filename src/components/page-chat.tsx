@@ -1,9 +1,10 @@
 'use client'
 
 import { useChat } from 'ai/react'
+import { Ghost } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-import { addMessage, getChat, getMessages } from '../lib/chats'
+import { addMessage, getChat, getMessages, updateMissingArchivedChats } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import AppInputMsg from './app-input-msg'
@@ -12,6 +13,7 @@ import ScrollToBottomButton from './btn-scroll-to-bottom'
 import Container from './container'
 import LoadingBar from './loading-bar'
 import MessagePreview from './message-preview'
+import { Button } from './ui/button'
 
 export default function PageChat({ chatId, className }: { chatId: string; className?: string }) {
   const router = useRouter()
@@ -19,6 +21,11 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const [isPageLoading, setIsPageLoading] = useState(true)
+
+  const handleDevFunction = async () => {
+    xtoast.info('Dev function is running now!')
+    // await updateMissingArchivedChats()
+  }
 
   // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
   const { messages, setMessages, input, setInput, handleSubmit, isLoading, stop } = useChat({
@@ -86,43 +93,56 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
   }, [pathname])
 
   return (
-    <div className={cn('relative flex h-full flex-col', className)}>
-      <LoadingBar isLoading={isPageLoading} />
-      <div ref={messagesContainerRef} className="x-flex-1 overflow-y-auto">
-        <Container className="h-full">
-          {!isPageLoading && (
-            <div className={cn('flex h-full w-full scroll-mb-[250px] flex-col gap-8 px-4 pb-14 pt-8', className)}>
-              {messages
-                .filter(msg => !!msg.content)
-                .map((msg, i) => (
-                  <MessagePreview key={msg.id ?? i} message={msg} isLoading={isLoading} />
-                ))}
-              {!messages.length && (
-                <div className="x-flex-1 flex flex-col items-center justify-center gap-4 opacity-30">
-                  <XChatBrand
-                    size={32}
-                    className="select-none gap-2 grayscale"
-                    textClassName="text-2xl font-bold opacity-80"
-                    wrap={true}
-                  />
-                </div>
-              )}
+    <>
+      <div className={cn('relative flex h-full flex-col', className)}>
+        <LoadingBar isLoading={isPageLoading} />
+        <div ref={messagesContainerRef} className="x-flex-1 overflow-y-auto">
+          <Container className="h-full">
+            {!isPageLoading && (
+              <div className={cn('flex h-full w-full scroll-mb-[250px] flex-col gap-8 px-4 pb-14 pt-8', className)}>
+                {messages
+                  .filter(msg => !!msg.content)
+                  .map((msg, i) => (
+                    <MessagePreview key={msg.id ?? i} message={msg} isLoading={isLoading} />
+                  ))}
+                {!messages.length && (
+                  <div className="x-flex-1 flex flex-col items-center justify-center gap-4 opacity-30">
+                    <XChatBrand
+                      size={32}
+                      className="select-none gap-2 grayscale"
+                      textClassName="text-2xl font-bold opacity-80"
+                      wrap={true}
+                    />
+                  </div>
+                )}
 
-              {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
-                <div className="is-typing text-sm italic text-muted-foreground">I'm thinking, please wait</div>
-              )}
+                {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
+                  <div className="is-typing text-sm italic text-muted-foreground">I'm thinking, please wait</div>
+                )}
 
-              <div ref={messagesEndRef} className="h-8 min-h-8 min-w-8 shrink-0"></div>
-            </div>
-          )}
-        </Container>
-        <ScrollToBottomButton className="absolute bottom-[150px] right-1/2" targetRef={messagesContainerRef} />
+                <div ref={messagesEndRef} className="h-8 min-h-8 min-w-8 shrink-0"></div>
+              </div>
+            )}
+          </Container>
+          <ScrollToBottomButton className="absolute bottom-[150px] right-1/2" targetRef={messagesContainerRef} />
+        </div>
+        <AppInputMsg
+          chatId={chatId}
+          className="pb-4"
+          useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading, stop }}
+        />
       </div>
-      <AppInputMsg
-        chatId={chatId}
-        className="pb-4"
-        useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading, stop }}
-      />
-    </div>
+      {!!process.env.NEXT_PUBLIC_DEV_MODE && (
+        <Button
+          variant="outline"
+          size="iconBig"
+          className="fixed bottom-4 right-4 rounded-full"
+          onClick={handleDevFunction}
+          tooltip="Dev function"
+        >
+          <Ghost size={24} />
+        </Button>
+      )}
+    </>
   )
 }
