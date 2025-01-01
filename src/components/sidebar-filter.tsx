@@ -18,29 +18,17 @@ export default function FilterButton({ settings, onSettingsChange }: FilterButto
           <ListFilter />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-64 p-1" align="start">
+      <PopoverContent className="w-56 p-1" align="start">
         <div className="space-y-0">
           <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
             <Label htmlFor="archived" className="flex flex-row items-center gap-2">
               <Archive className="h-4 w-4 opacity-70" />
-              Show archived chats
+              Archived chats
             </Label>
             <Switch
               id="archived"
               checked={settings.showArchived}
               onCheckedChange={checked => onSettingsChange({ showArchived: checked })}
-            />
-          </div>
-
-          <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
-            <Label htmlFor="sortByCreatedDate" className="flex flex-row items-center gap-2">
-              <Clock2 className="h-4 w-4 opacity-70" />
-              Sort by created date
-            </Label>
-            <Switch
-              id="sortByCreatedDate"
-              checked={settings.sortByCreatedDate}
-              onCheckedChange={checked => onSettingsChange({ sortByCreatedDate: checked })}
             />
           </div>
         </div>

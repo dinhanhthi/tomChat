@@ -40,8 +40,8 @@ export default function AppSidebar() {
     }
   }, [chats])
 
-  const pinnedChats = chats?.filter(conv => conv.pinned) || []
-  const unpinnedChats = chats?.filter(conv => !conv.pinned) || []
+  const pinnedChats = chats?.filter(conv => conv.pinned === 'true') || []
+  const unpinnedChats = chats?.filter(conv => conv.pinned !== 'true') || []
   const filteredChats = groupChatsByDates(unpinnedChats)
 
   const getLabel = (key: string) => {

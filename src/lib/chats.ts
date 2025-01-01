@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db/database'
 import { Chat, exMessage } from '../interface'
+import { toast } from 'sonner'
 
 export const getChat = async (chatId: string) => {
   return await db.chats.get(chatId)
@@ -49,6 +50,26 @@ export const getMessages = async (chatId: string) => {
   return messages ?? []
 }
 
-export async function toggleChatStatus(id: string, field: 'pinned' | 'archived', value: boolean) {
+export async function toggleChatStatus(id: string, field: 'pinned' | 'archived', value: 'true' | 'false') {
   return await db.chats.update(id, { [field]: value })
+}
+
+// DEV ONLY
+
+export async function updateMissingArchivedChats() {
+  const chatsToUpdate = await db.chats.filter(chat => !chat.archived).toArray()
+
+  if (!chatsToUpdate.length) {
+    toast.info('No missing archived chats found!')
+    return
+  }
+
+  await db.chats.bulkUpdate(
+    chatsToUpdate.map(chat => ({
+      key: chat.id,
+      changes: { archived: 'false' }
+    }))
+  )
+
+  toast.success('Updated missing archived chats!')
 }
