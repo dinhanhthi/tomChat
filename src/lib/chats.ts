@@ -1,7 +1,7 @@
+import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db/database'
-import { Chat, exMessage } from '../interface'
-import { toast } from 'sonner'
+import { exMessage } from '../interface'
 
 export const getChat = async (chatId: string) => {
   return await db.chats.get(chatId)
@@ -15,7 +15,9 @@ export const createChat = async (title: string, chatId?: string) => {
     id,
     title,
     createdAt: now,
-    updatedAt: now
+    updatedAt: now,
+    pinned: 'false',
+    archived: 'false'
   })
 
   return id
@@ -25,10 +27,6 @@ export const removeChat = async (chatId: string) => {
   await db.chats.delete(chatId)
   await db.messages.where('chatId').equals(chatId).delete()
   return chatId
-}
-
-export const updateChatMetadata = async (chatId: string, metadata: Partial<Chat>) => {
-  return await db.chats.update(chatId, metadata)
 }
 
 export const addMessage = async (chatId: string, message: exMessage) => {

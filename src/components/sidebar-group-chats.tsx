@@ -75,7 +75,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
               <SidebarMenuItem key={index}>
                 <SidebarMenuButton
                   isActive={chat.id === chatId}
-                  className="text-sm hover:bg-[#e9e9e9] data-[active=true]:bg-[#e9e9e9] group-data-[collapsible=icon]:opacity-0"
+                  className="hover:!bg-sidebar-hover data-[active=true]:bg-gray-200 text-sm group-data-[collapsible=icon]:opacity-0"
                   asChild
                 >
                   <Link href={`/chat/${chat.id}`}>
@@ -91,16 +91,16 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                 </SidebarMenuButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction showOnHover tooltip="Options" className="z-20 bg-[#e9e9e9]">
+                    <SidebarMenuAction showOnHover tooltip="Options" className="bg-sidebar-hover z-20">
                       <Settings2 />
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>
                   </DropdownMenuTrigger>
                   {chat.pinned === 'true' && chat.archived !== 'true' && (
-                    <Pin className="absolute right-1 top-1.5 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
+                    <Pin className="absolute right-1 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
                   )}
                   {chat.archived === 'true' && (
-                    <Archive className="absolute right-1 top-1.5 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
+                    <Archive className="absolute right-1 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
                   )}
                   <DropdownMenuContent
                     className="w-fit rounded-lg"

@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 
 const FILTER_SETTINGS_KEY = 'chat-filter-settings'
 
-export interface FilterSettings {
-  showArchived: boolean
+export interface SidebarFilter {
+  showArchived?: boolean
 }
 
 export const useFilterSettings = () => {
-  const [settings, setSettings] = useState<FilterSettings>({
+  const [settings, setSettings] = useState<SidebarFilter>({
     showArchived: false
   })
 
@@ -18,7 +18,7 @@ export const useFilterSettings = () => {
     }
   }, [])
 
-  const updateSettings = (newSettings: Partial<FilterSettings>) => {
+  const updateSettings = (newSettings: Partial<SidebarFilter>) => {
     const updated = { ...settings, ...newSettings }
     setSettings(updated)
     localStorage.setItem(FILTER_SETTINGS_KEY, JSON.stringify(updated))

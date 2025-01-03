@@ -2,12 +2,12 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Switch } from '@/components/ui/switch'
-import { Archive, Clock2, ListFilter } from 'lucide-react'
-import { FilterSettings } from '../hooks/useFilterSettings'
+import { Archive, ListFilter } from 'lucide-react'
+import { SidebarFilter } from '../hooks/useFilterSettings'
 
 interface FilterButtonProps {
-  settings: FilterSettings
-  onSettingsChange: (settings: Partial<FilterSettings>) => void
+  settings: SidebarFilter
+  onSettingsChange: (settings: Partial<SidebarFilter>) => void
 }
 
 export default function FilterButton({ settings, onSettingsChange }: FilterButtonProps) {
