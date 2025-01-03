@@ -119,7 +119,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                           <span>Unpin</span>
                         </>
                       )}
-                      {chat.pinned !== 'false' && (
+                      {(chat.pinned === 'false' || !chat.pinned) && (
                         <>
                           <Pin className="h-5 w-5 text-muted-foreground" />
                           <span>Pin</span>
