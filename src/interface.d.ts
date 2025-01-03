@@ -15,7 +15,7 @@ export interface Chat {
 }
 
 export interface exMessage extends Message {
-  chatId: string
+  chatId?: string // optional because the message from LLM doesn't have this prop
   usage?: Usage
   favorite?: 'true' | 'false' // Because Dexie's IndexableType is not compatible with boolean, undefined, or null (https://dexie.org/docs/Indexable-Type)
 }
