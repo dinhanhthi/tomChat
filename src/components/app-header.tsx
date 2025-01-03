@@ -53,16 +53,6 @@ export default function AppHeader() {
         )}
       </div>
       <div className="flex flex-row items-center gap-2">
-        <SimpleTooltip text="Usage of this chat">
-          <div className="flex select-none flex-row divide-x divide-slate-300 rounded-md border border-gray-300 px-2.5 py-1.5 text-xs">
-            <div className="flex flex-row flex-nowrap items-center gap-0.5 whitespace-nowrap pr-1.5 text-gray-600">
-              <TokenIcon className="h-4 w-4" />
-              <span>1.2K</span>
-            </div>
-
-            <div className="pl-1.5 text-primary">$15.00</div>
-          </div>
-        </SimpleTooltip>
         <Button
           onClick={() => setIsOpen(true)}
           variant="ghost"

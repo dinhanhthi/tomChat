@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { generateTitleFromUserMessage } from '../app/actions'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
+import { TokenIcon } from '../icons/TokenIcon'
 import { addMessage, createChat } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
@@ -15,6 +16,7 @@ import Container from './container'
 import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
+import SimpleTooltip from './ui/simple-tooltip'
 
 export default function AppInputMsg(props: {
   chatId: string
@@ -102,6 +104,7 @@ export default function AppInputMsg(props: {
           />
           <div className="flex flex-row items-center justify-between gap-4 p-2 pr-3 pt-0">
             <div className="flex flex-row items-center">
+              {/* Attach */}
               <Button
                 onClick={e => {
                   e.preventDefault()
@@ -115,6 +118,7 @@ export default function AppInputMsg(props: {
               >
                 <Paperclip />
               </Button>
+              {/* Web Search */}
               <Button
                 onClick={e => {
                   e.preventDefault()
@@ -128,6 +132,18 @@ export default function AppInputMsg(props: {
               >
                 <Globe />
               </Button>
+            </div>
+            <div className='flex flex-row items-end h-full pb-1'>
+              <SimpleTooltip text="Usage of this chat">
+                <div className="flex h-fit select-none flex-row divide-x divide-slate-300 rounded-md border-gray-300 px-2 text-[0.65rem] text-gray-400">
+                  <div className="flex flex-row flex-nowrap items-center gap-0.5 whitespace-nowrap pr-1.5">
+                    <TokenIcon className="h-4 w-4" />
+                    <span>1.2K</span>
+                  </div>
+
+                  <div className="pl-1.5">$15.00</div>
+                </div>
+              </SimpleTooltip>
             </div>
             {useChatParams.isLoading && (
               <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />
