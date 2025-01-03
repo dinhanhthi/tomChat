@@ -17,6 +17,7 @@ export interface Chat {
 export interface exMessage extends Message {
   chatId: string
   usage?: Usage
+  favorite?: 'true' | 'false' // Because Dexie's IndexableType is not compatible with boolean, undefined, or null (https://dexie.org/docs/Indexable-Type)
 }
 
 export interface Usage {

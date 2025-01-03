@@ -52,6 +52,10 @@ export async function toggleChatStatus(id: string, field: 'pinned' | 'archived',
   return await db.chats.update(id, { [field]: value })
 }
 
+export async function updateMessageFavoriteStatus(id: string, value: 'true' | 'false') {
+  return await db.messages.update(id, { favorite: value })
+}
+
 // DEV ONLY
 
 export async function updateMissingArchivedChats() {

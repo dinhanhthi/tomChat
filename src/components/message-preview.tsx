@@ -1,7 +1,6 @@
-import { Message } from 'ai'
 import { UseChatHelpers } from 'ai/react/dist'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Copy, RefreshCw, Volume2 } from 'lucide-react'
+import { Copy, Heart, RefreshCw, Volume2 } from 'lucide-react'
 import Image from 'next/image'
 import RemarkMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
@@ -9,19 +8,25 @@ import rehypeKatex from 'rehype-katex'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import LogoOpenAI from '../../public/img/services/openai.svg'
+import { exMessage } from '../interface'
+import { updateMessageFavoriteStatus } from '../lib/chats'
 import { cn, processMarkdownString } from '../lib/utils'
 import { Pre } from './markdown-blocks'
 import { Button } from './ui/button'
 
 interface MessagePreviewProps {
   className?: string
-  message: Message
+  message: exMessage
   isLoading: UseChatHelpers['isLoading']
 }
 
 export default function MessagePreview(props: MessagePreviewProps) {
   const { message, className, isLoading } = props
   const isUser = message.role === 'user'
+
+  const toggleFavorite = async () => {
+    await updateMessageFavoriteStatus(message.id, message.favorite === 'true' ? 'false' : 'true')
+  }
 
   return (
     <AnimatePresence>
@@ -56,6 +61,15 @@ export default function MessagePreview(props: MessagePreviewProps) {
           </RemarkMarkdown>
           {!isUser && !isLoading && (
             <div className="ml-auto flex flex-row items-center text-muted-foreground">
+              <Button
+                onClick={toggleFavorite}
+                variant="ghost"
+                size="icon"
+                tooltip="Add to favorite"
+                tooltipPosition="bottom"
+              >
+                <Heart className={cn({ 'fill-slate-700': message.favorite === 'true' })} />
+              </Button>
               <Button variant="ghost" size="icon" tooltip="Read aloud" tooltipPosition="bottom">
                 <Volume2 />
               </Button>
