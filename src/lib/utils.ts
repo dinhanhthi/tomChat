@@ -93,3 +93,69 @@ export function sanitizeUIMessages(messages: Array<Message>): Array<Message> {
     message => message.content.length > 0 || (message.toolInvocations && message.toolInvocations.length > 0)
   )
 }
+
+/**
+ * Group chats by dates into: today, yesterday, past 3 days, past 7 days, past 30 days, months in current year,
+ * and years before current year
+ */
+export function groupChatsByDates(chats: Chat[] = []): Map<string, Chat[]> {
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const currentYear = now.getFullYear()
+
+  // Initialize time-based groups
+  const yesterday = new Date(today)
+  const prev3days = new Date(today)
+  const prev7days = new Date(today)
+  const prev30days = new Date(today)
+
+  yesterday.setDate(today.getDate() - 1)
+  prev3days.setDate(today.getDate() - 3)
+  prev7days.setDate(today.getDate() - 7)
+  prev30days.setDate(today.getDate() - 30)
+
+  const groups = new Map<string, Chat[]>()
+
+  groups.set(
+    'today',
+    chats.filter(conv => new Date(conv.updatedAt) >= today)
+  )
+  groups.set(
+    'yesterday',
+    chats.filter(conv => new Date(conv.updatedAt) >= yesterday && new Date(conv.updatedAt) < today)
+  )
+  groups.set(
+    'prev3days',
+    chats.filter(conv => new Date(conv.updatedAt) >= prev3days && new Date(conv.updatedAt) < yesterday)
+  )
+  groups.set(
+    'prev7days',
+    chats.filter(conv => new Date(conv.updatedAt) >= prev7days && new Date(conv.updatedAt) < prev3days)
+  )
+  groups.set(
+    'prev30days',
+    chats.filter(conv => new Date(conv.updatedAt) >= prev30days && new Date(conv.updatedAt) < prev7days)
+  )
+
+  // Group by months for current year
+  chats.forEach(conv => {
+    const date = new Date(conv.updatedAt)
+    if (date.getFullYear() === currentYear && date < prev30days) {
+      const key = getMonthYearString(date)
+      if (!groups.has(key)) groups.set(key, [])
+      groups.get(key)?.push(conv)
+    }
+  })
+
+  // Group by years for older chats
+  chats.forEach(conv => {
+    const date = new Date(conv.updatedAt)
+    if (date.getFullYear() < currentYear) {
+      const key = date.getFullYear().toString()
+      if (!groups.has(key)) groups.set(key, [])
+      groups.get(key)?.push(conv)
+    }
+  })
+
+  return groups
+}

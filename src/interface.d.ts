@@ -6,11 +6,12 @@ export interface Chat {
   icon?: string
   description?: string
   messages?: Message[]
+  messageContents?: string[] // used for search indexing
   createdAt: Date
   updatedAt: Date
   usage?: Usage
-  pinned?: 'true' | 'false' // Because Dexie's IndexableType is not compatible with boolean, undefined, or null (https://dexie.org/docs/Indexable-Type)
-  archived?: 'true' | 'false' // Because Dexie's IndexableType is not compatible with boolean, undefined, or null (https://dexie.org/docs/Indexable-Type)
+  pinned: 'true' | 'false' // Because Dexie's IndexableType is not compatible with boolean, undefined, or null (https://dexie.org/docs/Indexable-Type)
+  archived: 'true' | 'false' // Because Dexie's IndexableType is not compatible with boolean, undefined, or null (https://dexie.org/docs/Indexable-Type)
 }
 
 export interface exMessage extends Message {

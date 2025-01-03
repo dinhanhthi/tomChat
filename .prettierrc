@@ -17,5 +17,5 @@
   "tailwindStylesheet": "./src/app/globals.scss",
   "tailwindConfig": "./tailwind.config.ts",
   "tailwindAttributes": ["textClassName", "overlayClassName"],
-  "tailwindFunctions": ["cn", "clsx"]
+  "tailwindFunctions": ["cn", "clsx", "cva"]
 }

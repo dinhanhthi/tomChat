@@ -3,20 +3,32 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import FlexSearch, { Id } from 'flexsearch'
 import { useEffect, useState } from 'react'
 import { Chat } from '../interface'
-import { FilterSettings } from './useFilterSettings'
+import { SidebarFilter } from './useFilterSettings'
 
 export type SearchableChat = Partial<Chat>
 
-export const useChats = (searchQuery = '', settings?: FilterSettings) => {
+export const useChats = ({
+  searchQuery = '',
+  sidebarFilter,
+  limit
+}: {
+  searchQuery?: string
+  sidebarFilter?: SidebarFilter
+  limit?: number
+}) => {
   const [searchIndex, setSearchIndex] = useState<FlexSearch.Document<SearchableChat>>()
   const [searchResults, setSearchResults] = useState<Chat[]>()
 
   const chats = useLiveQuery(async () => {
     const chatTable = db.chats
 
-    const filteredChats = settings?.showArchived
+    let filteredChats = sidebarFilter?.showArchived
       ? chatTable.where('archived').equals('true')
       : chatTable.where('archived').equals('false')
+
+    if (limit) {
+      filteredChats = filteredChats.limit(limit)
+    }
 
     const _chats = (await filteredChats.toArray()).sort((a, b) => {
       const dateA = new Date(a['updatedAt']).getTime()
@@ -31,7 +43,7 @@ export const useChats = (searchQuery = '', settings?: FilterSettings) => {
         messages: await db.messages.where('chatId').equals(chat.id).toArray()
       }))
     )
-  }, [settings])
+  }, [sidebarFilter])
 
   useEffect(() => {
     if (!chats) return
@@ -39,7 +51,7 @@ export const useChats = (searchQuery = '', settings?: FilterSettings) => {
     const index = new FlexSearch.Document<SearchableChat>({
       document: {
         id: 'id',
-        index: ['title', 'messages.content']
+        index: ['title', 'messages[]:content']
       },
       tokenize: 'full'
     })
@@ -61,10 +73,14 @@ export const useChats = (searchQuery = '', settings?: FilterSettings) => {
       return
     }
 
+    // /* ###Thi */ console.log(`👉👉👉 searchIndex: `, searchIndex);
+
     const results = searchIndex.search(searchQuery, {
       enrich: true,
       suggest: true
     })
+
+    /* ###Thi */ console.log(`👉👉👉 results: `, results)
 
     const matchedIds = new Set<Id>(results.flatMap(result => result.result))
 
