@@ -80,7 +80,6 @@ export function AlertDialogProvider({ children }: { children: React.ReactNode })
   )
 }
 
-// Custom hook
 export function useAlertDialog() {
   const context = useContext(AlertDialogContext)
   if (!context) {

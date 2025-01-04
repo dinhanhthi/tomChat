@@ -1,7 +1,9 @@
 import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db/database'
-import { exMessage } from '../interface'
+import { Chat, exMessage } from '../interface'
+
+// CHATS ---------------------------------------------------------
 
 export const getChat = async (chatId: string) => {
   return await db.chats.get(chatId)
@@ -29,6 +31,16 @@ export const removeChat = async (chatId: string) => {
   return chatId
 }
 
+export async function toggleChatStatus(id: string, field: 'pinned' | 'archived', value: 'true' | 'false') {
+  return await db.chats.update(id, { [field]: value })
+}
+
+export async function updateChatMeta(id: string, field: keyof Chat, value: string) {
+  return await db.chats.update(id, { [field]: value })
+}
+
+// MESSAGES ---------------------------------------------------------
+
 export const addMessage = async (chatId: string, message: exMessage) => {
   if (!message.id) {
     message.id = uuidv4()
@@ -48,15 +60,11 @@ export const getMessages = async (chatId: string) => {
   return messages ?? []
 }
 
-export async function toggleChatStatus(id: string, field: 'pinned' | 'archived', value: 'true' | 'false') {
-  return await db.chats.update(id, { [field]: value })
-}
-
 export async function updateMessageFavoriteStatus(id: string, value: 'true' | 'false') {
   return await db.messages.update(id, { favorite: value })
 }
 
-// DEV ONLY
+// DEV ONLY ---------------------------------------------------------
 
 export async function updateMissingArchivedChats() {
   const chatsToUpdate = await db.chats.filter(chat => !chat.archived).toArray()
