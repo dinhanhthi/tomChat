@@ -75,7 +75,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
               <SidebarMenuItem key={index}>
                 <SidebarMenuButton
                   isActive={chat.id === chatId}
-                  className="hover:!bg-sidebar-hover data-[active=true]:bg-gray-200 text-sm group-data-[collapsible=icon]:opacity-0"
+                  className="hover:!bg-sidebar-hover text-sm data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0"
                   asChild
                 >
                   <Link href={`/chat/${chat.id}`}>
@@ -91,7 +91,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                 </SidebarMenuButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction showOnHover tooltip="Options" className="bg-sidebar-hover z-20">
+                    <SidebarMenuAction showOnHover className="bg-sidebar-hover z-20">
                       <Settings2 />
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>

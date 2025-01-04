@@ -6,12 +6,14 @@ const OverflowTooltip = ({
   text,
   className,
   position,
-  delayDuration = 1
+  delayDuration = 1,
+  textHighlight
 }: {
   text: string
   className?: string
   position?: 'top' | 'right' | 'bottom' | 'left'
   delayDuration?: number
+  textHighlight?: string // used for search results
 }) => {
   const textRef = useRef<HTMLDivElement>(null)
   const [isOverflowed, setIsOverflowed] = useState(false)
@@ -31,7 +33,8 @@ const OverflowTooltip = ({
   if (!isOverflowed) {
     return (
       <div ref={textRef} className="truncate">
-        {text}
+        {!textHighlight && <div className="w-full">{text}</div>}
+        {textHighlight && <div className="w-full" dangerouslySetInnerHTML={{ __html: textHighlight }} />}
       </div>
     )
   }
@@ -41,7 +44,8 @@ const OverflowTooltip = ({
       <Tooltip>
         <TooltipTrigger asChild>
           <div ref={textRef} className={cn('truncate', className)}>
-            {text}
+            {!textHighlight && <div className="w-full">{text}</div>}
+            {textHighlight && <div className="w-full" dangerouslySetInnerHTML={{ __html: textHighlight }} />}
           </div>
         </TooltipTrigger>
         <TooltipContent side={position}>{text}</TooltipContent>

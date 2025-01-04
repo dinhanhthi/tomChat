@@ -56,6 +56,10 @@
   .x-min-hw-0 {
     @apply min-h-0 min-w-0;
   }
+
+  x-mark {
+    @apply font-medium text-gray-900 text-primary;
+  }
 }
 
 @layer base {

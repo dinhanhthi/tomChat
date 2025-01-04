@@ -137,8 +137,10 @@ export function groupChatsByDates(chats: Chat[] = []): Map<string, Chat[]> {
     chats.filter(conv => new Date(conv.updatedAt) >= prev30days && new Date(conv.updatedAt) < prev7days)
   )
 
+  const remainingChats = chats.filter(conv => new Date(conv.updatedAt) < prev30days)
+
   // Group by months for current year
-  chats.forEach(conv => {
+  remainingChats.forEach(conv => {
     const date = new Date(conv.updatedAt)
     if (date.getFullYear() === currentYear && date < prev30days) {
       const key = getMonthYearString(date)
@@ -148,7 +150,7 @@ export function groupChatsByDates(chats: Chat[] = []): Map<string, Chat[]> {
   })
 
   // Group by years for older chats
-  chats.forEach(conv => {
+  remainingChats.forEach(conv => {
     const date = new Date(conv.updatedAt)
     if (date.getFullYear() < currentYear) {
       const key = date.getFullYear().toString()
