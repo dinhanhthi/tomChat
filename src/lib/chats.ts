@@ -83,3 +83,23 @@ export async function updateMissingArchivedChats() {
 
   toast.success('Updated missing archived chats!')
 }
+
+export async function updateMissingPinnedChats() {
+  const chatsToUpdate = await db.chats
+    .filter(chat => !chat.pinned || !['true', 'false'].includes(chat.pinned))
+    .toArray()
+
+  if (!chatsToUpdate.length) {
+    toast.info('No missing pinned chats found!')
+    return
+  }
+
+  await db.chats.bulkUpdate(
+    chatsToUpdate.map(chat => ({
+      key: chat.id,
+      changes: { pinned: 'false' }
+    }))
+  )
+
+  toast.success('Updated missing pinned chats!')
+}
