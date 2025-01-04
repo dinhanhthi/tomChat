@@ -32,9 +32,9 @@ const OverflowTooltip = ({
 
   if (!isOverflowed) {
     return (
-      <div ref={textRef} className="truncate">
-        {!textHighlight && <div className="w-full">{text}</div>}
-        {textHighlight && <div className="w-full" dangerouslySetInnerHTML={{ __html: textHighlight }} />}
+      <div ref={textRef} className="w-full pr-6">
+        {!textHighlight && <div className="truncate">{text}</div>}
+        {textHighlight && <div className="truncate" dangerouslySetInnerHTML={{ __html: textHighlight }} />}
       </div>
     )
   }
@@ -43,9 +43,9 @@ const OverflowTooltip = ({
     <TooltipProvider delayDuration={delayDuration}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div ref={textRef} className={cn('truncate', className)}>
-            {!textHighlight && <div className="w-full">{text}</div>}
-            {textHighlight && <div className="w-full" dangerouslySetInnerHTML={{ __html: textHighlight }} />}
+          <div ref={textRef} className={cn(className)}>
+            {!textHighlight && <div className="w-full truncate">{text}</div>}
+            {textHighlight && <div className="w-full truncate" dangerouslySetInnerHTML={{ __html: textHighlight }} />}
           </div>
         </TooltipTrigger>
         <TooltipContent side={position}>{text}</TooltipContent>

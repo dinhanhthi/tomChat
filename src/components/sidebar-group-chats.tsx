@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -25,9 +26,10 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useChatStore } from '../hooks/useChatStore'
 import { Chat } from '../interface'
-import { removeChat, toggleChatStatus } from '../lib/chats'
+import { removeChat, toggleChatStatus, updateChatMeta } from '../lib/chats'
 import { xtoast } from '../lib/xtoast'
 import { useAlertDialog } from './dialog-confirm'
+import { RenameDialog } from './dialog-rename'
 import OverflowTooltip from './overflow-tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { Skeleton } from './ui/skeleton'
@@ -40,6 +42,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
   const { id } = useParams()
   const { activeId } = useChatStore()
   const chatId = id || activeId
+  const [renameChat, setRenameChat] = useState<Chat | null>(null)
 
   const handleRemoveChat = (chat: Chat) => async () => {
     showAlert({
@@ -63,6 +66,12 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
   const handleToggleArchive = async (e: React.MouseEvent, chat: Chat) => {
     e.stopPropagation()
     await toggleChatStatus(chat.id, 'archived', chat.archived === 'true' ? 'false' : 'true')
+  }
+
+  const handleRename = async (newTitle: string) => {
+    if (!renameChat) return
+    await updateChatMeta(renameChat.id, 'title', newTitle)
+    xtoast.success('Chat renamed successfully!')
   }
 
   return (
@@ -126,7 +135,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                         </>
                       )}
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setRenameChat(chat)}>
                       <Pencil className="text-muted-foreground" />
                       <span>Rename</span>
                     </DropdownMenuItem>
@@ -164,6 +173,12 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
           </SidebarMenu>
         </SidebarGroup>
       )}
+      <RenameDialog
+        open={!!renameChat}
+        onOpenChange={(open) => !open && setRenameChat(null)}
+        title={renameChat?.title || ''}
+        onRename={handleRename}
+      />
     </>
   )
 }
