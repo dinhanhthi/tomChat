@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -24,6 +23,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useChatStore } from '../hooks/useChatStore'
 import { Chat } from '../interface'
 import { removeChat, toggleChatStatus, updateChatMeta } from '../lib/chats'
@@ -121,38 +121,42 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                       <MessageSquareShare className="text-muted-foreground" />
                       <span>Share</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={e => handleTogglePin(e, chat)}>
-                      {chat.pinned === 'true' && (
-                        <>
-                          <PinOff className="text-muted-foreground" />
-                          <span>Unpin</span>
-                        </>
-                      )}
-                      {(chat.pinned === 'false' || !chat.pinned) && (
-                        <>
-                          <Pin className="h-5 w-5 text-muted-foreground" />
-                          <span>Pin</span>
-                        </>
-                      )}
-                    </DropdownMenuItem>
+                    {chat.pinned && ['true', 'false'].includes(chat.pinned) && (
+                      <DropdownMenuItem onClick={e => handleTogglePin(e, chat)}>
+                        {chat.pinned === 'true' && (
+                          <>
+                            <PinOff className="text-muted-foreground" />
+                            <span>Unpin</span>
+                          </>
+                        )}
+                        {(chat.pinned === 'false' || !chat.pinned) && (
+                          <>
+                            <Pin className="h-5 w-5 text-muted-foreground" />
+                            <span>Pin</span>
+                          </>
+                        )}
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={() => setRenameChat(chat)}>
                       <Pencil className="text-muted-foreground" />
                       <span>Rename</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={e => handleToggleArchive(e, chat)}>
-                      {chat.archived === 'true' && (
-                        <>
-                          <ArchiveX className="text-muted-foreground" />
-                          <span>Unarchived</span>
-                        </>
-                      )}
-                      {chat.archived !== 'true' && (
-                        <>
-                          <Archive className="text-muted-foreground" />
-                          <span>Archive</span>
-                        </>
-                      )}
-                    </DropdownMenuItem>
+                    {chat.archived && ['true', 'false'].includes(chat.archived) && (
+                      <DropdownMenuItem onClick={e => handleToggleArchive(e, chat)}>
+                        {chat.archived === 'true' && (
+                          <>
+                            <ArchiveX className="text-muted-foreground" />
+                            <span>Unarchived</span>
+                          </>
+                        )}
+                        {chat.archived !== 'true' && (
+                          <>
+                            <Archive className="text-muted-foreground" />
+                            <span>Archive</span>
+                          </>
+                        )}
+                      </DropdownMenuItem>
+                    )}
                     {/* <DropdownMenuSeparator /> */}
                     <DropdownMenuItem onClick={handleRemoveChat(chat)} className="text-danger hover:!text-danger">
                       <Trash2 />
@@ -175,7 +179,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
       )}
       <RenameDialog
         open={!!renameChat}
-        onOpenChange={(open) => !open && setRenameChat(null)}
+        onOpenChange={open => !open && setRenameChat(null)}
         title={renameChat?.title || ''}
         onRename={handleRename}
       />

@@ -4,7 +4,7 @@ import { useChat } from 'ai/react'
 import { Ghost } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-import { addMessage, getChat, getMessages } from '../lib/chats'
+import { addMessage, getChat, getMessages, updateMissingPinnedChats } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import AppInputMsg from './app-input-msg'
@@ -26,6 +26,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
     // xtoast.info('Dev function is running now!')
     xtoast.info('Dev function is disabled!')
     // await updateMissingArchivedChats()
+    // await updateMissingPinnedChats()
   }
 
   // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
