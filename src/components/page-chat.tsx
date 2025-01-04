@@ -38,7 +38,8 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
           promptTokens: options.usage.promptTokens,
           completionTokens: options.usage.completionTokens,
           totalTokens: options.usage.totalTokens
-        }
+        },
+        favorite: 'false'
       })
     },
     onError: error => {

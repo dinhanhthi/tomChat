@@ -5,7 +5,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
   SidebarSeparator
 } from '@/components/ui/sidebar'
 import { BadgeInfo, BookOpenText, Bug, Lightbulb, ScrollText } from 'lucide-react'
@@ -107,7 +106,7 @@ export default function AppSidebar() {
         </Button>
       </SidebarFooter>
 
-      <SidebarRail />
+      {/* <SidebarRail /> */}
     </Sidebar>
   )
 }

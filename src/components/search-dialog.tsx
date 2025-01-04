@@ -1,8 +1,9 @@
 'use client'
 
+import { debounce } from 'lodash'
 import { X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { create } from 'zustand'
 import { useChats } from '../hooks/useChats'
 import { groupChatsByDates } from '../lib/utils'
@@ -26,8 +27,8 @@ export default function SearchDialog() {
   const { isOpen, setIsOpen } = useDialogStore()
   const inputRef = useRef<HTMLInputElement>(null)
   const [query, setQuery] = useState('')
-  // const { chats } = useChats({ searchQuery: query, limit: query === '' ? 5 : undefined })
-  const { chats } = useChats({ searchQuery: query })
+  const [queryToSearch, setQueryToSearch] = useState(query)
+  const { chats } = useChats({ searchQuery: queryToSearch, includeArchived: true, limit: query === '' ? 7 : undefined })
   const groupedChats = groupChatsByDates(chats)
 
   const getLabel = (key: string) => {
@@ -40,10 +41,19 @@ export default function SearchDialog() {
     }
   }, [])
 
+  const debounceSearch = useCallback(
+    debounce(value => triggerSearch(value), 500),
+    [query]
+  )
+
+  function triggerSearch(value: string) {
+    setQueryToSearch(value)
+  }
+
   function handleOnchangeInput(e: ChangeEvent<HTMLInputElement>) {
     const { value } = e.target
     setQuery(value)
-    // debounceSearch(value)
+    debounceSearch(value)
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -72,13 +82,13 @@ export default function SearchDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className="max-w-[80%] !rounded-xl !p-0 shadow-[0_14px_62px_0_rgba(0,0,0,0.25)] md:min-w-[680px] md:max-w-[680px]"
+        className="h-[min(80svh,440px)] max-w-[80%] !rounded-xl !p-0 shadow-[0_14px_62px_0_rgba(0,0,0,0.25)] md:min-w-[680px] md:max-w-[680px]"
         overlayClassName="bg-black/30"
         hideCloseBtn={true}
       >
         <DialogTitle className="hidden">Hidden Title</DialogTitle>
         <DialogDescription className="hidden">Hidden Description</DialogDescription>
-        <div className="flex max-h-[80svh] flex-col divide-y divide-slate-200">
+        <div className="flex max-h-[80svh] flex-col divide-y divide-slate-200 overflow-hidden">
           <div className="ml-6 mr-4 flex max-h-14 min-h-14 items-center justify-between">
             <input
               ref={inputRef}
@@ -88,11 +98,17 @@ export default function SearchDialog() {
               onChange={e => handleOnchangeInput(e)}
               onKeyDown={e => handleKeyDown(e)}
             />
-            <Button onClick={() => setIsOpen(false)} variant="ghost" size="iconBig" className="group rounded-full">
+            <Button
+              onClick={() => setIsOpen(false)}
+              variant="ghost"
+              size="iconBig"
+              className="group rounded-full"
+              tooltip="Close search (ESC)"
+            >
               <X className="text-slate-800 opacity-50 group-hover:opacity-100" />
             </Button>
           </div>
-          <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-4 pb-4 pt-6">
+          <div className="flex min-h-0 w-full flex-1 flex-col gap-6 overflow-y-auto px-2 pb-4 pt-6">
             {Array.from(groupedChats).map(
               ([key, chts]) => chts.length > 0 && <SearchGroupChat key={key} label={getLabel(key)} chats={chts} />
             )}

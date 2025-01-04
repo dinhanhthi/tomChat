@@ -9,16 +9,12 @@ export class ChatDatabase extends Dexie {
     super('ChatDatabase')
 
     this.version(3).stores({
-      chats: 'id, title, description, pinned, archived, *messageContents',
+      chats: 'id, title, description, pinned, archived',
       messages: 'id, content, chatId'
     })
 
     this.chats = this.table('chats')
     this.messages = this.table('messages')
-
-    this.chats.hook('creating', (_primKey, obj, _transaction) => {
-      obj.messageContents = obj.messages?.map(m => m.content)
-    })
   }
 }
 

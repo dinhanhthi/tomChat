@@ -13,7 +13,7 @@ const CodeCopyButton: React.FC<{ code: string }> = ({ code }) => {
   }
 
   return (
-    <button onClick={handleCopy} style={{ position: 'absolute', right: '10px', top: '10px' }}>
+    <button className='bg-gray-100 p-2 rounded-md' onClick={handleCopy} style={{ position: 'absolute', right: '0px', top: '0px' }}>
       {copied ? (
         <Check className="h-4 w-4 text-green-600" />
       ) : (
