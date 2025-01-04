@@ -4,7 +4,6 @@ import { Chat } from '../interface'
 import OverflowTooltip from './overflow-tooltip'
 
 export default function SearchGroupChat({ label, chats = [] }: { label: string; chats?: Chat[] }) {
-  /* ###Thi */ console.log(`👉👉👉 chats: `, chats)
   return (
     <>
       {chats.length > 0 && (
@@ -23,13 +22,13 @@ export default function SearchGroupChat({ label, chats = [] }: { label: string; 
                   <OverflowTooltip
                     className="select-none"
                     text={chat.title}
-                    position="right"
+                    position="top"
                     delayDuration={700}
                     textHighlight={chat.searchResult?.highlightedTitle}
                   ></OverflowTooltip>
                   {chat.searchResult?.highlightedContent && (
                     <div
-                      className="line-clamp-2 overflow-hidden text-xs text-slate-500"
+                      className="line-clamp-1 overflow-hidden text-xs text-slate-500"
                       dangerouslySetInnerHTML={{ __html: chat.searchResult.highlightedContent }}
                     ></div>
                   )}
