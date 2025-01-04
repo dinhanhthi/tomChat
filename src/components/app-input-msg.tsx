@@ -136,7 +136,7 @@ export default function AppInputMsg(props: {
             </div>
             <div className="flex h-full flex-row items-end pb-1">
               <SimpleTooltip text="Usage of this chat">
-                <div className="flex h-fit select-none flex-row divide-x divide-slate-300 rounded-md border-gray-300 px-2 text-[0.65rem] text-gray-400">
+                <div className="flex h-fit select-none flex-row divide-x divide-slate-300 rounded-md border-gray-300 px-2 text-xs text-gray-400">
                   <div className="flex flex-row flex-nowrap items-center gap-0.5 whitespace-nowrap pr-1.5">
                     <TokenIcon className="h-4 w-4" />
                     <span>1.2K</span>

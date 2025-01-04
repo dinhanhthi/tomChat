@@ -75,60 +75,6 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
     xtoast.success('Chat renamed successfully!')
   }
 
-  const pinComponent = (chat: Chat) => {
-    return (
-      <>
-        {chat.pinned === 'true' ? (
-          <>
-            <PinOff className="mr-1 text-muted-foreground" />
-            <span>Unpin</span>
-          </>
-        ) : (
-          <>
-            <Pin className="mr-1 text-muted-foreground" />
-            <span>Pin</span>
-          </>
-        )}
-      </>
-    )
-  }
-
-  const shareComponent = (chat: Chat) => {
-    return (
-      <>
-        <MessageSquareShare className="mr-1 text-muted-foreground" />
-        <span>Share</span>
-      </>
-    )
-  }
-
-  const renameComponent = (chat: Chat) => {
-    return (
-      <>
-        <Pencil className="mr-1 text-muted-foreground" />
-        <span>Rename</span>
-      </>
-    )
-  }
-
-  const archiveComponent = (chat: Chat) => {
-    return (
-      <>
-        {chat.archived === 'true' ? (
-          <>
-            <ArchiveX className="mr-1 text-muted-foreground" />
-            <span>Unarchive</span>
-          </>
-        ) : (
-          <>
-            <Archive className="mr-1 text-muted-foreground" />
-            <span>Archive</span>
-          </>
-        )}
-      </>
-    )
-  }
-
   const renderDropdownContent = (chat: Chat) => (
     <>
       <DropdownMenuItem>{shareComponent(chat)}</DropdownMenuItem>
@@ -257,5 +203,59 @@ export function SidebarGroupChatsSkeleton() {
         ))}
       </div>
     </div>
+  )
+}
+
+const pinComponent = (chat: Chat) => {
+  return (
+    <>
+      {chat.pinned === 'true' ? (
+        <>
+          <PinOff className="mr-1 text-muted-foreground" />
+          <span>Unpin</span>
+        </>
+      ) : (
+        <>
+          <Pin className="mr-1 text-muted-foreground" />
+          <span>Pin</span>
+        </>
+      )}
+    </>
+  )
+}
+
+const shareComponent = (chat: Chat) => {
+  return (
+    <>
+      <MessageSquareShare className="mr-1 text-muted-foreground" />
+      <span>Share</span>
+    </>
+  )
+}
+
+const renameComponent = (chat: Chat) => {
+  return (
+    <>
+      <Pencil className="mr-1 text-muted-foreground" />
+      <span>Rename</span>
+    </>
+  )
+}
+
+const archiveComponent = (chat: Chat) => {
+  return (
+    <>
+      {chat.archived === 'true' ? (
+        <>
+          <ArchiveX className="mr-1 text-muted-foreground" />
+          <span>Unarchive</span>
+        </>
+      ) : (
+        <>
+          <Archive className="mr-1 text-muted-foreground" />
+          <span>Archive</span>
+        </>
+      )}
+    </>
   )
 }

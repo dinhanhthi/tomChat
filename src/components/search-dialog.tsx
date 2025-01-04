@@ -28,8 +28,8 @@ export default function SearchDialog() {
   const inputRef = useRef<HTMLInputElement>(null)
   const [query, setQuery] = useState('')
   const [queryToSearch, setQueryToSearch] = useState(query)
-  const { chats } = useChats({ searchQuery: queryToSearch, includeArchived: true, limit: query === '' ? 7 : undefined })
-  const groupedChats = groupChatsByDates(chats)
+  const { chats } = useChats({ searchQuery: queryToSearch, includeArchived: true })
+  const groupedChats = groupChatsByDates(queryToSearch === '' ? chats?.slice(0, 7) : chats)
 
   const getLabel = (key: string) => {
     return SPECIAL_HISTORY_LABELS[key] || key

@@ -30,24 +30,24 @@ const OverflowTooltip = ({
     return () => window.removeEventListener('resize', checkOverflow)
   }, [text])
 
+  const insideComp = (
+    <div ref={textRef} className={cn('truncate', className)}>
+      {text}
+    </div>
+  )
+
+  const insideCompHL = (
+    <div ref={textRef} className={cn('truncate', className)} dangerouslySetInnerHTML={{ __html: textHighlight! }} />
+  )
+
   if (!isOverflowed) {
-    return (
-      <div ref={textRef} className="w-full pr-6 select-none">
-        {!textHighlight && <div className="truncate">{text}</div>}
-        {textHighlight && <div className="truncate" dangerouslySetInnerHTML={{ __html: textHighlight }} />}
-      </div>
-    )
+    return !textHighlight ? insideComp : insideCompHL
   }
 
   return (
     <TooltipProvider delayDuration={delayDuration}>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <div ref={textRef} className={cn('select-none', className)}>
-            {!textHighlight && <div className="w-full truncate">{text}</div>}
-            {textHighlight && <div className="w-full truncate" dangerouslySetInnerHTML={{ __html: textHighlight }} />}
-          </div>
-        </TooltipTrigger>
+        <TooltipTrigger asChild>{!textHighlight ? insideComp : insideCompHL}</TooltipTrigger>
         <TooltipContent side={position}>{text}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
