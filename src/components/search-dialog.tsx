@@ -1,14 +1,16 @@
 'use client'
 
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
+import { Command } from 'cmdk'
 import { debounce } from 'lodash'
-import { X } from 'lucide-react'
-import { usePathname } from 'next/navigation'
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { Archive, MessageCircle, X } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { create } from 'zustand'
 import { useChats } from '../hooks/useChats'
 import { groupChatsByDates } from '../lib/utils'
 import { SPECIAL_HISTORY_LABELS } from './app-sidebar'
-import SearchGroupChat from './search-group-chat'
+import OverflowTooltip from './overflow-tooltip'
 import { Button } from './ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from './ui/dialog'
 
@@ -23,6 +25,7 @@ export const useDialogStore = create<DialogStore>(set => ({
 }))
 
 export default function SearchDialog() {
+  const router = useRouter()
   const pathname = usePathname()
   const { isOpen, setIsOpen } = useDialogStore()
   const inputRef = useRef<HTMLInputElement>(null)
@@ -50,18 +53,6 @@ export default function SearchDialog() {
     setQueryToSearch(value)
   }
 
-  function handleOnchangeInput(e: ChangeEvent<HTMLInputElement>) {
-    const { value } = e.target
-    setQuery(value)
-    debounceSearch(value)
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Escape') {
-      setIsOpen(false)
-    }
-  }
-
   // Add keyboard shortcut cmd/ctrl + k to open the search dialog
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -79,6 +70,11 @@ export default function SearchDialog() {
     setIsOpen(false)
   }, [pathname])
 
+  const handleItemClick = (chatId: string) => {
+    setIsOpen(false)
+    router.push(`/chat/${chatId}`)
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
@@ -86,17 +82,21 @@ export default function SearchDialog() {
         overlayClassName="bg-black/30"
         hideCloseBtn={true}
       >
-        <DialogTitle className="hidden">Hidden Title</DialogTitle>
-        <DialogDescription className="hidden">Hidden Description</DialogDescription>
-        <div className="flex max-h-[80svh] flex-col divide-y divide-slate-200 overflow-hidden">
+        <VisuallyHidden.Root>
+          <DialogTitle>Search Chats</DialogTitle>
+          <DialogDescription>Search through your chat history</DialogDescription>
+        </VisuallyHidden.Root>
+        <Command className="flex h-full flex-col divide-y divide-slate-200 overflow-hidden" shouldFilter={false} loop>
           <div className="ml-6 mr-4 flex max-h-14 min-h-14 items-center justify-between">
-            <input
+            <Command.Input
               ref={inputRef}
               className="placeholder:text-token-text-tertiary w-full border-none bg-transparent focus:border-transparent focus:outline-none focus:ring-0"
               placeholder="Search chats..."
               value={query}
-              onChange={e => handleOnchangeInput(e)}
-              onKeyDown={e => handleKeyDown(e)}
+              onValueChange={value => {
+                setQuery(value)
+                debounceSearch(value)
+              }}
             />
             <Button
               onClick={() => setIsOpen(false)}
@@ -108,13 +108,50 @@ export default function SearchDialog() {
               <X className="text-slate-800 opacity-50 group-hover:opacity-100" />
             </Button>
           </div>
-          <div className="flex min-h-0 w-full flex-1 flex-col gap-6 overflow-y-auto px-2 pb-4 pt-6">
+          <Command.List className="min-h-0 flex-1 overflow-y-auto">
+            <Command.Empty className="px-4 py-2 text-sm text-slate-500">No chat found!</Command.Empty>
             {Array.from(groupedChats).map(
-              ([key, chts]) => chts.length > 0 && <SearchGroupChat key={key} label={getLabel(key)} chats={chts} />
+              ([key, chts]) =>
+                chts.length > 0 && (
+                  <Command.Group key={key} heading={getLabel(key)} className="p-2 text-xs">
+                    {chts.map(chat => (
+                      <Command.Item
+                        key={chat.id}
+                        value={chat.title}
+                        className="group mb-1 flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground"
+                        onSelect={() => handleItemClick(chat.id)}
+                        onClick={() => handleItemClick(chat.id)}
+                      >
+                        {chat.icon ? <span>{chat.icon}</span> : <MessageCircle className="h-4 w-4" />}
+                        {/* <span className="truncate">{chat.title}</span> */}
+                        <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                          <OverflowTooltip
+                            className="select-none"
+                            text={chat.title}
+                            position="top"
+                            delayDuration={700}
+                            textHighlight={chat.searchResult?.highlightedTitle}
+                          ></OverflowTooltip>
+                          {chat.searchResult?.highlightedContent && (
+                            <div
+                              className="line-clamp-1 overflow-hidden text-xs text-slate-500"
+                              dangerouslySetInnerHTML={{ __html: chat.searchResult.highlightedContent }}
+                            ></div>
+                          )}
+                        </div>
+                        {chat.updatedAt && (
+                          <div className="hidden text-xs text-slate-500 group-hover:block">
+                            {new Date(chat.updatedAt).toLocaleDateString()}
+                          </div>
+                        )}
+                        {chat.archived === 'true' && <Archive className="h-4 w-4 text-gray-500" />}
+                      </Command.Item>
+                    ))}
+                  </Command.Group>
+                )
             )}
-            {!chats?.length && <div className="px-2 pb-2 text-sm text-slate-500">No chat found!</div>}
-          </div>
-        </div>
+          </Command.List>
+        </Command>
       </DialogContent>
     </Dialog>
   )
