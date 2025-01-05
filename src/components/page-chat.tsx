@@ -21,8 +21,15 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const [isPageLoading, setIsPageLoading] = useState(true)
+  const [hash, setHash] = useState('')
 
-  const hash = window.location.hash.substring(1)
+  useEffect(() => {
+    const _hash = window.location.hash.substring(1)
+    if (_hash) {
+      setHash(_hash)
+    }
+  }, [])
+
   useEffect(() => {
     if (hash) {
       setTimeout(() => {
