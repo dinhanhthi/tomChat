@@ -31,8 +31,9 @@ export default function MessagePreview(props: MessagePreviewProps) {
   return (
     <AnimatePresence>
       <motion.article
+        id={message.id}
         className={cn(
-          'flex w-full flex-row items-start gap-4 md:gap-5 lg:gap-6',
+          'flex w-full flex-row items-start gap-4 md:gap-5 lg:gap-6 scroll-mt-[20px]',
           {
             'ml-auto max-w-[70%] rounded-2xl bg-gray-100 p-4': isUser
           },
