@@ -65,8 +65,8 @@ export const useChats = ({
         tokenize: (string, _fieldName) => string.split(/\s+/),
         searchOptions: {
           boost: { title: 2 },
-          fuzzy: 0.2
-          // fuzzy: false
+          // fuzzy: 0.2
+          fuzzy: false
         }
       })
   )

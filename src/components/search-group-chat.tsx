@@ -14,7 +14,7 @@ export default function SearchGroupChat({ label, chats = [] }: { label: string; 
               <Link
                 className="group flex w-full flex-row items-center gap-3 rounded-md p-2 px-3 text-sm hover:bg-slate-100"
                 key={chat.id}
-                href={`/chat/${chat.id}`}
+                href={`/chat/${chat.id}#${chat.searchResult?.messageId}`}
               >
                 {chat.icon && <span>{chat.icon}</span>}
                 {!chat.icon && <MessageCircle className="h-4 w-4" />}
