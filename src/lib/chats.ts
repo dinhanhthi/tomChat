@@ -50,10 +50,6 @@ export const getMessages = async (chatId: string) => {
   return messages ?? []
 }
 
-export async function updateMessageFavoriteStatus(id: string, value: 'true' | 'false') {
-  return await db.messages.update(id, { favorite: value })
-}
-
 // DEV ONLY ---------------------------------------------------------
 
 export async function updateMissingArchivedChats() {
