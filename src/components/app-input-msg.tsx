@@ -70,8 +70,7 @@ export default function AppInputMsg(props: {
           role: 'user',
           content: useChatParams.input,
           createdAt: new Date(),
-          chatId,
-          favorite: 'false'
+          chatId
         })
       }
     } catch (error) {
