@@ -4,6 +4,7 @@ import { useChat } from 'ai/react'
 import { Ghost } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import { addMessage, getChat, getMessages } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
@@ -51,13 +52,14 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
     onFinish: async (message, options) => {
       await addMessage(chatId, {
         ...message,
+        serviceId: message.id,
+        id: uuidv4(),
         chatId,
         usage: {
           promptTokens: options.usage.promptTokens,
           completionTokens: options.usage.completionTokens,
           totalTokens: options.usage.totalTokens
-        },
-        favorite: 'false'
+        }
       })
     },
     onError: error => {
