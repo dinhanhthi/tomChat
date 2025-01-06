@@ -3,10 +3,10 @@ import { Message } from 'ai'
 import { useLiveQuery } from 'dexie-react-hooks'
 import MiniSearch from 'minisearch'
 import { useMemo, useState } from 'react'
-import { Chat } from '../interface'
+import { IChat } from '@/interface'
 import { SidebarFilter } from './useFilterSettings'
 
-export type SearchableChat = Partial<Chat>
+export type SearchableChat = Partial<IChat>
 
 interface SearchDocument {
   id: string
@@ -191,7 +191,7 @@ export const useChats = ({
     })
   }, [searchQuery, documents, miniSearch, chats])
 
-  const foundChats: Chat[] = results.map((result: any) => ({
+  const foundChats: IChat[] = results.map((result: any) => ({
     id: result['chatId'],
     title: result['title'],
     icon: result['icon'],
