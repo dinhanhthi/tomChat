@@ -1,24 +1,6 @@
 import { Message } from 'ai'
 
-export interface IChat {
-  id: string
-  title: string
-  icon?: string
-  description?: string
-  messages?: Message[]
-  createdAt?: Date
-  updatedAt: Date
-  usage?: Usage
-  pinned: 'true' | 'false'
-  archived: 'true' | 'false'
-  searchResult?: {
-    messageId?: string
-    highlightedTitle?: string
-    highlightedContent: string
-  }
-}
-
-export class Chat implements IChat {
+export class Chat {
   id: string
   title: string
   icon?: string
@@ -35,7 +17,7 @@ export class Chat implements IChat {
     highlightedContent: string
   }
 
-  constructor(partial?: Partial<IChat>) {
+  constructor(partial?: Partial<Chat>) {
     const now = new Date()
     this.id = partial?.id ?? crypto.randomUUID()
     this.title = partial?.title ?? 'New Chat'

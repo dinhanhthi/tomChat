@@ -1,7 +1,7 @@
 import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db/database'
-import { Chat, IChat, exMessage } from '../interface'
+import { Chat, exMessage } from '../interface'
 
 // CHATS ---------------------------------------------------------
 
@@ -25,7 +25,7 @@ export async function toggleChatStatus(id: string, field: 'pinned' | 'archived',
   return await db.chats.update(id, { [field]: value })
 }
 
-export async function updateChatMeta(id: string, field: keyof IChat, value: string) {
+export async function updateChatMeta(id: string, field: keyof Chat, value: string) {
   return await db.chats.update(id, { [field]: value })
 }
 
