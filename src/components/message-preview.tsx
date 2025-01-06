@@ -8,8 +8,8 @@ import rehypeKatex from 'rehype-katex'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import LogoOpenAI from '../../public/img/services/openai.svg'
+import { useFavoriteMessages } from '../hooks/useFavoriteMessages'
 import { exMessage } from '../interface'
-import { updateMessageFavoriteStatus } from '../lib/chats'
 import { cn, processMarkdownString } from '../lib/utils'
 import { Pre } from './markdown-blocks'
 import { Button } from './ui/button'
@@ -23,9 +23,10 @@ interface MessagePreviewProps {
 export default function MessagePreview(props: MessagePreviewProps) {
   const { message, className, isLoading } = props
   const isUser = message.role === 'user'
+  const { isFavoriteMessage, toggleFavoriteMessage } = useFavoriteMessages()
 
   const toggleFavorite = async () => {
-    await updateMessageFavoriteStatus(message.id, message.favorite === 'true' ? 'false' : 'true')
+    toggleFavoriteMessage(message.id)
   }
 
   return (
@@ -33,7 +34,7 @@ export default function MessagePreview(props: MessagePreviewProps) {
       <motion.article
         id={message.id}
         className={cn(
-          'flex w-full flex-row items-start gap-4 md:gap-5 lg:gap-6 scroll-mt-[20px]',
+          'flex w-full scroll-mt-[20px] flex-row items-start gap-4 md:gap-5 lg:gap-6',
           {
             'ml-auto max-w-[70%] rounded-2xl bg-gray-100 p-4': isUser
           },
@@ -69,7 +70,7 @@ export default function MessagePreview(props: MessagePreviewProps) {
                 tooltip="Add to favorite"
                 tooltipPosition="bottom"
               >
-                <Heart className={cn({ 'fill-slate-700': message.favorite === 'true' })} />
+                <Heart className={cn({ 'fill-slate-700': isFavoriteMessage(message.id) })} />
               </Button>
               <Button variant="ghost" size="icon" tooltip="Read aloud" tooltipPosition="bottom">
                 <Volume2 />

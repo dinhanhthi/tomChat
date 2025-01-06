@@ -38,9 +38,6 @@ export const addMessage = async (chatId: string, message: exMessage) => {
   if (!message.chatId && chatId) {
     message.chatId = chatId
   }
-  if (message.favorite === undefined) {
-    message.favorite = 'false'
-  }
   await db.messages.add(message)
   await db.chats.update(chatId, {
     updatedAt: new Date()
@@ -51,10 +48,6 @@ export const addMessage = async (chatId: string, message: exMessage) => {
 export const getMessages = async (chatId: string) => {
   const messages = await db.messages.where('chatId').equals(chatId).sortBy('createdAt')
   return messages ?? []
-}
-
-export async function updateMessageFavoriteStatus(id: string, value: 'true' | 'false') {
-  return await db.messages.update(id, { favorite: value })
 }
 
 // DEV ONLY ---------------------------------------------------------
