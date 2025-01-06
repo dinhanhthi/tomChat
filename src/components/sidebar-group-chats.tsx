@@ -20,6 +20,7 @@ import {
   Pin,
   PinOff,
   Settings2,
+  SmilePlus,
   Trash2
 } from 'lucide-react'
 import Link from 'next/link'
@@ -44,6 +45,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
   const { activeId } = useChatStore()
   const chatId = id || activeId
   const [renameChat, setRenameChat] = useState<Chat | null>(null)
+  const [changeIcon, setChangeIcon] = useState<Chat | null>(null)
 
   const handleRemoveChat = (chat: Chat) => async () => {
     showAlert({
@@ -77,11 +79,12 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
 
   const renderDropdownContent = (chat: Chat) => (
     <>
-      <DropdownMenuItem>{shareComponent(chat)}</DropdownMenuItem>
+      <DropdownMenuItem>{shareComponent()}</DropdownMenuItem>
       {chat.pinned && ['true', 'false'].includes(chat.pinned) && (
         <DropdownMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</DropdownMenuItem>
       )}
-      <DropdownMenuItem onClick={() => setRenameChat(chat)}>{renameComponent(chat)}</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => setRenameChat(chat)}>{renameComponent()}</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => setChangeIcon(chat)}>{iconComponent()}</DropdownMenuItem>
       {chat.archived && ['true', 'false'].includes(chat.archived) && (
         <DropdownMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</DropdownMenuItem>
       )}
@@ -100,11 +103,12 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
 
   const renderContextContent = (chat: Chat) => (
     <>
-      <ContextMenuItem>{shareComponent(chat)}</ContextMenuItem>
+      <ContextMenuItem>{shareComponent()}</ContextMenuItem>
       {chat.pinned && ['true', 'false'].includes(chat.pinned) && (
         <ContextMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</ContextMenuItem>
       )}
-      <ContextMenuItem onClick={() => setRenameChat(chat)}>{renameComponent(chat)}</ContextMenuItem>
+      <ContextMenuItem onClick={() => setRenameChat(chat)}>{renameComponent()}</ContextMenuItem>
+      <ContextMenuItem onClick={() => setChangeIcon(chat)}>{iconComponent()}</ContextMenuItem>
       {chat.archived && ['true', 'false'].includes(chat.archived) && (
         <ContextMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</ContextMenuItem>
       )}
@@ -126,7 +130,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                   <ContextMenuTrigger>
                     <SidebarMenuButton
                       isActive={chat.id === chatId}
-                      className="hover:!bg-sidebar-hover text-sm data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0"
+                      className="hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover text-sm data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0"
                       asChild
                     >
                       <Link href={`/chat/${chat.id}`}>
@@ -147,7 +151,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                 </ContextMenu>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction showOnHover className="bg-sidebar-hover z-20">
+                    <SidebarMenuAction showOnHover className="z-20 bg-white">
                       <Settings2 />
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>
@@ -224,7 +228,7 @@ const pinComponent = (chat: Chat) => {
   )
 }
 
-const shareComponent = (chat: Chat) => {
+const shareComponent = () => {
   return (
     <>
       <MessageSquareShare className="mr-1 text-muted-foreground" />
@@ -233,7 +237,7 @@ const shareComponent = (chat: Chat) => {
   )
 }
 
-const renameComponent = (chat: Chat) => {
+const renameComponent = () => {
   return (
     <>
       <Pencil className="mr-1 text-muted-foreground" />
@@ -256,6 +260,15 @@ const archiveComponent = (chat: Chat) => {
           <span>Archive</span>
         </>
       )}
+    </>
+  )
+}
+
+const iconComponent = () => {
+  return (
+    <>
+      <SmilePlus className="mr-1 text-muted-foreground" />
+      <span>Icon</span>
     </>
   )
 }
