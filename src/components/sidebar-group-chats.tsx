@@ -126,7 +126,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                   <ContextMenuTrigger>
                     <SidebarMenuButton
                       isActive={chat.id === chatId}
-                      className="hover:!bg-sidebar-hover text-sm data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0"
+                      className="hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover text-sm data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0"
                       asChild
                     >
                       <Link href={`/chat/${chat.id}`}>
@@ -147,7 +147,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                 </ContextMenu>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction showOnHover className="bg-sidebar-hover z-20">
+                    <SidebarMenuAction showOnHover className="z-20 bg-white">
                       <Settings2 />
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>
