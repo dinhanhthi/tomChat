@@ -11,17 +11,7 @@ export const getChat = async (chatId: string) => {
 
 export const createChat = async (title: string, chatId?: string) => {
   const id = chatId ?? uuidv4()
-  const now = new Date()
-
-  await db.chats.add({
-    id,
-    title,
-    createdAt: now,
-    updatedAt: now,
-    pinned: 'false',
-    archived: 'false'
-  })
-
+  await db.chats.add(new Chat({ id, title }))
   return id
 }
 

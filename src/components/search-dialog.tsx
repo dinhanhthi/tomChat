@@ -123,7 +123,6 @@ export default function SearchDialog() {
                         onClick={() => handleItemClick(chat.id)}
                       >
                         {chat.icon ? <span>{chat.icon}</span> : <MessageCircle className="h-4 w-4" />}
-                        {/* <span className="truncate">{chat.title}</span> */}
                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                           <OverflowTooltip
                             className="select-none"
@@ -140,7 +139,7 @@ export default function SearchDialog() {
                           )}
                         </div>
                         {chat.updatedAt && (
-                          <div className="hidden text-xs text-slate-500 group-hover:block">
+                          <div className="hidden text-xs text-slate-500 group-hover:block group-data-[selected=true]:block">
                             {new Date(chat.updatedAt).toLocaleDateString()}
                           </div>
                         )}
