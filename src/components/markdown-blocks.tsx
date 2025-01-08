@@ -13,7 +13,11 @@ const CodeCopyButton: React.FC<{ code: string }> = ({ code }) => {
   }
 
   return (
-    <button className='bg-gray-100 p-2 rounded-md' onClick={handleCopy} style={{ position: 'absolute', right: '0px', top: '0px' }}>
+    <button
+      className="rounded-md bg-gray-100 p-2"
+      onClick={handleCopy}
+      style={{ position: 'absolute', right: '0px', top: '0px' }}
+    >
       {copied ? (
         <Check className="h-4 w-4 text-green-600" />
       ) : (
@@ -25,13 +29,13 @@ const CodeCopyButton: React.FC<{ code: string }> = ({ code }) => {
   )
 }
 
-export const Pre: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const Pre = ({ children }: { children: React.ReactNode }) => {
   const code = children?.toString() || ''
 
   return (
     <div style={{ position: 'relative' }}>
       <CodeCopyButton code={code} />
-      <pre>{children}</pre>
+      <pre>{children!}</pre>
     </div>
   )
 }
