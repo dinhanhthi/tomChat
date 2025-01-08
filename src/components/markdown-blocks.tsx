@@ -29,13 +29,13 @@ const CodeCopyButton: React.FC<{ code: string }> = ({ code }) => {
   )
 }
 
-export const Pre = ({ children }: { children: React.ReactNode }) => {
+export function Pre({ children }: React.ComponentProps<'pre'>) {
   const code = children?.toString() || ''
 
   return (
     <div style={{ position: 'relative' }}>
       <CodeCopyButton code={code} />
-      <pre>{children!}</pre>
+      <pre>{children}</pre>
     </div>
   )
 }
