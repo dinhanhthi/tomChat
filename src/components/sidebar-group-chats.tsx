@@ -10,19 +10,15 @@ import {
   SidebarMenuItem,
   useSidebar
 } from '@/components/ui/sidebar'
-import data from '@emoji-mart/data'
-import Picker from '@emoji-mart/react'
 import {
   Archive,
   ArchiveX,
-  MessageCircle,
   MessageSquareShare,
   MoreHorizontal,
   Pencil,
   Pin,
   PinOff,
   Settings2,
-  SmilePlus,
   Trash2
 } from 'lucide-react'
 import Link from 'next/link'
@@ -31,13 +27,13 @@ import { useState } from 'react'
 import { useChatStore } from '../hooks/useChatStore'
 import { Chat } from '../interface'
 import { removeChat, toggleChatStatus, updateChatMeta } from '../lib/chats'
+import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import { useAlertDialog } from './dialog-confirm'
 import { RenameDialog } from './dialog-rename'
+import { EmojiPickerButton } from './emoji-picker-button'
 import OverflowTooltip from './overflow-tooltip'
-import { Button } from './ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 import { Skeleton } from './ui/skeleton'
 
 export default function SidebarGroupChats(props: { label: string; chats?: Chat[] }) {
@@ -50,6 +46,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
   const chatId = id || activeId
   const [renameChat, setRenameChat] = useState<Chat | null>(null)
   const [emojiPickerChat, setEmojiPickerChat] = useState<Chat | null>(null)
+  const [dropdownOpen, setDropdownOpen] = useState<Chat | null>(null)
 
   const handleRemoveChat = (chat: Chat) => async () => {
     showAlert({
@@ -144,52 +141,29 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                   <ContextMenuTrigger>
                     <SidebarMenuButton
                       isActive={chat.id === chatId}
-                      className="px-1 text-sm hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0"
+                      className={cn(
+                        'px-1 text-sm hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0',
+                        {
+                          '!bg-sidebar-hover': emojiPickerChat?.id === chat.id || dropdownOpen?.id === chat.id
+                        }
+                      )}
                       asChild
                     >
                       <Link className="flex flex-row items-center" href={`/chat/${chat.id}`}>
-                        <Popover open={emojiPickerChat?.id === chat.id} onOpenChange={() => setEmojiPickerChat(null)}>
-                          <PopoverTrigger asChild>
-                            <Button
-                              onClick={e => handleIconChangeBtnClicked(e, chat)}
-                              className="group/icon relative h-6 w-6 hover:bg-white"
-                              variant="ghost"
-                              size="icon"
-                              tooltip={'Change Icon'}
-                            >
-                              {chat.icon && <span className="z-10 group-hover/icon:opacity-0">{chat.icon}</span>}
-                              {!chat.icon && <MessageCircle className="z-10 group-hover/icon:opacity-0" />}
-                              <SmilePlus className="absolute left-1 top-1 z-20 opacity-0 group-hover/icon:opacity-100" />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent
-                            className="w-auto border-none p-0 shadow-none"
-                            side="right"
-                            align="start"
-                            sideOffset={0}
-                          >
-                            <div className="max-h-[300px] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
-                              <Picker
-                                data={data}
-                                onEmojiSelect={handleEmojiSelect}
-                                theme="light"
-                                previewPosition="none"
-                                skinTonePosition="none"
-                                perLine={8}
-                                emojiSize={16}
-                                emojiButtonSize={35}
-                                maxFrequentRows={1}
-                                skin={1}
-                              />
-                            </div>
-                          </PopoverContent>
-                        </Popover>
+                        <EmojiPickerButton
+                          popupOpen={emojiPickerChat?.id === chat.id}
+                          onPopupOpenChange={() => setEmojiPickerChat(null)}
+                          currentIcon={chat.icon}
+                          onEmojiSelect={handleEmojiSelect}
+                          handleBtnClick={e => handleIconChangeBtnClicked(e, chat)}
+                          tooltip="Change Icon"
+                        />
                         <OverflowTooltip
                           className="min-w-0 flex-1 select-none"
                           text={chat.title}
                           position="right"
                           delayDuration={700}
-                        ></OverflowTooltip>
+                        />
                       </Link>
                     </SidebarMenuButton>
                   </ContextMenuTrigger>
@@ -197,9 +171,15 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                     {renderContextContent(chat)}
                   </ContextMenuContent>
                 </ContextMenu>
-                <DropdownMenu>
+                <DropdownMenu
+                  open={dropdownOpen?.id === chat.id}
+                  onOpenChange={() => setDropdownOpen(open => (open ? null : chat))}
+                >
                   <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction showOnHover className="top-1 z-20 h-6 w-6 bg-white">
+                    <SidebarMenuAction
+                      showOnHover
+                      className="top-1 z-20 h-6 w-6 bg-white hover:!bg-white hover:text-primary"
+                    >
                       <Settings2 />
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>

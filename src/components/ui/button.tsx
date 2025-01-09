@@ -21,9 +21,9 @@ const buttonVariants = cva(
         default: 'h-10 px-4 py-2',
         sm: 'h-9 rounded-md px-3',
         lg: 'h-11 rounded-md px-8',
-        icon: 'group h-8 w-8 [&_svg]:size-4 [&_svg]:transition-transform [&_svg]:active:scale-90 shrink-0',
+        icon: 'group h-8 w-8 [&_svg]:size-4 [&_svg]:transition-transform [&_svg]:active:scale-90 shrink-0 hover:text-primary',
         iconBig:
-          'group h-9 w-9 text-gray-500 hover:text-gray-600 [&_svg]:size-5 [&_svg]:transition-transform [&_svg]:active:scale-90 shrink-0'
+          'group h-9 w-9 text-gray-500 hover:text-gray-600 [&_svg]:size-5 [&_svg]:transition-transform [&_svg]:active:scale-90 shrink-0 hover:text-primary'
       }
     },
     defaultVariants: {
