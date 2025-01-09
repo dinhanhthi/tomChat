@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.10",
+    "@emoji-mart/data": "^1.2.1",
+    "@emoji-mart/react": "^1.1.1",
     "@radix-ui/react-alert-dialog": "^1.1.4",
     "@radix-ui/react-context-menu": "^2.2.4",
     "@radix-ui/react-dialog": "^1.1.4",
@@ -40,6 +42,7 @@
     "cmdk": "^1.0.4",
     "dexie": "^4.0.10",
     "dexie-react-hooks": "^1.1.7",
+    "emoji-mart": "^5.6.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^15.1.0",
     "flexsearch": "^0.7.43",

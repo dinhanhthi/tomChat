@@ -13,14 +13,12 @@ import {
 import {
   Archive,
   ArchiveX,
-  MessageCircle,
   MessageSquareShare,
   MoreHorizontal,
   Pencil,
   Pin,
   PinOff,
   Settings2,
-  SmilePlus,
   Trash2
 } from 'lucide-react'
 import Link from 'next/link'
@@ -29,9 +27,11 @@ import { useState } from 'react'
 import { useChatStore } from '../hooks/useChatStore'
 import { Chat } from '../interface'
 import { removeChat, toggleChatStatus, updateChatMeta } from '../lib/chats'
+import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import { useAlertDialog } from './dialog-confirm'
 import { RenameDialog } from './dialog-rename'
+import { EmojiPickerButton } from './emoji-picker-button'
 import OverflowTooltip from './overflow-tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { Skeleton } from './ui/skeleton'
@@ -45,7 +45,8 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
   const { activeId } = useChatStore()
   const chatId = id || activeId
   const [renameChat, setRenameChat] = useState<Chat | null>(null)
-  const [changeIcon, setChangeIcon] = useState<Chat | null>(null)
+  const [emojiPickerChat, setEmojiPickerChat] = useState<Chat | null>(null)
+  const [dropdownOpen, setDropdownOpen] = useState<Chat | null>(null)
 
   const handleRemoveChat = (chat: Chat) => async () => {
     showAlert({
@@ -84,7 +85,6 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
         <DropdownMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</DropdownMenuItem>
       )}
       <DropdownMenuItem onClick={() => setRenameChat(chat)}>{renameComponent()}</DropdownMenuItem>
-      <DropdownMenuItem onClick={() => setChangeIcon(chat)}>{iconComponent()}</DropdownMenuItem>
       {chat.archived && ['true', 'false'].includes(chat.archived) && (
         <DropdownMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</DropdownMenuItem>
       )}
@@ -108,7 +108,6 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
         <ContextMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</ContextMenuItem>
       )}
       <ContextMenuItem onClick={() => setRenameChat(chat)}>{renameComponent()}</ContextMenuItem>
-      <ContextMenuItem onClick={() => setChangeIcon(chat)}>{iconComponent()}</ContextMenuItem>
       {chat.archived && ['true', 'false'].includes(chat.archived) && (
         <ContextMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</ContextMenuItem>
       )}
@@ -117,6 +116,18 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
       </ContextMenuItem>
     </>
   )
+
+  const handleIconChangeBtnClicked = (e: React.MouseEvent, chat: Chat) => {
+    e.stopPropagation()
+    e.preventDefault()
+    setEmojiPickerChat(chat)
+  }
+
+  const handleEmojiSelect = async (emoji: any) => {
+    if (!emojiPickerChat) return
+    await updateChatMeta(emojiPickerChat.id, 'icon', emoji.native)
+    setEmojiPickerChat(null)
+  }
 
   return (
     <>
@@ -130,18 +141,29 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                   <ContextMenuTrigger>
                     <SidebarMenuButton
                       isActive={chat.id === chatId}
-                      className="hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover text-sm data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0"
+                      className={cn(
+                        'px-1 text-sm hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0',
+                        {
+                          '!bg-sidebar-hover': emojiPickerChat?.id === chat.id || dropdownOpen?.id === chat.id
+                        }
+                      )}
                       asChild
                     >
-                      <Link href={`/chat/${chat.id}`}>
-                        {chat.icon && <span>{chat.icon}</span>}
-                        {!chat.icon && <MessageCircle />}
+                      <Link className="flex flex-row items-center" href={`/chat/${chat.id}`}>
+                        <EmojiPickerButton
+                          popupOpen={emojiPickerChat?.id === chat.id}
+                          onPopupOpenChange={() => setEmojiPickerChat(null)}
+                          currentIcon={chat.icon}
+                          onEmojiSelect={handleEmojiSelect}
+                          handleBtnClick={e => handleIconChangeBtnClicked(e, chat)}
+                          tooltip="Change Icon"
+                        />
                         <OverflowTooltip
-                          className="select-none"
+                          className="min-w-0 flex-1 select-none"
                           text={chat.title}
                           position="right"
                           delayDuration={700}
-                        ></OverflowTooltip>
+                        />
                       </Link>
                     </SidebarMenuButton>
                   </ContextMenuTrigger>
@@ -149,9 +171,15 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                     {renderContextContent(chat)}
                   </ContextMenuContent>
                 </ContextMenu>
-                <DropdownMenu>
+                <DropdownMenu
+                  open={dropdownOpen?.id === chat.id}
+                  onOpenChange={() => setDropdownOpen(open => (open ? null : chat))}
+                >
                   <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction showOnHover className="z-20 bg-white">
+                    <SidebarMenuAction
+                      showOnHover
+                      className="top-1 z-20 h-6 w-6 bg-white hover:!bg-white hover:text-primary"
+                    >
                       <Settings2 />
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>
@@ -260,15 +288,6 @@ const archiveComponent = (chat: Chat) => {
           <span>Archive</span>
         </>
       )}
-    </>
-  )
-}
-
-const iconComponent = () => {
-  return (
-    <>
-      <SmilePlus className="mr-1 text-muted-foreground" />
-      <span>Icon</span>
     </>
   )
 }

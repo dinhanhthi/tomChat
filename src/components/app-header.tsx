@@ -9,6 +9,7 @@ import { Chat } from '../interface'
 import { updateChatMeta } from '../lib/chats'
 import { xtoast } from '../lib/xtoast'
 import { RenameDialog } from './dialog-rename'
+import { EmojiPickerButton } from './emoji-picker-button'
 import OverflowTooltip from './overflow-tooltip'
 import { useDialogStore } from './search-dialog'
 import { Button } from './ui/button'
@@ -24,11 +25,25 @@ export default function AppHeader() {
   const { chat } = useChatClient(chatId as string)
   const chatTitle = chat?.title
 
+  const [emojiOpen, setEmojiOpen] = useState(false)
+
   const [renameChat, setRenameChat] = useState<Chat | null>(null)
   const handleRename = async (newTitle: string) => {
     if (!renameChat) return
     await updateChatMeta(renameChat.id, 'title', newTitle)
     xtoast.success('Chat renamed successfully!')
+  }
+
+  const handleEmojiSelect = async (emoji: any) => {
+    if (!chat) return
+    await updateChatMeta(chat.id, 'icon', emoji.native)
+    setEmojiOpen(false)
+  }
+
+  const handleIconChangeBtnClicked = (e: React.MouseEvent, _chat: Chat) => {
+    e.stopPropagation()
+    e.preventDefault()
+    setEmojiOpen(!emojiOpen)
   }
 
   return (
@@ -57,7 +72,19 @@ export default function AppHeader() {
           {chatTitle && (
             <>
               <Separator orientation="vertical" className="mr-2 h-4" />
-              <div className="x-flex-1 truncate pr-4 text-[1.05rem] flex items-center gap-2">
+              <div className="x-flex-1 flex items-center gap-2 truncate pr-4 text-[1.05rem]">
+                {chat?.icon && (
+                  <EmojiPickerButton
+                    size="lg"
+                    popupOpen={emojiOpen}
+                    onPopupOpenChange={setEmojiOpen}
+                    currentIcon={chat.icon}
+                    onEmojiSelect={handleEmojiSelect}
+                    handleBtnClick={e => handleIconChangeBtnClicked(e, chat)}
+                    tooltip="Change Icon"
+                    tooltipPosition="bottom"
+                  />
+                )}
                 <OverflowTooltip text={chatTitle} position="bottom" delayDuration={1}></OverflowTooltip>
                 <Button
                   className="hidden group-hover:inline-flex"
