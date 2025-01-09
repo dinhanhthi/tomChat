@@ -8,21 +8,25 @@ import { Button } from './ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 
 interface EmojiPickerButtonProps {
+  size?: 'sm' | 'lg'
   popupOpen?: boolean
   onPopupOpenChange?: (open: boolean) => void
   currentIcon?: string
   onEmojiSelect: (emoji: { native: string }) => void
   handleBtnClick: (e: React.MouseEvent) => void
   tooltip?: string
+  tooltipPosition?: 'top' | 'right' | 'bottom' | 'left'
 }
 
 export function EmojiPickerButton({
+  size = 'sm',
   popupOpen,
   onPopupOpenChange,
   currentIcon,
   onEmojiSelect,
   handleBtnClick,
-  tooltip
+  tooltip,
+  tooltipPosition
 }: EmojiPickerButtonProps) {
   return (
     <Popover open={popupOpen} onOpenChange={onPopupOpenChange}>
@@ -32,31 +36,39 @@ export function EmojiPickerButton({
           className={cn('group/icon relative h-6 w-6 hover:bg-white', {
             'bg-white': popupOpen
           })}
+          style={{ fontSize: 'inherit' }}
           variant="ghost"
-          size="icon"
+          size={size === 'sm' ? 'icon' : 'iconBig'}
           tooltip={tooltip}
+          tooltipPosition={tooltipPosition}
         >
           {currentIcon && (
             <span
               className={cn('z-10 group-hover/icon:opacity-0', {
                 'opacity-0': popupOpen
               })}
+              style={{ fontSize: 'inherit' }}
             >
               {currentIcon}
             </span>
           )}
           {!currentIcon && (
             <MessageCircle
-              className={cn('z-10 group-hover/icon:opacity-0', {
+              className={cn('z-10 text-gray-600 group-hover/icon:opacity-0', {
                 'opacity-0': popupOpen
               })}
             />
           )}
-          <SmilePlus
-            className={cn('absolute left-1 top-1 z-20 opacity-0 group-hover/icon:opacity-100 text-primary', {
-              'opacity-100': popupOpen
-            })}
-          />
+          <div
+            className={cn(
+              'absolute left-0 top-0 z-20 flex h-full w-full items-center justify-center text-primary opacity-0 transition-opacity duration-100 ease-linear group-hover/icon:opacity-100',
+              {
+                'opacity-100': popupOpen
+              }
+            )}
+          >
+            <SmilePlus />
+          </div>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto border-none p-0 shadow-none" side="right" align="start" sideOffset={0}>
