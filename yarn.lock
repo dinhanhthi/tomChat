@@ -1627,6 +1627,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@emoji-mart/data@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "@emoji-mart/data@npm:1.2.1"
+  checksum: 10c0/6784b97bf49a0d3ff110d8447bbd3b0449fcbc497294be3d1c3a6cb1609308776895c7520200be604cbecaa5e172c76927e47f34419c72ba8a76fd4e5a53674b
+  languageName: node
+  linkType: hard
+
+"@emoji-mart/react@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@emoji-mart/react@npm:1.1.1"
+  peerDependencies:
+    emoji-mart: ^5.2
+    react: ^16.8 || ^17 || ^18
+  checksum: 10c0/88a9c8c24bbc5695f0ed2458734c9982c965a16db1999bc731c7cce77f9bf228f1871e899744f9a3f9fdd36a11db7ad6c0e049d710cb91c66c69a2cd4d2ee40a
+  languageName: node
+  linkType: hard
+
 "@eslint-community/eslint-utils@npm:^4.2.0, @eslint-community/eslint-utils@npm:^4.4.0":
   version: 4.4.1
   resolution: "@eslint-community/eslint-utils@npm:4.4.1"
@@ -5332,6 +5349,13 @@ __metadata:
   version: 0.13.1
   resolution: "emittery@npm:0.13.1"
   checksum: 10c0/1573d0ae29ab34661b6c63251ff8f5facd24ccf6a823f19417ae8ba8c88ea450325788c67f16c99edec8de4b52ce93a10fe441ece389fd156e88ee7dab9bfa35
+  languageName: node
+  linkType: hard
+
+"emoji-mart@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "emoji-mart@npm:5.6.0"
+  checksum: 10c0/23e68ab10984f101b696d8f8e103e553ffa8e4d644e9a315190a9657903f71b833db09aac51b05de20f33bb9eef5bc1425eecdb2437042b25aff2dad0231f029
   languageName: node
   linkType: hard
 
@@ -12133,6 +12157,8 @@ __metadata:
   resolution: "x-chat@workspace:."
   dependencies:
     "@ai-sdk/openai": "npm:^1.0.10"
+    "@emoji-mart/data": "npm:^1.2.1"
+    "@emoji-mart/react": "npm:^1.1.1"
     "@radix-ui/react-alert-dialog": "npm:^1.1.4"
     "@radix-ui/react-context-menu": "npm:^2.2.4"
     "@radix-ui/react-dialog": "npm:^1.1.4"
@@ -12166,6 +12192,7 @@ __metadata:
     cmdk: "npm:^1.0.4"
     dexie: "npm:^4.0.10"
     dexie-react-hooks: "npm:^1.1.7"
+    emoji-mart: "npm:^5.6.0"
     eslint: "npm:^8.57.0"
     eslint-config-next: "npm:^15.1.0"
     eslint-config-prettier: "npm:^9.1.0"

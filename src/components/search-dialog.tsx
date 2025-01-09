@@ -87,7 +87,7 @@ export default function SearchDialog() {
           <DialogDescription>Search through your chat history</DialogDescription>
         </VisuallyHidden.Root>
         <Command className="flex h-full flex-col divide-y divide-slate-200 overflow-hidden" shouldFilter={false} loop>
-          <div className="ml-6 mr-4 flex max-h-14 min-h-14 items-center justify-between">
+          <div className="ml-6 mr-4 flex max-h-14 min-h-14 items-center justify-between border-none">
             <Command.Input
               ref={inputRef}
               className="placeholder:text-token-text-tertiary w-full border-none bg-transparent focus:border-transparent focus:outline-none focus:ring-0"
