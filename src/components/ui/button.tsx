@@ -21,9 +21,12 @@ const buttonVariants = cva(
         default: 'h-10 px-4 py-2',
         sm: 'h-9 rounded-md px-3',
         lg: 'h-11 rounded-md px-8',
-        icon: 'group h-8 w-8 [&_svg]:size-4 [&_svg]:transition-transform [&_svg]:active:scale-90 shrink-0 hover:text-primary',
+        icon: 'group h-8 w-8 shrink-0 hover:text-primary [&_svg]:size-4 [&_svg]:transition-transform [&_svg]:active:scale-90',
         iconBig:
-          'group h-9 w-9 text-gray-500 hover:text-gray-600 [&_svg]:size-5 [&_svg]:transition-transform [&_svg]:active:scale-90 shrink-0 hover:text-primary'
+          'group h-9 w-9 shrink-0 text-gray-500 hover:text-gray-600 hover:text-primary [&_svg]:size-5 [&_svg]:transition-transform [&_svg]:active:scale-90'
+      },
+      inSidebar: {
+        true: 'hover:bg-gray-200/70'
       }
     },
     defaultVariants: {
@@ -42,10 +45,10 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, tooltip, tooltipPosition = 'right', ...props }, ref) => {
+  ({ className, variant, size, inSidebar, asChild = false, tooltip, tooltipPosition = 'right', ...props }, ref) => {
     const Comp = asChild ? Slot : 'button'
 
-    const button = <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
+    const button = <Comp className={cn(buttonVariants({ variant, size, inSidebar, className }))} ref={ref} {...props} />
 
     if (!tooltip) {
       return button
