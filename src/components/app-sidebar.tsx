@@ -89,19 +89,19 @@ export default function AppSidebar() {
       <SidebarSeparator />
 
       <SidebarFooter className="flex flex-row items-center justify-evenly">
-        <Button variant="ghost" size="iconBig" tooltip="About" tooltipPosition="bottom">
+        <Button inSidebar variant="ghost" size="iconBig" tooltip="About" tooltipPosition="bottom">
           <BadgeInfo />
         </Button>
-        <Button variant="ghost" size="iconBig" tooltip="Documentation" tooltipPosition="bottom">
+        <Button inSidebar variant="ghost" size="iconBig" tooltip="Documentation" tooltipPosition="bottom">
           <BookOpenText />
         </Button>
-        <Button variant="ghost" size="iconBig" tooltip="Changelog" tooltipPosition="bottom">
+        <Button inSidebar variant="ghost" size="iconBig" tooltip="Changelog" tooltipPosition="bottom">
           <ScrollText />
         </Button>
-        <Button variant="ghost" size="iconBig" tooltip="Bug report" tooltipPosition="bottom">
+        <Button inSidebar variant="ghost" size="iconBig" tooltip="Bug report" tooltipPosition="bottom">
           <Bug />
         </Button>
-        <Button variant="ghost" size="iconBig" tooltip="Feature request" tooltipPosition="bottom">
+        <Button inSidebar variant="ghost" size="iconBig" tooltip="Feature request" tooltipPosition="bottom">
           <Lightbulb />
         </Button>
       </SidebarFooter>

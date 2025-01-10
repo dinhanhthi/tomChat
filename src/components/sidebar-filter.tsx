@@ -14,7 +14,7 @@ export default function FilterButton({ settings, onSettingsChange }: FilterButto
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="iconBig">
+        <Button inSidebar variant="ghost" size="iconBig">
           <ListFilter />
         </Button>
       </PopoverTrigger>

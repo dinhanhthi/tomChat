@@ -99,6 +99,7 @@ export default function AppHeader() {
               </div>
             </>
           )}
+          {!chatTitle && <div className="x-flex-1 text-center font-medium text-gray-700">Add a new chat</div>}
         </div>
         <div className="flex flex-row items-center gap-2">
           <Button
