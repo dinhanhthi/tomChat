@@ -8,7 +8,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { create } from 'zustand'
 import { useChats } from '../hooks/useChats'
-import { groupChatsByDates } from '../lib/utils'
+import { MODAL_BG_CLASS, MODAL_RADIUS } from '../lib/constants'
+import { cn, groupChatsByDates } from '../lib/utils'
 import { SPECIAL_HISTORY_LABELS } from './app-sidebar'
 import OverflowTooltip from './overflow-tooltip'
 import { Button } from './ui/button'
@@ -78,8 +79,11 @@ export default function SearchDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
-        className="h-[min(80svh,440px)] max-w-[80%] !rounded-xl !p-0 shadow-[0_14px_62px_0_rgba(0,0,0,0.25)] md:min-w-[680px] md:max-w-[680px]"
-        overlayClassName="bg-black/30"
+        className={cn(
+          'h-[min(80svh,440px)] max-w-[80%] !p-0 shadow-[0_14px_62px_0_rgba(0,0,0,0.25)] md:min-w-[680px] md:max-w-[680px]',
+          MODAL_RADIUS
+        )}
+        overlayClassName={MODAL_BG_CLASS}
         hideCloseBtn={true}
       >
         <VisuallyHidden.Root>

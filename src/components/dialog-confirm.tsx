@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import React, { createContext, useContext, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { MODAL_RADIUS } from '../lib/constants'
 import { cn } from '../lib/utils'
 
 interface AlertDialogOptions {
@@ -53,7 +54,7 @@ export function AlertDialogProvider({ children }: { children: React.ReactNode })
     <AlertDialogContext.Provider value={{ showAlert }}>
       {children}
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <AlertDialogContent className="!rounded-[2rem]">
+        <AlertDialogContent className={MODAL_RADIUS}>
           <AlertDialogHeader className="gap-2">
             <AlertDialogTitle className="text-lg">{options.title || 'Confirm Action'}</AlertDialogTitle>
             <AlertDialogDescription asChild>
