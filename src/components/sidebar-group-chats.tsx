@@ -178,7 +178,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                   <DropdownMenuTrigger asChild>
                     <SidebarMenuAction
                       showOnHover
-                      className="top-1 z-20 h-6 w-6 bg-white hover:!bg-white hover:text-primary"
+                      className="top-1 z-20 h-6 w-6 bg-white hover:!bg-white"
                     >
                       <Settings2 />
                       <span className="sr-only">More</span>
