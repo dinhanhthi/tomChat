@@ -4,11 +4,15 @@ const FILTER_SETTINGS_KEY = 'chat-filter-settings'
 
 export interface SidebarFilter {
   showArchived?: boolean
+  showByTags?: boolean
+  multipleSelection?: boolean
 }
 
 export const useFilterSettings = () => {
   const [settings, setSettings] = useState<SidebarFilter>({
-    showArchived: false
+    showArchived: false, 
+    showByTags: false,
+    multipleSelection: false
   })
 
   useEffect(() => {
