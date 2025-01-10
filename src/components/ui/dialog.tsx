@@ -5,7 +5,7 @@ import { X } from 'lucide-react'
 import * as React from 'react'
 
 import { cn } from '@/lib/utils'
-import { MODAL_BG_CLASS, MODAL_POSITION_TOP, MODAL_RADIUS } from '../../lib/constants'
+import { MODAL_BG_CLASS, MODAL_RADIUS } from '../../lib/constants'
 
 const Dialog = DialogPrimitive.Root
 
@@ -40,9 +40,8 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-[50%] top-[min(50%,300px)] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg',
+        'fixed left-0 right-0 top-[70px] z-50 mx-auto grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg',
         MODAL_RADIUS,
-        MODAL_POSITION_TOP,
         className
       )}
       {...props}

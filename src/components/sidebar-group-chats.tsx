@@ -19,6 +19,7 @@ import {
   Pin,
   PinOff,
   Settings2,
+  Tag,
   Trash2
 } from 'lucide-react'
 import Link from 'next/link'
@@ -85,6 +86,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
         <DropdownMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</DropdownMenuItem>
       )}
       <DropdownMenuItem onClick={() => setRenameChat(chat)}>{renameComponent()}</DropdownMenuItem>
+      <DropdownMenuItem>{tagsComponent()}</DropdownMenuItem>
       {chat.archived && ['true', 'false'].includes(chat.archived) && (
         <DropdownMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</DropdownMenuItem>
       )}
@@ -108,6 +110,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
         <ContextMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</ContextMenuItem>
       )}
       <ContextMenuItem onClick={() => setRenameChat(chat)}>{renameComponent()}</ContextMenuItem>
+      <ContextMenuItem>{tagsComponent()}</ContextMenuItem>
       {chat.archived && ['true', 'false'].includes(chat.archived) && (
         <ContextMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</ContextMenuItem>
       )}
@@ -176,10 +179,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
                   onOpenChange={() => setDropdownOpen(open => (open ? null : chat))}
                 >
                   <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction
-                      showOnHover
-                      className="top-1 z-20 h-6 w-6 bg-white hover:!bg-white"
-                    >
+                    <SidebarMenuAction showOnHover className="top-1 z-20 h-6 w-6 bg-white hover:!bg-white">
                       <Settings2 />
                       <span className="sr-only">More</span>
                     </SidebarMenuAction>
@@ -288,6 +288,15 @@ const archiveComponent = (chat: Chat) => {
           <span>Archive</span>
         </>
       )}
+    </>
+  )
+}
+
+const tagsComponent = () => {
+  return (
+    <>
+      <Tag className="mr-1 text-muted-foreground" />
+      <span>Tags</span>
     </>
   )
 }
