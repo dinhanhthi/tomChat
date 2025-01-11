@@ -161,3 +161,26 @@ export function groupChatsByDates(chats: Chat[] = []): Map<string, Chat[]> {
 
   return groups
 }
+
+export const generatePastelColor = () => {
+  const hue = Math.floor(Math.random() * 360)
+  return `hsl(${hue}, 30%, 80%)`
+}
+
+export function getTagStringColor(tagColor: string): string {
+  const matches = tagColor.match(/\d+/g);
+  if (!matches || matches.length !== 3) {
+    return tagColor;
+  }
+  const [h, s, l] = matches.map(Number);
+  return `hsl(${h}, ${s}%, 50%)`;
+}
+
+export function getTagTextColor(tagColor: string): string {
+  const matches = tagColor.match(/\d+/g);
+  if (!matches || matches.length !== 3) {
+    return tagColor;
+  }
+  const [h, s, l] = matches.map(Number);
+  return `hsl(${h}, ${s}%, 30%)`;
+}

@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { CommandEmpty } from 'cmdk'
-import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTagStore } from '../hooks/useTagStore'
 import { Chat } from '../interface'
 import { updateChatMeta } from '../lib/chats'
-import { Badge } from './ui/badge'
+import { generatePastelColor, getTagStringColor } from '../lib/utils'
+import { TagBadge } from './tag-badge'
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command'
 
 interface TagsDialogProps {
@@ -37,7 +37,7 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
     if (!chat) return
 
     // Save new tags to localStorage
-    const newTags = chatTags.filter(tag => !availableTags.includes(tag))
+    const newTags = chatTags.filter(tag => !availableTags.some(t => t.name === tag))
     if (newTags.length > 0) {
       addTags(newTags)
     }
@@ -51,7 +51,7 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
 
   const showCreateOption =
     inputValue &&
-    !availableTags.some(tag => normalizeString(tag) === normalizeString(inputValue)) &&
+    !availableTags.some(tag => normalizeString(tag.name) === normalizeString(inputValue)) &&
     !chatTags.some(tag => normalizeString(tag) === normalizeString(inputValue))
 
   const handleSelectTag = (tag: string) => {
@@ -89,12 +89,17 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
         <div className="flex flex-col gap-4">
           {chatTags.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {chatTags.map(tag => (
-                <Badge key={tag} variant="secondary" className="flex items-center gap-1 text-sm">
-                  {tag}
-                  <X className="h-3 w-3 cursor-pointer hover:text-primary" onClick={() => handleRemoveTag(tag)} />
-                </Badge>
-              ))}
+              {chatTags.map(tag => {
+                const tagData = availableTags.find(t => t.name === tag)
+                return (
+                  <TagBadge
+                    key={tag}
+                    name={tag}
+                    color={tagData?.color || generatePastelColor()}
+                    onRemove={() => handleRemoveTag(tag)}
+                  />
+                )
+              })}
             </div>
           )}
 
@@ -144,13 +149,21 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
                   {availableTags
                     .filter(
                       tag =>
-                        normalizeString(tag).includes(normalizeString(inputValue)) &&
-                        !chatTags.some(chatTag => normalizeString(chatTag) === normalizeString(tag))
+                        normalizeString(tag.name).includes(normalizeString(inputValue)) &&
+                        !chatTags.some(chatTag => normalizeString(chatTag) === normalizeString(tag.name))
                     )
                     .sort()
                     .map(tag => (
-                      <CommandItem key={tag} onSelect={() => handleSelectTag(tag)}>
-                        {tag}
+                      <CommandItem
+                        key={tag.name}
+                        onSelect={() => handleSelectTag(tag.name)}
+                        className="flex items-center gap-2"
+                      >
+                        <div
+                          className="h-2 w-2 shrink-0 rounded-full"
+                          style={{ backgroundColor: getTagStringColor(tag.color) }}
+                        />
+                        <span>{tag.name}</span>
                       </CommandItem>
                     ))}
                 </CommandGroup>
