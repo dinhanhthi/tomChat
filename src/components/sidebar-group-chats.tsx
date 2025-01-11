@@ -32,6 +32,7 @@ import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import { useAlertDialog } from './dialog-confirm'
 import { RenameDialog } from './dialog-rename'
+import { TagsDialog } from './dialog-tags'
 import { EmojiPickerButton } from './emoji-picker-button'
 import OverflowTooltip from './overflow-tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
@@ -48,6 +49,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
   const [renameChat, setRenameChat] = useState<Chat | null>(null)
   const [emojiPickerChat, setEmojiPickerChat] = useState<Chat | null>(null)
   const [dropdownOpen, setDropdownOpen] = useState<Chat | null>(null)
+  const [tagsChat, setTagsChat] = useState<Chat | null>(null)
 
   const handleRemoveChat = (chat: Chat) => async () => {
     showAlert({
@@ -86,7 +88,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
         <DropdownMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</DropdownMenuItem>
       )}
       <DropdownMenuItem onClick={() => setRenameChat(chat)}>{renameComponent()}</DropdownMenuItem>
-      <DropdownMenuItem>{tagsComponent()}</DropdownMenuItem>
+      <DropdownMenuItem onClick={() => setTagsChat(chat)}>{tagsComponent()}</DropdownMenuItem>
       {chat.archived && ['true', 'false'].includes(chat.archived) && (
         <DropdownMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</DropdownMenuItem>
       )}
@@ -218,6 +220,7 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
         title={renameChat?.title || ''}
         onRename={handleRename}
       />
+      <TagsDialog chat={tagsChat} open={!!tagsChat} onOpenChange={open => !open && setTagsChat(null)} />
     </>
   )
 }

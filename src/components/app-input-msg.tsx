@@ -152,7 +152,9 @@ export default function AppInputMsg(props: {
           </div>
         </form>
         {/* <div className="select-none text-[0.7rem] text-muted-foreground">Usage of this chat: $0.5, tokens: 100.</div> */}
-        <div className='select-none text-xs text-muted-foreground'>AI can make mistakes. Double check important info.</div>
+        <div className="select-none text-xs text-muted-foreground">
+          AI can make mistakes. Double check important info.
+        </div>
       </div>
     </Container>
   )

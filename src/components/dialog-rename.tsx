@@ -33,11 +33,12 @@ export function RenameDialog({ open, onOpenChange, title, onRename }: RenameDial
             <DialogTitle>Rename Chat</DialogTitle>
           </VisuallyHidden.Root>
           <DialogDescription className="text-foreground">
-            Current title: <span className="font-medium">{title}</span>
+            <span className="text-muted-foreground">Another name for </span>{' '}
+            <span className="font-medium">{title}</span>
           </DialogDescription>
         </DialogHeader>
         <Input
-          className="mb-2 rounded-none border-x-0 border-t-0 px-2 pb-0 !text-base"
+          className="mb-2 rounded-none border-x-0 border-t-0 border-dashed pb-0 pl-0 pr-2 !text-base"
           value={newTitle}
           onChange={e => setNewTitle(e.target.value)}
           placeholder="Enter new title"
