@@ -10,7 +10,7 @@ export interface SidebarFilter {
 
 export const useFilterSettings = () => {
   const [settings, setSettings] = useState<SidebarFilter>({
-    showArchived: false, 
+    showArchived: false,
     showByTags: false,
     multipleSelection: false
   })

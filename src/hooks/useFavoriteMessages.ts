@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const FAVORITE_MESSAGES_KEY = 'chat-favorite-messages'
+const FAVORITE_MESSAGES_KEY = 'xchat-favorite-messages'
 
 export const useFavoriteMessages = () => {
   const [favoriteMessageIds, setFavoriteIds] = useState<string[]>([])
