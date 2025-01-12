@@ -4,14 +4,14 @@ import { useEffect, useMemo, useState } from 'react'
 const FILTER_SETTINGS_KEY = 'chat-filter-settings'
 
 export interface SidebarFilter {
-  showArchived?: boolean
+  onlyArchived?: boolean
   showByTags?: boolean
   multipleSelection?: boolean
   showTagIndicators?: boolean
 }
 
 const defaultSettings: SidebarFilter = {
-  showArchived: false,
+  onlyArchived: false,
   showByTags: false,
   multipleSelection: false,
   showTagIndicators: false
@@ -27,7 +27,7 @@ export const useFilterSettings = () => {
         const parsedSettings = JSON.parse(stored)
         // Only pick properties defined in SidebarFilter interface
         const filteredSettings: SidebarFilter = {
-          showArchived: parsedSettings.showArchived ?? defaultSettings.showArchived,
+          onlyArchived: parsedSettings.showArchived ?? defaultSettings.onlyArchived,
           showByTags: parsedSettings.showByTags ?? defaultSettings.showByTags,
           multipleSelection: parsedSettings.multipleSelection ?? defaultSettings.multipleSelection,
           showTagIndicators: parsedSettings.showTagIndicators ?? defaultSettings.showTagIndicators
@@ -42,9 +42,14 @@ export const useFilterSettings = () => {
 
   const updateSettings = (newSettings: Partial<SidebarFilter>) => {
     const updated = { ...settings, ...newSettings }
-    // Only store properties defined in SidebarFilter interface
+    
+    // Force onlyArchived to false when showByTags is enabled
+    if (updated.showByTags) {
+      updated.onlyArchived = false
+    }
+
     const filteredUpdate: SidebarFilter = {
-      showArchived: updated.showArchived,
+      onlyArchived: updated.onlyArchived,
       showByTags: updated.showByTags,
       multipleSelection: updated.multipleSelection,
       showTagIndicators: updated.showTagIndicators

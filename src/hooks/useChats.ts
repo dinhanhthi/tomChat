@@ -1,24 +1,28 @@
 import { db } from '@/db/database'
+import { Collection } from 'dexie'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { SidebarFilter } from './useFilterSettings'
+import { Chat } from '../interface'
 
 export const useChats = ({
-  sidebarFilter,
+  onlyArchived,
   limit,
-  includeArchived = false
+  tagName
 }: {
-  sidebarFilter?: SidebarFilter
+  onlyArchived?: boolean
   limit?: number
-  includeArchived?: boolean
+  tagName?: string
 }) => {
   const chats = useLiveQuery(async () => {
     const chatTable = db.chats
+    let filteredChats: Collection<Chat, string, Chat>
 
-    let filteredChats = sidebarFilter?.showArchived
+    if (tagName) {
+      filteredChats = chatTable.where('tags').anyOfIgnoreCase(tagName)
+    } else {
+      filteredChats = onlyArchived
       ? chatTable.where('archived').equals('true')
-      : includeArchived
-        ? chatTable
-        : chatTable.where('archived').equals('false')
+      : chatTable.where('archived').equals('false')
+    }
 
     if (limit) {
       filteredChats = filteredChats.limit(limit)
@@ -31,7 +35,7 @@ export const useChats = ({
     })
 
     return _chats
-  }, [sidebarFilter])
+  }, [onlyArchived, tagName, limit])
 
   return { chats }
 }

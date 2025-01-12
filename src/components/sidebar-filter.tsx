@@ -30,8 +30,8 @@ export default function FilterButton({ settings, onSettingsChange, isChanged }: 
             </Label>
             <Switch
               id="archived"
-              checked={settings.showArchived}
-              onCheckedChange={checked => onSettingsChange({ showArchived: checked })}
+              checked={settings.onlyArchived}
+              onCheckedChange={checked => onSettingsChange({ onlyArchived: checked })}
             />
           </div>
 

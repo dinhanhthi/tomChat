@@ -25,7 +25,7 @@ export async function toggleChatStatus(id: string, field: 'pinned' | 'archived',
   return await db.chats.update(id, { [field]: value })
 }
 
-export async function updateChatMeta(chatId: string, field: keyof Chat, value: string) {
+export async function updateChatMeta<K extends keyof Chat>(chatId: string, field: K, value: Chat[K]) {
   return await db.chats.update(chatId, { [field]: value })
 }
 
@@ -88,4 +88,22 @@ export async function updateMissingPinnedChats() {
   )
 
   toast.success('Updated missing pinned chats!')
+}
+
+export async function updateTagsProp() {
+  const chatsToUpdate = await db.chats.toArray()
+
+  if (!chatsToUpdate.length) {
+    toast.info('No chats found!')
+    return
+  }
+
+  await db.chats.bulkUpdate(
+    chatsToUpdate.map(chat => ({
+      key: chat.id,
+      changes: { tags: [] }
+    }))
+  )
+
+  toast.success('Updated tags prop!')
 }
