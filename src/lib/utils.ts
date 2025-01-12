@@ -168,19 +168,19 @@ export const generatePastelColor = () => {
 }
 
 export function getTagStringColor(tagColor: string): string {
-  const matches = tagColor.match(/\d+/g);
+  const matches = tagColor.match(/\d+/g)
   if (!matches || matches.length !== 3) {
-    return tagColor;
+    return tagColor
   }
-  const [h, s, l] = matches.map(Number);
-  return `hsl(${h}, ${s}%, 50%)`;
+  const [h, s, l] = matches.map(Number)
+  return `hsl(${h}, ${s}%, 50%)`
 }
 
 export function getTagTextColor(tagColor: string): string {
-  const matches = tagColor.match(/\d+/g);
+  const matches = tagColor.match(/\d+/g)
   if (!matches || matches.length !== 3) {
-    return tagColor;
+    return tagColor
   }
-  const [h, s, l] = matches.map(Number);
-  return `hsl(${h}, ${s}%, 30%)`;
+  const [h, s, l] = matches.map(Number)
+  return `hsl(${h}, ${s}%, 30%)`
 }

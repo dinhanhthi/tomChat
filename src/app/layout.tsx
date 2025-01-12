@@ -1,9 +1,12 @@
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { Inter } from 'next/font/google'
 
 import AppHeader from '../components/app-header'
 import AppSidebar from '../components/app-sidebar'
 import { AlertDialogProvider } from '../components/dialog-confirm'
-import SearchDialog from '../components/search-dialog'
+// Remove this import since we're not using it directly
+// import SearchDialog from '../components/search-dialog'
+import SearchDialogWrapper from '@/components/search-dialog-wrapper'
 import { SidebarProvider } from '../components/ui/sidebar'
 import { Toaster } from '../components/ui/sonner'
 import { cn } from '../lib/utils'
@@ -21,17 +24,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en">
       {/* There is an overflow problem here, cannot find the solution except putting overflow-hidden here! */}
       <body className={cn(inter.className, 'overflow-hidden')}>
-        <AlertDialogProvider>
-          <SidebarProvider>
-            <AppSidebar />
-            <main className="x-flex-1 flex h-svh flex-col bg-background">
-              <AppHeader />
-              <div className="x-flex-1">{children}</div>
-            </main>
-            <SearchDialog />
-          </SidebarProvider>
-        </AlertDialogProvider>
-        <Toaster position="top-center" />
+        <TooltipProvider>
+          <AlertDialogProvider>
+            <SidebarProvider>
+              <AppSidebar />
+              <main className="x-flex-1 flex h-svh flex-col bg-background">
+                <AppHeader />
+                <div className="x-flex-1">{children}</div>
+              </main>
+            </SidebarProvider>
+            <SearchDialogWrapper />
+          </AlertDialogProvider>
+          <Toaster position="top-center" />
+        </TooltipProvider>
       </body>
     </html>
   )

@@ -11,14 +11,14 @@ import { xtoast } from '../lib/xtoast'
 import { RenameDialog } from './dialog-rename'
 import { EmojiPickerButton } from './emoji-picker-button'
 import OverflowTooltip from './overflow-tooltip'
-import { useDialogStore } from './search-dialog'
+import { useSearchDialogStore } from './search-dialog-wrapper'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { SidebarTrigger } from './ui/sidebar'
 
 export default function AppHeader() {
   const router = useRouter()
-  const { setIsOpen } = useDialogStore()
+  const { setIsOpen } = useSearchDialogStore()
   const { id } = useParams()
   const { activeId } = useChatStore()
   const chatId = id || activeId

@@ -18,7 +18,7 @@ const getInitialTags = (): TagData[] => {
   if (typeof window === 'undefined') return []
   const storedTags = localStorage.getItem(TAGS_STORAGE_KEY)
   if (!storedTags) return []
-  
+
   try {
     const parsed = JSON.parse(storedTags)
     if (typeof parsed[0] === 'string') {
@@ -33,7 +33,7 @@ const getInitialTags = (): TagData[] => {
   }
 }
 
-export const useTagStore = create<TagStore>((set) => ({
+export const useTagStore = create<TagStore>(set => ({
   tags: getInitialTags(),
   addTags: (newTags: string[]) =>
     set(state => {
@@ -44,7 +44,7 @@ export const useTagStore = create<TagStore>((set) => ({
           name: tag,
           color: generatePastelColor()
         }))
-      
+
       const updatedTags = [...state.tags, ...newTagData]
       localStorage.setItem(TAGS_STORAGE_KEY, JSON.stringify(updatedTags))
       return { tags: updatedTags }
