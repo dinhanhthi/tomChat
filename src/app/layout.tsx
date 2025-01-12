@@ -4,8 +4,6 @@ import { Inter } from 'next/font/google'
 import AppHeader from '../components/app-header'
 import AppSidebar from '../components/app-sidebar'
 import { AlertDialogProvider } from '../components/dialog-confirm'
-// Remove this import since we're not using it directly
-// import SearchDialog from '../components/search-dialog'
 import SearchDialogWrapper from '@/components/search-dialog-wrapper'
 import { SidebarProvider } from '../components/ui/sidebar'
 import { Toaster } from '../components/ui/sonner'

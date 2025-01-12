@@ -23,11 +23,10 @@ interface SearchDialogProps {
 
 interface SearchContentProps {
   onOpenChange: (open: boolean) => void
-  pathname?: string
 }
 
 // This component only renders when dialog is open
-const SearchContent = ({ onOpenChange, pathname }: SearchContentProps) => {
+const SearchContent = ({ onOpenChange }: SearchContentProps) => {
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
   const [query, setQuery] = useState('')
@@ -35,8 +34,6 @@ const SearchContent = ({ onOpenChange, pathname }: SearchContentProps) => {
   const { searchChats } = useSearchChats(queryToSearch)
   const { chats: recentChats } = useChats({ limit: N_WELCOME_SEARCH_RESULTS })
   const groupedChats = groupChatsByDates(queryToSearch === '' ? recentChats : searchChats)
-
-  /* ###Thi */ console.log(`👉👉👉 searchChats: `, searchChats)
 
   const getLabel = (key: string) => {
     return SPECIAL_HISTORY_LABELS[key] || key
@@ -139,7 +136,7 @@ export default function SearchDialog({ isOpen, onOpenChange }: SearchDialogProps
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogContent
           className={cn(
-            'h-[min(80svh,440px)] max-w-[80%] !p-0 shadow-[0_14px_62px_0_rgba(0,0,0,0.25)] md:min-w-[680px] md:max-w-[680px]',
+            'h-[min(80svh,440px)] max-w-[80%] !p-0 shadow-[0_14px_62px_0_rgba(0,0,0,0.25)] md:min-w-[680px] md:max-w-[680px] border-none overflow-hidden',
             MODAL_RADIUS
           )}
           hideCloseBtn={true}
@@ -148,7 +145,7 @@ export default function SearchDialog({ isOpen, onOpenChange }: SearchDialogProps
             <DialogTitle>Search Chats</DialogTitle>
             <DialogDescription>Search through your chat history</DialogDescription>
           </VisuallyHidden.Root>
-          {isOpen && <SearchContent onOpenChange={onOpenChange} pathname={pathname} />}
+          {isOpen && <SearchContent onOpenChange={onOpenChange} />}
         </DialogContent>
       </Dialog>
     </TooltipProvider>
