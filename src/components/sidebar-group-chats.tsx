@@ -185,28 +185,30 @@ export default function SidebarGroupChats(props: {
                               delayDuration={700}
                             />
                             {settings?.showTagIndicators && chatTags && chatTags?.length > 0 && (
-                              <div className="flex w-full flex-row items-center gap-1.5">
-                                {[...chatTags].sort((a, b) => a.localeCompare(b)).map(tag => {
-                                  const tagData = availableTags?.find(t => t.name === tag)
-                                  return (
-                                    <TooltipProvider key={tag} delayDuration={1}>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <div
-                                            className="h-2 w-3 shrink-0 rounded-full"
-                                            style={{
-                                              backgroundColor: tagData?.color
-                                            }}
-                                          ></div>
-                                        </TooltipTrigger>
-                                        <TooltipContent className="flex flex-nowrap items-center gap-1.5 whitespace-nowrap">
-                                          <Tag className="h-3 w-3" />
-                                          <span>{tag}</span>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  )
-                                })}
+                              <div className="flex w-full flex-row items-center gap-1.5 overflow-hidden hover:overflow-auto [&::-webkit-scrollbar]:hidden">
+                                {[...chatTags]
+                                  .sort((a, b) => a.localeCompare(b))
+                                  .map(tag => {
+                                    const tagData = availableTags?.find(t => t.name === tag)
+                                    return (
+                                      <TooltipProvider key={tag} delayDuration={1}>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <div
+                                              className="h-2 w-3 shrink-0 rounded-full"
+                                              style={{
+                                                backgroundColor: tagData?.color
+                                              }}
+                                            ></div>
+                                          </TooltipTrigger>
+                                          <TooltipContent className="flex flex-nowrap items-center gap-1.5 whitespace-nowrap">
+                                            <Tag className="h-3 w-3" />
+                                            <span>{tag}</span>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                    )
+                                  })}
                               </div>
                             )}
                           </div>

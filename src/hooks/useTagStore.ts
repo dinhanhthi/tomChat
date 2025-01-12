@@ -58,10 +58,8 @@ export const useTagStore = create<TagStore>(set => ({
     }),
   updateTagColor: (tagName: string, color: string) =>
     set(state => {
-      const updatedTags = state.tags.map(tag => 
-        tag.name === tagName ? { ...tag, color } : tag
-      )
+      const updatedTags = state.tags.map(tag => (tag.name === tagName ? { ...tag, color } : tag))
       localStorage.setItem(TAGS_STORAGE_KEY, JSON.stringify(updatedTags))
       return { tags: updatedTags }
-    }),
+    })
 }))
