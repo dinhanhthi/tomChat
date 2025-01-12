@@ -60,6 +60,18 @@ export default function AppSidebar() {
 
       <SidebarSeparator />
 
+      {settings.showArchived && (
+        <>
+          <div className="select-none px-4 py-2 text-xs text-muted-foreground">
+            Only archived chats are shown.{' '}
+            <Button variant={'link'} className='text-xs' onClick={() => updateSettings({ showArchived: false })}>
+              Reset
+            </Button>.
+          </div>
+          <SidebarSeparator />
+        </>
+      )}
+
       <SidebarContent>
         {!isLoading && (
           <>
