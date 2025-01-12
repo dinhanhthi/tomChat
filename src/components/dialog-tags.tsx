@@ -18,11 +18,11 @@ interface TagsDialogProps {
 export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
   const [chatTags, setChatTags] = useState<string[]>([])
   const [inputValue, setInputValue] = useState('')
+  const [newTagColors, setNewTagColors] = useState<Record<string, string>>({})
   const { tags: availableTags, addTags } = useTagStore()
 
   useEffect(() => {
     if (chat && open) {
-      // Parse tags from JSON string or use empty array if undefined/invalid
       try {
         const parsedTags = chat.tags ? JSON.parse(chat.tags as unknown as string) : []
         setChatTags(Array.isArray(parsedTags) ? parsedTags : [])
@@ -36,13 +36,11 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
   const handleSave = async () => {
     if (!chat) return
 
-    // Save new tags to localStorage
     const newTags = chatTags.filter(tag => !availableTags.some(t => t.name === tag))
     if (newTags.length > 0) {
       addTags(newTags)
     }
 
-    // Update chat tags
     await updateChatMeta(chat.id, 'tags', JSON.stringify(chatTags))
     onOpenChange(false)
   }
@@ -56,7 +54,14 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
 
   const handleSelectTag = (tag: string) => {
     if (!chatTags.some(t => normalizeString(t) === normalizeString(tag))) {
-      setChatTags([...chatTags, tag.trim()])
+      const trimmedTag = tag.trim()
+      if (!availableTags.some(t => t.name === trimmedTag) && !newTagColors[trimmedTag]) {
+        setNewTagColors(prev => ({
+          ...prev,
+          [trimmedTag]: generatePastelColor()
+        }))
+      }
+      setChatTags([...chatTags, trimmedTag])
     }
     setInputValue('')
   }
@@ -71,7 +76,14 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
       inputValue &&
       !chatTags.some(tag => normalizeString(tag) === normalizeString(inputValue))
     ) {
-      setChatTags([...chatTags, inputValue.trim()])
+      const trimmedTag = inputValue.trim()
+      if (!availableTags.some(t => t.name === trimmedTag) && !newTagColors[trimmedTag]) {
+        setNewTagColors(prev => ({
+          ...prev,
+          [trimmedTag]: generatePastelColor()
+        }))
+      }
+      setChatTags([...chatTags, trimmedTag])
       setInputValue('')
     }
   }
@@ -95,7 +107,7 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
                   <TagBadge
                     key={tag}
                     name={tag}
-                    color={tagData?.color || generatePastelColor()}
+                    color={tagData?.color || newTagColors[tag] || generatePastelColor()}
                     onRemove={() => handleRemoveTag(tag)}
                   />
                 )
