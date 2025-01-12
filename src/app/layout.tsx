@@ -1,10 +1,10 @@
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Inter } from 'next/font/google'
 
+import SearchDialogWrapper from '@/components/search-dialog-wrapper'
 import AppHeader from '../components/app-header'
 import AppSidebar from '../components/app-sidebar'
 import { AlertDialogProvider } from '../components/dialog-confirm'
-import SearchDialogWrapper from '@/components/search-dialog-wrapper'
 import { SidebarProvider } from '../components/ui/sidebar'
 import { Toaster } from '../components/ui/sonner'
 import { cn } from '../lib/utils'

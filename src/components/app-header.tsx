@@ -7,6 +7,7 @@ import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
 import { Chat } from '../interface'
 import { updateChatMeta } from '../lib/chats'
+import { getOperatingSystem } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import { RenameDialog } from './dialog-rename'
 import { EmojiPickerButton } from './emoji-picker-button'
@@ -15,7 +16,6 @@ import { useSearchDialogStore } from './search-dialog-wrapper'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { SidebarTrigger } from './ui/sidebar'
-import { getOperatingSystem } from '../lib/utils'
 
 export default function AppHeader() {
   const router = useRouter()

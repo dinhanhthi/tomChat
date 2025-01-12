@@ -30,7 +30,7 @@ import { SidebarFilter } from '../hooks/useFilterSettings'
 import { TagData } from '../hooks/useTagStore'
 import { Chat } from '../interface'
 import { removeChat, toggleChatStatus, updateChatMeta } from '../lib/chats'
-import { cn, getTagStringColor } from '../lib/utils'
+import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import { useAlertDialog } from './dialog-confirm'
 import { RenameDialog } from './dialog-rename'
@@ -195,12 +195,12 @@ export default function SidebarGroupChats(props: {
                                           <div
                                             className="h-2 w-3 shrink-0 rounded-full"
                                             style={{
-                                              backgroundColor: getTagStringColor(tagData?.color)
+                                              backgroundColor: tagData?.color
                                             }}
                                           ></div>
                                         </TooltipTrigger>
-                                        <TooltipContent className='flex items-center gap-1.5 flex-nowrap whitespace-nowrap'>
-                                          <Tag className='h-3 w-3' />
+                                        <TooltipContent className="flex flex-nowrap items-center gap-1.5 whitespace-nowrap">
+                                          <Tag className="h-3 w-3" />
                                           <span>{tag}</span>
                                         </TooltipContent>
                                       </Tooltip>

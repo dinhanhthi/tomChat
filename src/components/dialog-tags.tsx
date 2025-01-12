@@ -5,8 +5,9 @@ import { useEffect, useState } from 'react'
 import { useTagStore } from '../hooks/useTagStore'
 import { Chat } from '../interface'
 import { updateChatMeta } from '../lib/chats'
-import { generatePastelColor, getTagStringColor } from '../lib/utils'
+import { generatePastelColor } from '../lib/utils'
 import { TagBadge } from './tag-badge'
+import { TagItem } from './tag-item'
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command'
 
 interface TagsDialogProps {
@@ -18,11 +19,20 @@ interface TagsDialogProps {
 export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
   const [chatTags, setChatTags] = useState<string[]>([])
   const [inputValue, setInputValue] = useState('')
-  const { tags: availableTags, addTags } = useTagStore()
+  const [newTagColors, setNewTagColors] = useState<Record<string, string>>({})
+  const { tags: availableTags, addTags, updateTagColor } = useTagStore()
+  const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [colorPickerOpen, setColorPickerOpen] = useState(false)
+
+  const handlePopoverOpenChange = (open: boolean) => {
+    setColorPickerOpen(open)
+    if (!open) {
+      setSelectedTag(null)
+    }
+  }
 
   useEffect(() => {
     if (chat && open) {
-      // Parse tags from JSON string or use empty array if undefined/invalid
       try {
         const parsedTags = chat.tags ? JSON.parse(chat.tags as unknown as string) : []
         setChatTags(Array.isArray(parsedTags) ? parsedTags : [])
@@ -36,13 +46,11 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
   const handleSave = async () => {
     if (!chat) return
 
-    // Save new tags to localStorage
     const newTags = chatTags.filter(tag => !availableTags.some(t => t.name === tag))
     if (newTags.length > 0) {
       addTags(newTags)
     }
 
-    // Update chat tags
     await updateChatMeta(chat.id, 'tags', JSON.stringify(chatTags))
     onOpenChange(false)
   }
@@ -56,7 +64,14 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
 
   const handleSelectTag = (tag: string) => {
     if (!chatTags.some(t => normalizeString(t) === normalizeString(tag))) {
-      setChatTags([...chatTags, tag.trim()])
+      const trimmedTag = tag.trim()
+      if (!availableTags.some(t => t.name === trimmedTag) && !newTagColors[trimmedTag]) {
+        setNewTagColors(prev => ({
+          ...prev,
+          [trimmedTag]: generatePastelColor()
+        }))
+      }
+      setChatTags([...chatTags, trimmedTag])
     }
     setInputValue('')
   }
@@ -71,9 +86,37 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
       inputValue &&
       !chatTags.some(tag => normalizeString(tag) === normalizeString(inputValue))
     ) {
-      setChatTags([...chatTags, inputValue.trim()])
+      const trimmedTag = inputValue.trim()
+      if (!availableTags.some(t => t.name === trimmedTag) && !newTagColors[trimmedTag]) {
+        setNewTagColors(prev => ({
+          ...prev,
+          [trimmedTag]: generatePastelColor()
+        }))
+      }
+      setChatTags([...chatTags, trimmedTag])
       setInputValue('')
     }
+  }
+
+  const handleColorChange = (color: string) => {
+    if (!selectedTag) return
+
+    const existingTag = availableTags.find(t => t.name === selectedTag)
+    if (existingTag) {
+      updateTagColor(selectedTag, color)
+    } else {
+      setNewTagColors(prev => ({
+        ...prev,
+        [selectedTag]: color
+      }))
+    }
+  }
+
+  const handlePopoverTriggerClick = (e: React.MouseEvent, tagName: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setSelectedTag(tagName)
+    setColorPickerOpen(true)
   }
 
   return (
@@ -95,7 +138,7 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
                   <TagBadge
                     key={tag}
                     name={tag}
-                    color={tagData?.color || generatePastelColor()}
+                    color={tagData?.color || newTagColors[tag] || generatePastelColor()}
                     onRemove={() => handleRemoveTag(tag)}
                   />
                 )
@@ -154,18 +197,47 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
                     )
                     .sort()
                     .map(tag => (
-                      <CommandItem
+                      <TagItem
                         key={tag.name}
-                        onSelect={() => handleSelectTag(tag.name)}
-                        className="flex items-center gap-2"
-                      >
-                        <div
-                          className="h-2 w-2 shrink-0 rounded-full"
-                          style={{ backgroundColor: getTagStringColor(tag.color) }}
-                        />
-                        <span>{tag.name}</span>
-                      </CommandItem>
+                        name={tag.name}
+                        color={tag.color}
+                        isSelected={selectedTag === tag.name}
+                        colorPickerOpen={colorPickerOpen}
+                        onSelect={() => {
+                          setSelectedTag(tag.name)
+                          setColorPickerOpen(true)
+                        }}
+                        onColorChange={handleColorChange}
+                        onPopoverOpenChange={handlePopoverOpenChange}
+                        onTagSelect={() => handleSelectTag(tag.name)}
+                      />
                     ))}
+                </CommandGroup>
+              )}
+
+              {chatTags.length > 0 && (
+                <CommandGroup heading={`Assigned Tags (${chatTags.length})`}>
+                  {chatTags.map(tag => {
+                    const tagData = availableTags.find(t => t.name === tag)
+                    const tagColor = tagData?.color ? tagData.color : newTagColors[tag] || generatePastelColor()
+
+                    return (
+                      <TagItem
+                        key={tag}
+                        name={tag}
+                        color={tagColor}
+                        isSelected={selectedTag === tag}
+                        colorPickerOpen={colorPickerOpen}
+                        onSelect={() => {
+                          setSelectedTag(tag)
+                          setColorPickerOpen(true)
+                        }}
+                        onColorChange={handleColorChange}
+                        onPopoverOpenChange={handlePopoverOpenChange}
+                        onTagSelect={() => handleRemoveTag(tag)}
+                      />
+                    )
+                  })}
                 </CommandGroup>
               )}
             </CommandList>
