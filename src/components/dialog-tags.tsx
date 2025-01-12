@@ -23,11 +23,13 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
   const { tags: availableTags, addTags, updateTagColor } = useTagStore()
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [colorPickerOpen, setColorPickerOpen] = useState(false)
+  const [tempTagColors, setTempTagColors] = useState<Record<string, string>>({})
 
   const handlePopoverOpenChange = (open: boolean) => {
     setColorPickerOpen(open)
     if (!open) {
       setSelectedTag(null)
+      setTempTagColors({})
     }
   }
 
@@ -98,8 +100,23 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
     }
   }
 
-  const handleColorChange = (color: string) => {
+  const handleColorChange = (color: string, isTemporary: boolean = false) => {
     if (!selectedTag) return
+
+    if (isTemporary) {
+      setTempTagColors(prev => ({
+        ...prev,
+        [selectedTag]: color
+      }))
+      return
+    }
+
+    // Reset temporary colors when making permanent changes
+    setTempTagColors(prev => {
+      const newColors = { ...prev }
+      delete newColors[selectedTag]
+      return newColors
+    })
 
     const existingTag = availableTags.find(t => t.name === selectedTag)
     if (existingTag) {
@@ -110,13 +127,6 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
         [selectedTag]: color
       }))
     }
-  }
-
-  const handlePopoverTriggerClick = (e: React.MouseEvent, tagName: string) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setSelectedTag(tagName)
-    setColorPickerOpen(true)
   }
 
   return (
@@ -134,14 +144,8 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
             <div className="flex flex-wrap gap-2">
               {chatTags.map(tag => {
                 const tagData = availableTags.find(t => t.name === tag)
-                return (
-                  <TagBadge
-                    key={tag}
-                    name={tag}
-                    color={tagData?.color || newTagColors[tag] || generatePastelColor()}
-                    onRemove={() => handleRemoveTag(tag)}
-                  />
-                )
+                const finalColor = tempTagColors[tag] || tagData?.color || newTagColors[tag] || generatePastelColor()
+                return <TagBadge key={tag} name={tag} color={finalColor} onRemove={() => handleRemoveTag(tag)} />
               })}
             </div>
           )}

@@ -207,18 +207,6 @@ function hexToRgb(hex: string): RGB {
   }
 }
 
-function rgbToHex(rgb: RGB): string {
-  return (
-    '#' +
-    [rgb.r, rgb.g, rgb.b]
-      .map(x => {
-        const hex = x.toString(16)
-        return hex.length === 1 ? '0' + hex : hex
-      })
-      .join('')
-  )
-}
-
 function hexToRgba(color: string, opacity: number = 0.1): string {
   const rgb = hexToRgb(color)
   return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`

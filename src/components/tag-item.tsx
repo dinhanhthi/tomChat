@@ -11,7 +11,7 @@ interface TagItemProps {
   isSelected: boolean
   colorPickerOpen: boolean
   onSelect: () => void
-  onColorChange: (color: string) => void
+  onColorChange: (color: string, isTemporary?: boolean) => void // Updated type
   onPopoverOpenChange: (open: boolean) => void
   onTagSelect: () => void
 }
@@ -31,16 +31,17 @@ export function TagItem({
 
   const handleColorPreview = (newColor: string) => {
     setTempColor(newColor)
+    onColorChange(newColor, true) // Pass true to indicate this is a temporary change
   }
 
   const handleAcceptColor = () => {
-    onColorChange(tempColor)
+    onColorChange(tempColor, false) // Pass false to indicate this is a permanent change
     onPopoverOpenChange(false)
   }
 
   const handleCancel = () => {
     setTempColor(originalColor)
-    onColorChange(originalColor)
+    onColorChange(originalColor, false)
     onPopoverOpenChange(false)
   }
 
@@ -90,10 +91,10 @@ export function TagItem({
         >
           <HexColorPicker color={tempColor} onChange={handleColorPreview} />
           <div className="mt-1 flex justify-between gap-4">
-            <Button className='px-3 h-7 text-xs rounded-2xl' variant="outline" size="sm" onClick={handleCancel}>
+            <Button className="h-7 rounded-2xl px-3 text-xs" variant="outline" size="sm" onClick={handleCancel}>
               Cancel
             </Button>
-            <Button className='px-4 h-7 text-xs rounded-2xl' size="sm" onClick={handleAcceptColor}>
+            <Button className="h-7 rounded-2xl px-4 text-xs" size="sm" onClick={handleAcceptColor}>
               OK
             </Button>
           </div>
