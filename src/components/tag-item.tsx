@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { CommandItem } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { MoreHorizontal, Trash2 } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { useAlertDialog } from './dialog-confirm'
 
