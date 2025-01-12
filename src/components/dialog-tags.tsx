@@ -236,7 +236,7 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
                         normalizeString(tag.name).includes(normalizeString(inputValue)) &&
                         !chatTags.some(chatTag => normalizeString(chatTag) === normalizeString(tag.name))
                     )
-                    .sort()
+                    .sort((a, b) => a.name.localeCompare(b.name))
                     .map(tag => {
                       const currentColor = confirmedColorChanges[tag.name] || tag.color
                       return (
@@ -263,31 +263,33 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
 
               {chatTags.length > 0 && (
                 <CommandGroup heading={`Assigned Tags (${chatTags.length})`}>
-                  {chatTags.map(tag => {
-                    const tagData = availableTags.find(t => t.name === tag)
-                    const tagColor =
-                      confirmedColorChanges[tag] ||
-                      (tagData?.color ? tagData.color : newTagColors[tag] || generatePastelColor())
+                  {chatTags
+                    .sort((a, b) => a.localeCompare(b))
+                    .map(tag => {
+                      const tagData = availableTags.find(t => t.name === tag)
+                      const tagColor =
+                        confirmedColorChanges[tag] ||
+                        (tagData?.color ? tagData.color : newTagColors[tag] || generatePastelColor())
 
-                    return (
-                      <TagItem
-                        key={tag}
-                        name={tag}
-                        color={tagColor}
-                        isSelected={selectedTag === tag}
-                        colorPickerOpen={colorPickerOpen}
-                        onSelect={() => {
-                          setSelectedTag(tag)
-                          setColorPickerOpen(true)
-                        }}
-                        onColorChange={handleColorChange}
-                        onPopoverOpenChange={handlePopoverOpenChange}
-                        onTagSelect={() => handleRemoveTag(tag)}
-                        showRemove={true}
-                        onRemove={() => handleRemoveFromDatabase(tag)}
-                      />
-                    )
-                  })}
+                      return (
+                        <TagItem
+                          key={tag}
+                          name={tag}
+                          color={tagColor}
+                          isSelected={selectedTag === tag}
+                          colorPickerOpen={colorPickerOpen}
+                          onSelect={() => {
+                            setSelectedTag(tag)
+                            setColorPickerOpen(true)
+                          }}
+                          onColorChange={handleColorChange}
+                          onPopoverOpenChange={handlePopoverOpenChange}
+                          onTagSelect={() => handleRemoveTag(tag)}
+                          showRemove={true}
+                          onRemove={() => handleRemoveFromDatabase(tag)}
+                        />
+                      )
+                    })}
                 </CommandGroup>
               )}
             </CommandList>
