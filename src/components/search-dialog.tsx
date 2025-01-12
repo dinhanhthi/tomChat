@@ -136,7 +136,7 @@ export default function SearchDialog({ isOpen, onOpenChange }: SearchDialogProps
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogContent
           className={cn(
-            'h-[min(80svh,440px)] max-w-[80%] !p-0 shadow-[0_14px_62px_0_rgba(0,0,0,0.25)] md:min-w-[680px] md:max-w-[680px] border-none overflow-hidden',
+            'h-[min(80svh,440px)] max-w-[80%] overflow-hidden border-none !p-0 shadow-[0_14px_62px_0_rgba(0,0,0,0.25)] md:min-w-[680px] md:max-w-[680px]',
             MODAL_RADIUS
           )}
           hideCloseBtn={true}

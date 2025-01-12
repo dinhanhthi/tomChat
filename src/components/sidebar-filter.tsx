@@ -15,11 +15,9 @@ export default function FilterButton({ settings, onSettingsChange, isChanged }: 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className='relative' inSidebar variant="ghost" size="iconBig">
+        <Button className="relative" inSidebar variant="ghost" size="iconBig">
           <ListFilter />
-          {isChanged && (
-            <div className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full bg-primary"></div>
-          )}
+          {isChanged && <div className="absolute bottom-2 right-2 h-1.5 w-1.5 rounded-full bg-primary"></div>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-64 p-1" align="start">
