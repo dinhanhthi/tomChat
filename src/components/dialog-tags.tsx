@@ -145,7 +145,7 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
               )}
 
               {availableTags.length > 0 && (
-                <CommandGroup heading="Available Tags">
+                <CommandGroup heading={`Available Tags (${availableTags.length})`}>
                   {availableTags
                     .filter(
                       tag =>

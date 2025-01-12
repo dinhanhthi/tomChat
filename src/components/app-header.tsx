@@ -1,8 +1,8 @@
 'use client'
 
-import { CircleUserRound, Edit, MessageSquareShare, Pencil, Search } from 'lucide-react'
+import { CircleUserRound, Edit, MessageSquareShare, Pencil, Search, SlidersHorizontal } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
 import { Chat } from '../interface'
@@ -15,6 +15,7 @@ import { useSearchDialogStore } from './search-dialog-wrapper'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { SidebarTrigger } from './ui/sidebar'
+import { getOperatingSystem } from '../lib/utils'
 
 export default function AppHeader() {
   const router = useRouter()
@@ -46,13 +47,27 @@ export default function AppHeader() {
     setEmojiOpen(!emojiOpen)
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setIsOpen(true)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [setIsOpen])
+
+  const isMac = getOperatingSystem() === 'mac'
+
   return (
     <>
       <header className="flex h-14 w-full shrink-0 flex-row items-center justify-between border-b border-slate-200 pl-2 pr-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
         <div className="x-flex-1 group flex items-center gap-2">
           <div className="flex items-center">
             <SidebarTrigger
-              tooltip="Toggle sidebar (⌘+B)"
+              tooltip={`Toggle sidebar (${isMac ? '⌘' : 'Ctrl'}+B)`}
               tooltipPosition="bottom"
               className="group-data-[collapsible=icon]:opacity-0"
             />
@@ -101,12 +116,12 @@ export default function AppHeader() {
           )}
           {!chatTitle && <div className="x-flex-1 text-center font-medium text-gray-700">Add a new chat</div>}
         </div>
-        <div className="flex flex-row items-center gap-2">
+        <div className="flex flex-row items-center gap-1">
           <Button
             onClick={() => setIsOpen(true)}
             variant="ghost"
             size="iconBig"
-            tooltip="Search chat (⌘+K)"
+            tooltip={`Search chat (${isMac ? '⌘' : 'Ctrl'}+K)`}
             tooltipPosition="bottom"
           >
             <Search />
@@ -114,9 +129,9 @@ export default function AppHeader() {
           <Button variant="ghost" size="iconBig" tooltip="Share this chat" tooltipPosition="bottom">
             <MessageSquareShare />
           </Button>
-          {/* <Button variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
-        <SlidersHorizontal />
-      </Button> */}
+          <Button variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
+            <SlidersHorizontal />
+          </Button>
           <Button variant="ghost" size="iconBig" tooltip="Profile" tooltipPosition="bottom">
             <CircleUserRound />
           </Button>

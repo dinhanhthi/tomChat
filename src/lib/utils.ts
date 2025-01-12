@@ -186,3 +186,22 @@ export function getTagTextColor(tagColor?: string): string {
   const [h, s, l] = matches.map(Number)
   return `hsl(${h}, ${s}%, 30%)`
 }
+
+export function getOperatingSystem(): 'windows' | 'mac' | 'linux' | 'unknown' {
+  if (typeof window === 'undefined') return 'unknown'
+  
+  const platform = (navigator as any).userAgentData?.platform || navigator.platform
+  const userAgent = navigator.userAgent.toLowerCase()
+
+  if (platform.toLowerCase().includes('mac') || /mac|iphone|ipod|ipad/.test(userAgent)) {
+    return 'mac'
+  }
+  if (platform.toLowerCase().includes('win') || /win/.test(userAgent)) {
+    return 'windows'
+  }
+  if (/linux/.test(platform.toLowerCase()) || /linux/.test(userAgent)) {
+    return 'linux'
+  }
+  
+  return 'unknown'
+}
