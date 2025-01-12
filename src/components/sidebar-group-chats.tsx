@@ -38,8 +38,8 @@ import { TagsDialog } from './dialog-tags'
 import { EmojiPickerButton } from './emoji-picker-button'
 import OverflowTooltip from './overflow-tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
-import SimpleTooltip from './ui/simple-tooltip'
 import { Skeleton } from './ui/skeleton'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip'
 
 export default function SidebarGroupChats(props: {
   label: string
@@ -189,14 +189,22 @@ export default function SidebarGroupChats(props: {
                                 {chatTags.map(tag => {
                                   const tagData = availableTags?.find(t => t.name === tag)
                                   return (
-                                    <SimpleTooltip key={tag} text={`Tag: ${tag}`}>
-                                      <div
-                                        className="h-2 w-4 shrink-0 rounded-lg"
-                                        style={{
-                                          backgroundColor: getTagStringColor(tagData?.color)
-                                        }}
-                                      ></div>
-                                    </SimpleTooltip>
+                                    <TooltipProvider delayDuration={1}>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <div
+                                            className="h-2 w-4 shrink-0 rounded-lg"
+                                            style={{
+                                              backgroundColor: getTagStringColor(tagData?.color)
+                                            }}
+                                          ></div>
+                                        </TooltipTrigger>
+                                        <TooltipContent className='flex items-center gap-1.5 flex-nowrap whitespace-nowrap'>
+                                          <Tag className='h-3 w-3' />
+                                          <span>{tag}</span>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
                                   )
                                 })}
                               </div>
