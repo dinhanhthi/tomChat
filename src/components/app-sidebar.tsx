@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChats } from '../hooks/useChats'
 import { useFilterSettings } from '../hooks/useFilterSettings'
+import { useTagStore } from '../hooks/useTagStore'
 import { groupChatsByDates } from '../lib/utils'
 import XChatBrand from './brand'
 import FilterButton from './sidebar-filter'
@@ -25,8 +26,7 @@ export default function AppSidebar() {
   const [isLoading, setIsLoading] = useState(true)
   const { settings, updateSettings } = useFilterSettings()
   const { chats } = useChats({ sidebarFilter: settings })
-
-  /* ###Thi */ console.log(`👉👉👉 chats: `, chats)
+  const { tags: availableTags } = useTagStore()
 
   useEffect(() => {
     if (chats) {
@@ -63,10 +63,26 @@ export default function AppSidebar() {
       <SidebarContent>
         {!isLoading && (
           <>
-            {!!pinnedChats.length && <SidebarGroupChats label="Pinned Chats" chats={pinnedChats} />}
+            {!!pinnedChats.length && (
+              <SidebarGroupChats
+                availableTags={availableTags}
+                settings={settings}
+                label="Pinned Chats"
+                chats={pinnedChats}
+              />
+            )}
 
             {Array.from(groupedChats).map(
-              ([key, chts]) => chts.length > 0 && <SidebarGroupChats key={key} label={getLabel(key)} chats={chts} />
+              ([key, chts]) =>
+                chts.length > 0 && (
+                  <SidebarGroupChats
+                    settings={settings}
+                    availableTags={availableTags}
+                    key={key}
+                    label={getLabel(key)}
+                    chats={chts}
+                  />
+                )
             )}
 
             {!chats?.length && (
