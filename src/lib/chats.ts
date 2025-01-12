@@ -25,7 +25,7 @@ export async function toggleChatStatus(id: string, field: 'pinned' | 'archived',
   return await db.chats.update(id, { [field]: value })
 }
 
-export async function updateChatMeta(chatId: string, field: keyof Chat, value: string) {
+export async function updateChatMeta<K extends keyof Chat>(chatId: string, field: K, value: Chat[K]) {
   return await db.chats.update(chatId, { [field]: value })
 }
 

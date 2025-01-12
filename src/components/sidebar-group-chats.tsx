@@ -149,11 +149,7 @@ export default function SidebarGroupChats(props: {
           <SidebarGroupLabel className="sticky top-0 z-20 bg-sidebar text-sidebar-primary">{label}</SidebarGroupLabel>
           <SidebarMenu className="gap-1">
             {chats.map((chat, index) => {
-              const chatTags: string[] = chat.tags
-                ? typeof chat.tags === 'string'
-                  ? JSON.parse(chat.tags)
-                  : chat.tags
-                : []
+              const chatTags: string[] = chat.tags ?? []
               return (
                 <SidebarMenuItem key={index}>
                   <ContextMenu>

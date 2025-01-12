@@ -25,7 +25,10 @@ export default function AppSidebar() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const { settings, updateSettings, isChanged } = useFilterSettings()
-  const { chats } = useChats({ sidebarFilter: settings })
+  const { chats } = useChats({
+    onlyArchived: settings.onlyArchived,
+    tagName: settings.showByTags ? 'dinhanhthi' : undefined
+  })
   const { tags: availableTags } = useTagStore()
 
   useEffect(() => {
@@ -60,11 +63,11 @@ export default function AppSidebar() {
 
       <SidebarSeparator />
 
-      {settings.showArchived && (
+      {settings.onlyArchived && (
         <>
           <div className="select-none px-4 py-2 text-xs text-muted-foreground">
             Only archived chats are shown.{' '}
-            <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ showArchived: false })}>
+            <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ onlyArchived: false })}>
               Reset
             </Button>
             .

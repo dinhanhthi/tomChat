@@ -87,7 +87,7 @@ export default function AppHeader() {
           {chatTitle && (
             <>
               <Separator orientation="vertical" className="mr-2 h-4" />
-              <div className="x-flex-1 flex items-center gap-2 truncate pr-4 text-[1.05rem]">
+              <div className="x-flex-1 flex items-center gap-2 truncate pl-1 pr-4 text-[1.05rem]">
                 {chat?.icon && (
                   <EmojiPickerButton
                     size="lg"

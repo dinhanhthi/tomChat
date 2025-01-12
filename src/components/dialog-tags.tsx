@@ -37,7 +37,7 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
   useEffect(() => {
     if (chat && open) {
       try {
-        const parsedTags = chat.tags ? JSON.parse(chat.tags as unknown as string) : []
+        const parsedTags = chat.tags ?? []
         setChatTags(Array.isArray(parsedTags) ? parsedTags : [])
       } catch (e) {
         console.warn('Failed to parse chat tags:', e)
@@ -70,7 +70,7 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
       }
     })
 
-    await updateChatMeta(chat.id, 'tags', JSON.stringify(chatTags))
+    await updateChatMeta(chat.id, 'tags', chatTags)
     setTempTagColors({})
     setConfirmedColorChanges({})
     onOpenChange(false)
@@ -189,8 +189,8 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
             <CommandList>
               <CommandEmpty>
                 {/*
-                    There is an error when we type space, the real create new tag item disappears and empty section shows up instead. this div is a fake only shown when a space is typed.
-                  */}
+                  There is an error when we type space, the real create new tag item disappears and empty section shows up instead. this div is a fake only shown when a space is typed.
+                */}
                 <div className="p-1 text-foreground">
                   <div className="group">
                     <div
