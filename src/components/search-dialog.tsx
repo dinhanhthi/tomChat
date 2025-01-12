@@ -85,13 +85,13 @@ const SearchContent = ({ onOpenChange }: SearchContentProps) => {
       <Command.List className="min-h-0 flex-1 overflow-y-auto">
         <Command.Empty className="px-4 py-2 text-sm text-slate-500">No chat found!</Command.Empty>
         {Array.from(groupedChats).map(
-          ([key, chts]) =>
-            chts.length > 0 && (
+          ([key, chats]) =>
+            chats.length > 0 && (
               <Command.Group key={key} heading={getLabel(key)} className="p-2 text-xs">
-                {chts.map(chat => (
+                {chats.map(chat => (
                   <Command.Item
                     key={chat.id}
-                    value={chat.title}
+                    value={chat.id}
                     className="group mb-1 flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground"
                     onSelect={() => handleItemClick(chat.id)}
                     onClick={() => handleItemClick(chat.id)}

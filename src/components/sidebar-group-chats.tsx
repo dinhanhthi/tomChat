@@ -193,7 +193,7 @@ export default function SidebarGroupChats(props: {
                                       <Tooltip>
                                         <TooltipTrigger asChild>
                                           <div
-                                            className="h-2 w-4 shrink-0 rounded-lg"
+                                            className="h-2 w-3 shrink-0 rounded-full"
                                             style={{
                                               backgroundColor: getTagStringColor(tagData?.color)
                                             }}
