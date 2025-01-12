@@ -120,7 +120,7 @@ export default function SidebarGroupChats(props: {
         <ContextMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</ContextMenuItem>
       )}
       <ContextMenuItem onClick={() => setRenameChat(chat)}>{renameComponent()}</ContextMenuItem>
-      <ContextMenuItem>{tagsComponent()}</ContextMenuItem>
+      <ContextMenuItem onClick={() => setTagsChat(chat)}>{tagsComponent()}</ContextMenuItem>
       {chat.archived && ['true', 'false'].includes(chat.archived) && (
         <ContextMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</ContextMenuItem>
       )}
