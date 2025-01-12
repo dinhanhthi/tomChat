@@ -89,3 +89,21 @@ export async function updateMissingPinnedChats() {
 
   toast.success('Updated missing pinned chats!')
 }
+
+export async function updateTagsProp() {
+  const chatsToUpdate = await db.chats.toArray()
+
+  if (!chatsToUpdate.length) {
+    toast.info('No chats found!')
+    return
+  }
+
+  await db.chats.bulkUpdate(
+    chatsToUpdate.map(chat => ({
+      key: chat.id,
+      changes: { tags: [] }
+    }))
+  )
+
+  toast.success('Updated tags prop!')
+}
