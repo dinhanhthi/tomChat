@@ -58,7 +58,11 @@ export function TagItem({
   const handlePopoverTriggerClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    onSelect()
+    if (colorPickerOpen && isSelected) {
+      onPopoverOpenChange(false)
+    } else {
+      onSelect()
+    }
   }
 
   const handlePopoverOpenChange = (open: boolean) => {
