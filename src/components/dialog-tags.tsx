@@ -21,7 +21,7 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
   const [inputValue, setInputValue] = useState('')
   const [newTagColors, setNewTagColors] = useState<Record<string, string>>({})
   const [tempTagColors, setTempTagColors] = useState<Record<string, string>>({})
-  const { tags: availableTags, addTags, updateTagColor } = useTagStore()
+  const { tags: availableTags, addTags, updateTagColor, removeTag } = useTagStore()
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [colorPickerOpen, setColorPickerOpen] = useState(false)
   const [confirmedColorChanges, setConfirmedColorChanges] = useState<Record<string, string>>({})
@@ -52,11 +52,14 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
     // Save new tags with their colors
     const newTags = chatTags.filter(tag => !availableTags.some(t => t.name === tag))
     if (newTags.length > 0) {
-      const newTagsWithColors = newTags.reduce((acc, tag) => ({
-        ...acc,
-        [tag]: confirmedColorChanges[tag] || newTagColors[tag] || generatePastelColor()
-      }), {} as Record<string, string>)
-      
+      const newTagsWithColors = newTags.reduce(
+        (acc, tag) => ({
+          ...acc,
+          [tag]: confirmedColorChanges[tag] || newTagColors[tag] || generatePastelColor()
+        }),
+        {} as Record<string, string>
+      )
+
       addTags(newTags, newTagsWithColors)
     }
 
@@ -142,6 +145,14 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
     onOpenChange(false)
   }
 
+  const handleRemoveFromDatabase = (tagName: string) => {
+    removeTag(tagName)
+    // Also remove from current chat if it's assigned
+    if (chatTags.includes(tagName)) {
+      handleRemoveTag(tagName)
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]" hideCloseBtn={true}>
@@ -157,7 +168,12 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
             <div className="flex flex-wrap gap-2">
               {chatTags.map(tag => {
                 const tagData = availableTags.find(t => t.name === tag)
-                const finalColor = tempTagColors[tag] || confirmedColorChanges[tag] || tagData?.color || newTagColors[tag] || generatePastelColor()
+                const finalColor =
+                  tempTagColors[tag] ||
+                  confirmedColorChanges[tag] ||
+                  tagData?.color ||
+                  newTagColors[tag] ||
+                  generatePastelColor()
                 return <TagBadge key={tag} name={tag} color={finalColor} onRemove={() => handleRemoveTag(tag)} />
               })}
             </div>
@@ -237,6 +253,8 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
                           onColorChange={handleColorChange}
                           onPopoverOpenChange={handlePopoverOpenChange}
                           onTagSelect={() => handleSelectTag(tag.name)}
+                          showRemove={true}
+                          onRemove={() => handleRemoveFromDatabase(tag.name)}
                         />
                       )
                     })}
@@ -247,7 +265,8 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
                 <CommandGroup heading={`Assigned Tags (${chatTags.length})`}>
                   {chatTags.map(tag => {
                     const tagData = availableTags.find(t => t.name === tag)
-                    const tagColor = confirmedColorChanges[tag] || 
+                    const tagColor =
+                      confirmedColorChanges[tag] ||
                       (tagData?.color ? tagData.color : newTagColors[tag] || generatePastelColor())
 
                     return (
@@ -264,6 +283,8 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
                         onColorChange={handleColorChange}
                         onPopoverOpenChange={handlePopoverOpenChange}
                         onTagSelect={() => handleRemoveTag(tag)}
+                        showRemove={true}
+                        onRemove={() => handleRemoveFromDatabase(tag)}
                       />
                     )
                   })}
