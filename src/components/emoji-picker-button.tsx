@@ -33,7 +33,7 @@ export function EmojiPickerButton({
       <PopoverTrigger asChild>
         <Button
           onClick={handleBtnClick}
-          className={cn('group/icon relative h-6 w-6 hover:bg-white', {
+          className={cn('group/icon relative h-4 w-4 hover:bg-white', {
             'bg-white': popupOpen
           })}
           style={{ fontSize: 'inherit' }}

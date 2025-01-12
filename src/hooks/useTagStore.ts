@@ -3,7 +3,7 @@ import { generatePastelColor } from '../lib/utils'
 
 const TAGS_STORAGE_KEY = 'xchat-tags'
 
-interface TagData {
+export interface TagData {
   name: string
   color: string
 }

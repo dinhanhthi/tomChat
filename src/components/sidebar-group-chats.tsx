@@ -26,9 +26,11 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useChatStore } from '../hooks/useChatStore'
+import { SidebarFilter } from '../hooks/useFilterSettings'
+import { TagData } from '../hooks/useTagStore'
 import { Chat } from '../interface'
 import { removeChat, toggleChatStatus, updateChatMeta } from '../lib/chats'
-import { cn } from '../lib/utils'
+import { cn, getTagStringColor } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import { useAlertDialog } from './dialog-confirm'
 import { RenameDialog } from './dialog-rename'
@@ -36,10 +38,16 @@ import { TagsDialog } from './dialog-tags'
 import { EmojiPickerButton } from './emoji-picker-button'
 import OverflowTooltip from './overflow-tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
+import SimpleTooltip from './ui/simple-tooltip'
 import { Skeleton } from './ui/skeleton'
 
-export default function SidebarGroupChats(props: { label: string; chats?: Chat[] }) {
-  const { label, chats = [] } = props
+export default function SidebarGroupChats(props: {
+  label: string
+  chats?: Chat[]
+  settings?: SidebarFilter
+  availableTags?: TagData[]
+}) {
+  const { label, chats = [], settings, availableTags } = props
   const { isMobile } = useSidebar()
   const { showAlert } = useAlertDialog()
   const router = useRouter()
@@ -140,69 +148,95 @@ export default function SidebarGroupChats(props: { label: string; chats?: Chat[]
         <SidebarGroup>
           <SidebarGroupLabel className="sticky top-0 z-20 bg-sidebar text-sidebar-primary">{label}</SidebarGroupLabel>
           <SidebarMenu className="gap-1">
-            {chats.map((chat, index) => (
-              <SidebarMenuItem key={index}>
-                <ContextMenu>
-                  <ContextMenuTrigger>
-                    <SidebarMenuButton
-                      isActive={chat.id === chatId}
-                      className={cn(
-                        'px-1 text-sm hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0',
-                        {
-                          '!bg-sidebar-hover': emojiPickerChat?.id === chat.id || dropdownOpen?.id === chat.id
-                        }
-                      )}
-                      asChild
-                    >
-                      <Link className="flex flex-row items-center" href={`/chat/${chat.id}`}>
-                        <EmojiPickerButton
-                          popupOpen={emojiPickerChat?.id === chat.id}
-                          onPopupOpenChange={() => setEmojiPickerChat(null)}
-                          currentIcon={chat.icon}
-                          onEmojiSelect={handleEmojiSelect}
-                          handleBtnClick={e => handleIconChangeBtnClicked(e, chat)}
-                          tooltip="Change Icon"
-                        />
-                        <OverflowTooltip
-                          className="min-w-0 flex-1 select-none"
-                          text={chat.title}
-                          position="right"
-                          delayDuration={700}
-                        />
-                      </Link>
-                    </SidebarMenuButton>
-                  </ContextMenuTrigger>
-                  <ContextMenuContent className="w-fit rounded-lg p-1" onCloseAutoFocus={e => e.preventDefault()}>
-                    {renderContextContent(chat)}
-                  </ContextMenuContent>
-                </ContextMenu>
-                <DropdownMenu
-                  open={dropdownOpen?.id === chat.id}
-                  onOpenChange={() => setDropdownOpen(open => (open ? null : chat))}
-                >
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuAction showOnHover className="top-1 z-20 h-6 w-6 bg-white hover:!bg-white">
-                      <Settings2 />
-                      <span className="sr-only">More</span>
-                    </SidebarMenuAction>
-                  </DropdownMenuTrigger>
-                  {chat.pinned === 'true' && chat.archived !== 'true' && (
-                    <Pin className="absolute right-1.5 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
-                  )}
-                  {chat.archived === 'true' && (
-                    <Archive className="absolute right-1.5 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
-                  )}
-                  <DropdownMenuContent
-                    className="w-fit rounded-lg"
-                    side={isMobile ? 'bottom' : 'right'}
-                    align={isMobile ? 'end' : 'start'}
-                    onCloseAutoFocus={e => e.preventDefault()}
+            {chats.map((chat, index) => {
+              const chatTags: string[] = chat.tags
+                ? typeof chat.tags === 'string'
+                  ? JSON.parse(chat.tags)
+                  : chat.tags
+                : []
+              return (
+                <SidebarMenuItem key={index}>
+                  <ContextMenu>
+                    <ContextMenuTrigger>
+                      <SidebarMenuButton
+                        isActive={chat.id === chatId}
+                        className={cn(
+                          'px-1 text-sm hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0',
+                          {
+                            '!bg-sidebar-hover': emojiPickerChat?.id === chat.id || dropdownOpen?.id === chat.id
+                          }
+                        )}
+                        asChild
+                      >
+                        <Link className="flex h-fit flex-row !items-start" href={`/chat/${chat.id}`}>
+                          <EmojiPickerButton
+                            popupOpen={emojiPickerChat?.id === chat.id}
+                            onPopupOpenChange={() => setEmojiPickerChat(null)}
+                            currentIcon={chat.icon}
+                            onEmojiSelect={handleEmojiSelect}
+                            handleBtnClick={e => handleIconChangeBtnClicked(e, chat)}
+                            tooltip="Change Icon"
+                          />
+                          <div className="flex min-w-0 flex-1 flex-col gap-1 leading-4">
+                            <OverflowTooltip
+                              className="select-none"
+                              text={chat.title}
+                              position="right"
+                              delayDuration={700}
+                            />
+                            {settings?.showTagIndicators && chatTags && chatTags?.length > 0 && (
+                              <div className="flex w-full flex-row items-center gap-1">
+                                {chatTags.map(tag => {
+                                  const tagData = availableTags?.find(t => t.name === tag)
+                                  return (
+                                    <SimpleTooltip key={tag} text={`Tag: ${tag}`}>
+                                      <div
+                                        className="h-2 w-4 shrink-0 rounded-lg"
+                                        style={{
+                                          backgroundColor: getTagStringColor(tagData?.color)
+                                        }}
+                                      ></div>
+                                    </SimpleTooltip>
+                                  )
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </Link>
+                      </SidebarMenuButton>
+                    </ContextMenuTrigger>
+                    <ContextMenuContent className="w-fit rounded-lg p-1" onCloseAutoFocus={e => e.preventDefault()}>
+                      {renderContextContent(chat)}
+                    </ContextMenuContent>
+                  </ContextMenu>
+                  <DropdownMenu
+                    open={dropdownOpen?.id === chat.id}
+                    onOpenChange={() => setDropdownOpen(open => (open ? null : chat))}
                   >
-                    {renderDropdownContent(chat)}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </SidebarMenuItem>
-            ))}
+                    <DropdownMenuTrigger asChild>
+                      <SidebarMenuAction showOnHover className={cn('top-1 z-20 h-6 w-6 bg-white hover:!bg-white')}>
+                        <Settings2 />
+                        <span className="sr-only">More</span>
+                      </SidebarMenuAction>
+                    </DropdownMenuTrigger>
+                    {chat.pinned === 'true' && chat.archived !== 'true' && (
+                      <Pin className="absolute right-1.5 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
+                    )}
+                    {chat.archived === 'true' && (
+                      <Archive className="absolute right-1.5 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
+                    )}
+                    <DropdownMenuContent
+                      className="w-fit rounded-lg"
+                      side={isMobile ? 'bottom' : 'right'}
+                      align={isMobile ? 'end' : 'start'}
+                      onCloseAutoFocus={e => e.preventDefault()}
+                    >
+                      {renderDropdownContent(chat)}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </SidebarMenuItem>
+              )
+            })}
             {chats.length > 10 && (
               <SidebarMenuItem>
                 <SidebarMenuButton className="text-sidebar-foreground/70">
