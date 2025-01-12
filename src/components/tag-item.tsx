@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { CommandItem } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { MoreHorizontal } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { HexColorPicker } from 'react-colorful'
 
 interface TagItemProps {
@@ -11,7 +11,7 @@ interface TagItemProps {
   isSelected: boolean
   colorPickerOpen: boolean
   onSelect: () => void
-  onColorChange: (color: string, isTemporary?: boolean) => void // Updated type
+  onColorChange: (color: string, isTemporary: boolean, isConfirmed?: boolean) => void
   onPopoverOpenChange: (open: boolean) => void
   onTagSelect: () => void
 }
@@ -28,20 +28,30 @@ export function TagItem({
 }: TagItemProps) {
   const [tempColor, setTempColor] = useState(color)
   const [originalColor, setOriginalColor] = useState(color)
+  const [confirmedColor, setConfirmedColor] = useState(color)
+
+  useEffect(() => {
+    // Update colors when parent color changes
+    setTempColor(color)
+    setOriginalColor(color)
+    setConfirmedColor(color)
+  }, [color])
 
   const handleColorPreview = (newColor: string) => {
     setTempColor(newColor)
-    onColorChange(newColor, true) // Pass true to indicate this is a temporary change
+    onColorChange(newColor, true, false)
   }
 
   const handleAcceptColor = () => {
-    onColorChange(tempColor, false) // Pass false to indicate this is a permanent change
+    setConfirmedColor(tempColor)
+    onColorChange(tempColor, false, true)
     onPopoverOpenChange(false)
   }
 
   const handleCancel = () => {
     setTempColor(originalColor)
-    onColorChange(originalColor, false)
+    setConfirmedColor(originalColor)
+    onColorChange(originalColor, false, false)
     onPopoverOpenChange(false)
   }
 

@@ -10,7 +10,7 @@ export interface TagData {
 
 interface TagStore {
   tags: TagData[]
-  addTags: (newTags: string[]) => void
+  addTags: (newTags: string[], colors?: Record<string, string>) => void
   removeTag: (tagToRemove: string) => void
   updateTagColor: (tagName: string, color: string) => void
 }
@@ -36,14 +36,14 @@ const getInitialTags = (): TagData[] => {
 
 export const useTagStore = create<TagStore>(set => ({
   tags: getInitialTags(),
-  addTags: (newTags: string[]) =>
+  addTags: (newTags: string[], colors?: Record<string, string>) =>
     set(state => {
       const existingTagNames = new Set(state.tags.map(t => t.name))
       const newTagData = newTags
         .filter(tag => !existingTagNames.has(tag))
         .map(tag => ({
           name: tag,
-          color: generatePastelColor()
+          color: colors?.[tag] || generatePastelColor()
         }))
 
       const updatedTags = [...state.tags, ...newTagData]
@@ -57,7 +57,11 @@ export const useTagStore = create<TagStore>(set => ({
       return { tags: newTags }
     }),
   updateTagColor: (tagName: string, color: string) =>
-    set(state => ({
-      tags: state.tags.map(tag => (tag.name === tagName ? { ...tag, color } : tag))
-    }))
+    set(state => {
+      const updatedTags = state.tags.map(tag => 
+        tag.name === tagName ? { ...tag, color } : tag
+      )
+      localStorage.setItem(TAGS_STORAGE_KEY, JSON.stringify(updatedTags))
+      return { tags: updatedTags }
+    }),
 }))
