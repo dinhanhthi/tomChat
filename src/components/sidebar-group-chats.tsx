@@ -189,7 +189,7 @@ export default function SidebarGroupChats(props: {
                                 {chatTags.map(tag => {
                                   const tagData = availableTags?.find(t => t.name === tag)
                                   return (
-                                    <TooltipProvider delayDuration={1}>
+                                    <TooltipProvider key={tag} delayDuration={1}>
                                       <Tooltip>
                                         <TooltipTrigger asChild>
                                           <div

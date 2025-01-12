@@ -24,7 +24,7 @@ export const SPECIAL_HISTORY_LABELS: Record<string, string> = {
 export default function AppSidebar() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
-  const { settings, updateSettings } = useFilterSettings()
+  const { settings, updateSettings, isChanged } = useFilterSettings()
   const { chats } = useChats({ sidebarFilter: settings })
   const { tags: availableTags } = useTagStore()
 
@@ -55,7 +55,7 @@ export default function AppSidebar() {
           </button>
           <div className="rounded-lg border border-slate-300 px-2 font-mono text-[0.6rem] text-slate-600">v0.0.0</div>
         </div>
-        <FilterButton settings={settings} onSettingsChange={updateSettings} />
+        <FilterButton settings={settings} isChanged={isChanged} onSettingsChange={updateSettings} />
       </SidebarHeader>
 
       <SidebarSeparator />

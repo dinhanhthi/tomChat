@@ -8,14 +8,18 @@ import { SidebarFilter } from '../hooks/useFilterSettings'
 interface FilterButtonProps {
   settings: SidebarFilter
   onSettingsChange: (settings: Partial<SidebarFilter>) => void
+  isChanged?: boolean
 }
 
-export default function FilterButton({ settings, onSettingsChange }: FilterButtonProps) {
+export default function FilterButton({ settings, onSettingsChange, isChanged }: FilterButtonProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button inSidebar variant="ghost" size="iconBig">
+        <Button className='relative' inSidebar variant="ghost" size="iconBig">
           <ListFilter />
+          {isChanged && (
+            <div className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full bg-primary"></div>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-64 p-1" align="start">
