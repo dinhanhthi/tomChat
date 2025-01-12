@@ -180,6 +180,31 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
                     ))}
                 </CommandGroup>
               )}
+
+              {chatTags.length > 0 && (
+                <CommandGroup heading={`Assigned Tags (${chatTags.length})`}>
+                  {chatTags.map(tag => {
+                    const tagData = availableTags.find(t => t.name === tag)
+                    return (
+                      <CommandItem
+                        key={tag}
+                        className="flex items-center gap-2"
+                        onSelect={() => handleRemoveTag(tag)}
+                      >
+                        <div
+                          className="h-2 w-2 shrink-0 rounded-full"
+                          style={{ 
+                            backgroundColor: tagData?.color 
+                              ? getTagStringColor(tagData.color) 
+                              : newTagColors[tag] || generatePastelColor()
+                          }}
+                        />
+                        <span>{tag}</span>
+                      </CommandItem>
+                    )
+                  })}
+                </CommandGroup>
+              )}
             </CommandList>
           </Command>
 
