@@ -21,7 +21,6 @@ const getInitialTags = (): TagData[] => {
   
   try {
     const parsed = JSON.parse(storedTags)
-    // Handle migration from old format
     if (typeof parsed[0] === 'string') {
       return parsed.map((name: string) => ({
         name,

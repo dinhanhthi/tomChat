@@ -164,7 +164,7 @@ export function groupChatsByDates(chats: Chat[] = []): Map<string, Chat[]> {
 
 export const generatePastelColor = () => {
   const hue = Math.floor(Math.random() * 360)
-  return `hsl(${hue}, 30%, 80%)`
+  return `hsl(${hue}, 30%, 90%)`
 }
 
 export function getTagStringColor(tagColor: string): string {

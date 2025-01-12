@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Switch } from '@/components/ui/switch'
-import { Archive, ListFilter, SquareMousePointer, Tag } from 'lucide-react'
+import { Archive, ListFilter, SquareMousePointer, Tag, Tags } from 'lucide-react'
 import { SidebarFilter } from '../hooks/useFilterSettings'
 
 interface FilterButtonProps {
@@ -18,13 +18,13 @@ export default function FilterButton({ settings, onSettingsChange }: FilterButto
           <ListFilter />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-1" align="start">
+      <PopoverContent className="w-64 p-1" align="start">
         <div className="space-y-0">
           {/* Show archived */}
           <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
             <Label htmlFor="archived" className="flex flex-row items-center gap-2">
               <Archive className="h-4 w-4 opacity-70" />
-              Archived chats
+              Show archived chats
             </Label>
             <Switch
               id="archived"
@@ -37,7 +37,7 @@ export default function FilterButton({ settings, onSettingsChange }: FilterButto
           <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
             <Label htmlFor="tags" className="flex flex-row items-center gap-2">
               <Tag className="h-4 w-4 opacity-70" />
-              Show by tags
+              Show chats by tags
             </Label>
             <Switch
               id="tags"
@@ -46,11 +46,24 @@ export default function FilterButton({ settings, onSettingsChange }: FilterButto
             />
           </div>
 
+          {/* Show tag indicators */}
+          <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
+            <Label htmlFor="tag-indicators" className="flex flex-row items-center gap-2">
+              <Tags className="h-4 w-4 opacity-70" />
+              Show tag indicators
+            </Label>
+            <Switch
+              id="tag-indicators"
+              checked={settings.showTagIndicators}
+              onCheckedChange={checked => onSettingsChange({ showTagIndicators: checked })}
+            />
+          </div>
+
           {/* Multiple selection */}
           <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
             <Label htmlFor="multi-select" className="flex flex-row items-center gap-2">
               <SquareMousePointer className="h-4 w-4 opacity-70" />
-              Multiple selection
+              Select multiple chats
             </Label>
             <Switch
               id="multi-select"

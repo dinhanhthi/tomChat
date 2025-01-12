@@ -80,9 +80,9 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]" hideCloseBtn={true}>
         <DialogHeader>
-          <DialogTitle>Manage Tags</DialogTitle>
+          <DialogTitle>Assign tags to chat</DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Add or remove tags for chat: <span className="font-medium text-foreground">{chat?.title}</span>
+            Chat: <span className="font-medium text-foreground">{chat?.title}</span>
           </DialogDescription>
         </DialogHeader>
 

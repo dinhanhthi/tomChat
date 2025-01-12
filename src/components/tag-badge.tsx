@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import { getTagTextColor } from '../lib/utils'
+import { getTagStringColor, getTagTextColor } from '../lib/utils'
 import { Badge } from './ui/badge'
 
 interface TagBadgeProps {
@@ -15,13 +15,14 @@ export function TagBadge({ name, color, onRemove, className }: TagBadgeProps) {
   return (
     <Badge
       variant="secondary"
-      className={`flex items-center gap-1 font-normal ${className}`} // Added font-normal
+      className={`flex items-center gap-1.5 font-normal ${className}`}
       style={{
         backgroundColor: color,
         color: textColor,
         border: 'none'
       }}
     >
+      <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: getTagStringColor(color) }}></div>
       {name}
       {onRemove && <X className="h-3 w-3 cursor-pointer hover:opacity-80" onClick={onRemove} />}
     </Badge>
