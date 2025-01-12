@@ -6,13 +6,15 @@ export interface SidebarFilter {
   showArchived?: boolean
   showByTags?: boolean
   multipleSelection?: boolean
+  showTagIndicators?: boolean
 }
 
 export const useFilterSettings = () => {
   const [settings, setSettings] = useState<SidebarFilter>({
     showArchived: false,
     showByTags: false,
-    multipleSelection: false
+    multipleSelection: false,
+    showTagIndicators: false
   })
 
   useEffect(() => {

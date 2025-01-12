@@ -26,6 +26,8 @@ export default function AppSidebar() {
   const { settings, updateSettings } = useFilterSettings()
   const { chats } = useChats({ sidebarFilter: settings })
 
+  /* ###Thi */ console.log(`👉👉👉 chats: `, chats)
+
   useEffect(() => {
     if (chats) {
       setIsLoading(false)
