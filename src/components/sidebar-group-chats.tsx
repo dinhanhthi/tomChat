@@ -185,8 +185,8 @@ export default function SidebarGroupChats(props: {
                               delayDuration={700}
                             />
                             {settings?.showTagIndicators && chatTags && chatTags?.length > 0 && (
-                              <div className="flex w-full flex-row items-center gap-1">
-                                {chatTags.map(tag => {
+                              <div className="flex w-full flex-row items-center gap-1.5">
+                                {[...chatTags].sort((a, b) => a.localeCompare(b)).map(tag => {
                                   const tagData = availableTags?.find(t => t.name === tag)
                                   return (
                                     <TooltipProvider key={tag} delayDuration={1}>

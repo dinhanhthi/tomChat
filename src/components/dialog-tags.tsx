@@ -20,10 +20,11 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
   const [chatTags, setChatTags] = useState<string[]>([])
   const [inputValue, setInputValue] = useState('')
   const [newTagColors, setNewTagColors] = useState<Record<string, string>>({})
-  const { tags: availableTags, addTags, updateTagColor } = useTagStore()
+  const [tempTagColors, setTempTagColors] = useState<Record<string, string>>({})
+  const { tags: availableTags, addTags, updateTagColor, removeTag } = useTagStore()
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [colorPickerOpen, setColorPickerOpen] = useState(false)
-  const [tempTagColors, setTempTagColors] = useState<Record<string, string>>({})
+  const [confirmedColorChanges, setConfirmedColorChanges] = useState<Record<string, string>>({})
 
   const handlePopoverOpenChange = (open: boolean) => {
     setColorPickerOpen(open)
@@ -48,12 +49,30 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
   const handleSave = async () => {
     if (!chat) return
 
+    // Save new tags with their colors
     const newTags = chatTags.filter(tag => !availableTags.some(t => t.name === tag))
     if (newTags.length > 0) {
-      addTags(newTags)
+      const newTagsWithColors = newTags.reduce(
+        (acc, tag) => ({
+          ...acc,
+          [tag]: confirmedColorChanges[tag] || newTagColors[tag] || generatePastelColor()
+        }),
+        {} as Record<string, string>
+      )
+
+      addTags(newTags, newTagsWithColors)
     }
 
+    // Save confirmed color changes to tag store
+    Object.entries(confirmedColorChanges).forEach(([tagName, color]) => {
+      if (availableTags.some(t => t.name === tagName)) {
+        updateTagColor(tagName, color)
+      }
+    })
+
     await updateChatMeta(chat.id, 'tags', JSON.stringify(chatTags))
+    setTempTagColors({})
+    setConfirmedColorChanges({})
     onOpenChange(false)
   }
 
@@ -64,18 +83,8 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
     !availableTags.some(tag => normalizeString(tag.name) === normalizeString(inputValue)) &&
     !chatTags.some(tag => normalizeString(tag) === normalizeString(inputValue))
 
-  const handleSelectTag = (tag: string) => {
-    if (!chatTags.some(t => normalizeString(t) === normalizeString(tag))) {
-      const trimmedTag = tag.trim()
-      if (!availableTags.some(t => t.name === trimmedTag) && !newTagColors[trimmedTag]) {
-        setNewTagColors(prev => ({
-          ...prev,
-          [trimmedTag]: generatePastelColor()
-        }))
-      }
-      setChatTags([...chatTags, trimmedTag])
-    }
-    setInputValue('')
+  const handleSelectTag = (tagName: string) => {
+    handleCreateNewTag(tagName)
   }
 
   const handleRemoveTag = (tagToRemove: string) => {
@@ -83,12 +92,14 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (
-      e.key === 'Enter' &&
-      inputValue &&
-      !chatTags.some(tag => normalizeString(tag) === normalizeString(inputValue))
-    ) {
-      const trimmedTag = inputValue.trim()
+    if (e.key === 'Enter' && inputValue) {
+      handleCreateNewTag(inputValue)
+    }
+  }
+
+  const handleCreateNewTag = (tagName: string) => {
+    if (!chatTags.some(t => normalizeString(t) === normalizeString(tagName))) {
+      const trimmedTag = tagName.trim()
       if (!availableTags.some(t => t.name === trimmedTag) && !newTagColors[trimmedTag]) {
         setNewTagColors(prev => ({
           ...prev,
@@ -100,7 +111,7 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
     }
   }
 
-  const handleColorChange = (color: string, isTemporary: boolean = false) => {
+  const handleColorChange = (color: string, isTemporary: boolean = false, isConfirmed: boolean = false) => {
     if (!selectedTag) return
 
     if (isTemporary) {
@@ -111,21 +122,34 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
       return
     }
 
-    // Reset temporary colors when making permanent changes
+    // Reset temporary colors
     setTempTagColors(prev => {
       const newColors = { ...prev }
       delete newColors[selectedTag]
       return newColors
     })
 
-    const existingTag = availableTags.find(t => t.name === selectedTag)
-    if (existingTag) {
-      updateTagColor(selectedTag, color)
-    } else {
-      setNewTagColors(prev => ({
+    if (isConfirmed) {
+      // Only update confirmed colors if OK was clicked
+      setConfirmedColorChanges(prev => ({
         ...prev,
         [selectedTag]: color
       }))
+    }
+  }
+
+  // Add dialog cancel handler
+  const handleDialogCancel = () => {
+    setTempTagColors({})
+    setConfirmedColorChanges({})
+    onOpenChange(false)
+  }
+
+  const handleRemoveFromDatabase = (tagName: string) => {
+    removeTag(tagName)
+    // Also remove from current chat if it's assigned
+    if (chatTags.includes(tagName)) {
+      handleRemoveTag(tagName)
     }
   }
 
@@ -144,7 +168,12 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
             <div className="flex flex-wrap gap-2">
               {chatTags.map(tag => {
                 const tagData = availableTags.find(t => t.name === tag)
-                const finalColor = tempTagColors[tag] || tagData?.color || newTagColors[tag] || generatePastelColor()
+                const finalColor =
+                  tempTagColors[tag] ||
+                  confirmedColorChanges[tag] ||
+                  tagData?.color ||
+                  newTagColors[tag] ||
+                  generatePastelColor()
                 return <TagBadge key={tag} name={tag} color={finalColor} onRemove={() => handleRemoveTag(tag)} />
               })}
             </div>
@@ -152,7 +181,7 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
 
           <Command className="rounded-lg border border-slate-200 shadow-sm">
             <CommandInput
-              placeholder="Type to search or create new tag..."
+              placeholder="Search or create new tag..."
               value={inputValue}
               onValueChange={setInputValue}
               onKeyDown={handleKeyDown}
@@ -192,63 +221,82 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
               )}
 
               {availableTags.length > 0 && (
-                <CommandGroup heading={`Available Tags (${availableTags.length})`}>
+                <CommandGroup
+                  heading={`Available Tags (${
+                    availableTags.filter(
+                      tag =>
+                        normalizeString(tag.name).includes(normalizeString(inputValue)) &&
+                        !chatTags.some(chatTag => normalizeString(chatTag) === normalizeString(tag.name))
+                    ).length
+                  })`}
+                >
                   {availableTags
                     .filter(
                       tag =>
                         normalizeString(tag.name).includes(normalizeString(inputValue)) &&
                         !chatTags.some(chatTag => normalizeString(chatTag) === normalizeString(tag.name))
                     )
-                    .sort()
-                    .map(tag => (
-                      <TagItem
-                        key={tag.name}
-                        name={tag.name}
-                        color={tag.color}
-                        isSelected={selectedTag === tag.name}
-                        colorPickerOpen={colorPickerOpen}
-                        onSelect={() => {
-                          setSelectedTag(tag.name)
-                          setColorPickerOpen(true)
-                        }}
-                        onColorChange={handleColorChange}
-                        onPopoverOpenChange={handlePopoverOpenChange}
-                        onTagSelect={() => handleSelectTag(tag.name)}
-                      />
-                    ))}
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map(tag => {
+                      const currentColor = confirmedColorChanges[tag.name] || tag.color
+                      return (
+                        <TagItem
+                          key={tag.name}
+                          name={tag.name}
+                          color={currentColor}
+                          isSelected={selectedTag === tag.name}
+                          colorPickerOpen={colorPickerOpen}
+                          onSelect={() => {
+                            setSelectedTag(tag.name)
+                            setColorPickerOpen(true)
+                          }}
+                          onColorChange={handleColorChange}
+                          onPopoverOpenChange={handlePopoverOpenChange}
+                          onTagSelect={() => handleSelectTag(tag.name)}
+                          showRemove={true}
+                          onRemove={() => handleRemoveFromDatabase(tag.name)}
+                        />
+                      )
+                    })}
                 </CommandGroup>
               )}
 
               {chatTags.length > 0 && (
                 <CommandGroup heading={`Assigned Tags (${chatTags.length})`}>
-                  {chatTags.map(tag => {
-                    const tagData = availableTags.find(t => t.name === tag)
-                    const tagColor = tagData?.color ? tagData.color : newTagColors[tag] || generatePastelColor()
+                  {chatTags
+                    .sort((a, b) => a.localeCompare(b))
+                    .map(tag => {
+                      const tagData = availableTags.find(t => t.name === tag)
+                      const tagColor =
+                        confirmedColorChanges[tag] ||
+                        (tagData?.color ? tagData.color : newTagColors[tag] || generatePastelColor())
 
-                    return (
-                      <TagItem
-                        key={tag}
-                        name={tag}
-                        color={tagColor}
-                        isSelected={selectedTag === tag}
-                        colorPickerOpen={colorPickerOpen}
-                        onSelect={() => {
-                          setSelectedTag(tag)
-                          setColorPickerOpen(true)
-                        }}
-                        onColorChange={handleColorChange}
-                        onPopoverOpenChange={handlePopoverOpenChange}
-                        onTagSelect={() => handleRemoveTag(tag)}
-                      />
-                    )
-                  })}
+                      return (
+                        <TagItem
+                          key={tag}
+                          name={tag}
+                          color={tagColor}
+                          isSelected={selectedTag === tag}
+                          colorPickerOpen={colorPickerOpen}
+                          onSelect={() => {
+                            setSelectedTag(tag)
+                            setColorPickerOpen(true)
+                          }}
+                          onColorChange={handleColorChange}
+                          onPopoverOpenChange={handlePopoverOpenChange}
+                          onTagSelect={() => handleRemoveTag(tag)}
+                          showRemove={true}
+                          onRemove={() => handleRemoveFromDatabase(tag)}
+                        />
+                      )
+                    })}
                 </CommandGroup>
               )}
             </CommandList>
           </Command>
 
           <div className="flex justify-end gap-3 pt-2">
-            <Button className="rounded-3xl" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button className="rounded-3xl" variant="outline" onClick={handleDialogCancel}>
               Cancel
             </Button>
             <Button className="rounded-3xl" onClick={handleSave}>
