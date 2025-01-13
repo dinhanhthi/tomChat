@@ -69,8 +69,6 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
       }
     })
 
-    /* ###Thi */ console.log(`👉👉👉 chatTags: `, chatTags)
-
     await updateChatMeta(chat.id, 'tags', chatTags)
     if (chatTags.length === 0) {
       await updateChatMeta(chat.id, 'hasNoTag', 1)
