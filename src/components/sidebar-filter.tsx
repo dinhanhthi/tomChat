@@ -20,13 +20,13 @@ export default function FilterButton({ settings, onSettingsChange, isChanged }: 
           {isChanged && <div className="absolute bottom-2 right-2 h-1.5 w-1.5 rounded-full bg-primary"></div>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-64 p-1" align="start">
+      <PopoverContent className="w-fit p-1" align="start">
         <div className="space-y-0">
           {/* Show archived */}
-          <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
+          <div className="flex items-center justify-between gap-4 rounded-md p-2 hover:bg-secondary">
             <Label htmlFor="archived" className="flex flex-row items-center gap-2">
               <Archive className="h-4 w-4 opacity-70" />
-              Show archived chats
+              Show only archived chats
             </Label>
             <Switch
               id="archived"
@@ -35,8 +35,21 @@ export default function FilterButton({ settings, onSettingsChange, isChanged }: 
             />
           </div>
 
+          {/* Show also archived chats */}
+          <div className="flex items-center justify-between gap-4 rounded-md p-2 hover:bg-secondary">
+            <Label htmlFor="also-archived" className="flex flex-row items-center gap-2">
+              <Archive className="h-4 w-4 opacity-70" />
+              Show also archived chats
+            </Label>
+            <Switch
+              id="also-archived"
+              checked={settings.alsoArchived}
+              onCheckedChange={checked => onSettingsChange({ alsoArchived: checked })}
+            />
+          </div>
+
           {/* Show by tags */}
-          <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
+          <div className="flex items-center justify-between gap-4 rounded-md p-2 hover:bg-secondary">
             <Label htmlFor="tags" className="flex flex-row items-center gap-2">
               <Tag className="h-4 w-4 opacity-70" />
               Show chats by tags
@@ -49,7 +62,7 @@ export default function FilterButton({ settings, onSettingsChange, isChanged }: 
           </div>
 
           {/* Show tag indicators */}
-          <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
+          <div className="flex items-center justify-between gap-4 rounded-md p-2 hover:bg-secondary">
             <Label htmlFor="tag-indicators" className="flex flex-row items-center gap-2">
               <Tags className="h-4 w-4 opacity-70" />
               Show tag indicators
@@ -62,7 +75,7 @@ export default function FilterButton({ settings, onSettingsChange, isChanged }: 
           </div>
 
           {/* Multiple selection */}
-          <div className="flex items-center justify-between rounded-md p-2 hover:bg-secondary">
+          <div className="flex items-center justify-between gap-4 rounded-md p-2 hover:bg-secondary">
             <Label htmlFor="multi-select" className="flex flex-row items-center gap-2">
               <SquareMousePointer className="h-4 w-4 opacity-70" />
               Select multiple chats

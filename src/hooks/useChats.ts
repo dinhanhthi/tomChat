@@ -6,10 +6,12 @@ import { NO_TAG } from '../lib/constants'
 
 export const useChats = ({
   onlyArchived,
+  alsoArchived,
   limit,
   tagName
 }: {
   onlyArchived?: boolean
+  alsoArchived?: boolean
   limit?: number
   tagName?: string
 }) => {
@@ -25,8 +27,10 @@ export const useChats = ({
       }
     } else {
       filteredChats = onlyArchived
-      ? chatTable.where('archived').equals('true')
-      : chatTable.where('archived').equals('false')
+        ? chatTable.where('archived').equals('true')
+        : alsoArchived
+          ? chatTable.where('archived').anyOf(['true', 'false'])
+          : chatTable.where('archived').equals('false')
     }
 
     if (limit) {
@@ -40,7 +44,7 @@ export const useChats = ({
     })
 
     return _chats
-  }, [onlyArchived, tagName, limit])
+  }, [onlyArchived, alsoArchived, tagName, limit])
 
   return { chats }
 }

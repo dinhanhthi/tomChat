@@ -29,6 +29,7 @@ export default function AppSidebar() {
   const [selectedTagName, setSelectedTagName] = useState<string>('')
   const { chats } = useChats({
     onlyArchived: settings.onlyArchived,
+    alsoArchived: settings.alsoArchived,
     tagName: settings.showByTags && selectedTagName ? selectedTagName : undefined
   })
   const { tags: availableTags } = useTagStore()
@@ -68,10 +69,23 @@ export default function AppSidebar() {
       {/* Only archived */}
       {settings.onlyArchived && (
         <>
-          <div className="inline-flex select-none items-center gap-1 px-4 py-2 text-xs text-muted-foreground">
-            <Archive className="inline-block h-4 w-4" />
+          <div className="inline-flex select-none items-center gap-1 px-2 py-3 text-xs text-muted-foreground">
+            <Archive className="inline-block h-3 w-3" />
             Only archived chats are shown.{' '}
             <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ onlyArchived: false })}>
+              Reset
+            </Button>
+          </div>
+          <SidebarSeparator />
+        </>
+      )}
+
+      {!settings.onlyArchived && settings.alsoArchived && (
+        <>
+          <div className="inline-flex select-none items-center gap-1 px-2 py-3 text-xs text-muted-foreground">
+            <Archive className="inline-block h-3 w-3" />
+            Also show archived chats.{' '}
+            <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ alsoArchived: false })}>
               Reset
             </Button>
           </div>

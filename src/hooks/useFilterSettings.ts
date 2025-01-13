@@ -5,6 +5,7 @@ const FILTER_SETTINGS_KEY = 'chat-filter-settings'
 
 export interface SidebarFilter {
   onlyArchived?: boolean
+  alsoArchived?: boolean
   showByTags?: boolean
   multipleSelection?: boolean
   showTagIndicators?: boolean
@@ -12,6 +13,7 @@ export interface SidebarFilter {
 
 const defaultSettings: SidebarFilter = {
   onlyArchived: false,
+  alsoArchived: false,
   showByTags: false,
   multipleSelection: false,
   showTagIndicators: false
@@ -28,6 +30,7 @@ export const useFilterSettings = () => {
         // Only pick properties defined in SidebarFilter interface
         const filteredSettings: SidebarFilter = {
           onlyArchived: parsedSettings.onlyArchived ?? defaultSettings.onlyArchived,
+          alsoArchived: parsedSettings.alsoArchived ?? defaultSettings.alsoArchived,
           showByTags: parsedSettings.showByTags ?? defaultSettings.showByTags,
           multipleSelection: parsedSettings.multipleSelection ?? defaultSettings.multipleSelection,
           showTagIndicators: parsedSettings.showTagIndicators ?? defaultSettings.showTagIndicators
@@ -53,6 +56,7 @@ export const useFilterSettings = () => {
 
     const filteredUpdate: SidebarFilter = {
       onlyArchived: updated.onlyArchived,
+      alsoArchived: updated.alsoArchived,
       showByTags: updated.showByTags,
       multipleSelection: updated.multipleSelection,
       showTagIndicators: updated.showTagIndicators
