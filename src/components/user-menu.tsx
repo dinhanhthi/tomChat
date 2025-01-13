@@ -1,6 +1,7 @@
 'use client'
 
 import { CircleUserRound, HelpCircle, LogIn, Settings } from 'lucide-react'
+import Link from 'next/link'
 import { useState } from 'react'
 import { Button } from './ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
@@ -25,9 +26,11 @@ export function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" onCloseAutoFocus={event => event.preventDefault()}>
-        <DropdownMenuItem>
-          <Settings className="mr-2 h-4 w-4" />
-          <span>Admin configs</span>
+        <DropdownMenuItem asChild>
+          <Link href="/admin" className="flex items-center">
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Admin configs</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <LogIn className="mr-2 h-4 w-4" />
