@@ -24,10 +24,10 @@ export const useFilterSettings = () => {
     const stored = localStorage.getItem(FILTER_SETTINGS_KEY)
     if (stored) {
       try {
-        const parsedSettings = JSON.parse(stored)
+        const parsedSettings: SidebarFilter = JSON.parse(stored)
         // Only pick properties defined in SidebarFilter interface
         const filteredSettings: SidebarFilter = {
-          onlyArchived: parsedSettings.showArchived ?? defaultSettings.onlyArchived,
+          onlyArchived: parsedSettings.onlyArchived ?? defaultSettings.onlyArchived,
           showByTags: parsedSettings.showByTags ?? defaultSettings.showByTags,
           multipleSelection: parsedSettings.multipleSelection ?? defaultSettings.multipleSelection,
           showTagIndicators: parsedSettings.showTagIndicators ?? defaultSettings.showTagIndicators
@@ -42,7 +42,7 @@ export const useFilterSettings = () => {
 
   const updateSettings = (newSettings: Partial<SidebarFilter>) => {
     const updated = { ...settings, ...newSettings }
-    
+
     if (newSettings.showByTags) {
       updated.onlyArchived = false
     }

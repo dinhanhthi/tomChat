@@ -1,7 +1,7 @@
 'use client'
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarSeparator } from '@/components/ui/sidebar'
-import { BadgeInfo, BookOpenText, Bug, Lightbulb, ScrollText } from 'lucide-react'
+import { Archive, BadgeInfo, BookOpenText, Bug, Lightbulb, ScrollText, Tag } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChats } from '../hooks/useChats'
@@ -68,7 +68,8 @@ export default function AppSidebar() {
       {/* Only archived */}
       {settings.onlyArchived && (
         <>
-          <div className="select-none px-4 py-2 text-xs text-muted-foreground">
+          <div className="inline-flex select-none items-center gap-1 px-4 py-2 text-xs text-muted-foreground">
+            <Archive className="inline-block h-4 w-4" />
             Only archived chats are shown.{' '}
             <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ onlyArchived: false })}>
               Reset
@@ -82,7 +83,8 @@ export default function AppSidebar() {
       {settings.showByTags && (
         <>
           <div className="flex flex-col gap-2 px-2 py-3">
-            <div className="select-none pl-1 text-xs text-muted-foreground">
+            <div className="inline-flex select-none items-center gap-1 pl-1 text-xs text-muted-foreground">
+              <Tag className="inline-block h-3 w-3" />
               Chats are filtered by tag.{' '}
               <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ showByTags: false })}>
                 Reset
