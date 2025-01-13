@@ -73,7 +73,6 @@ export default function AppSidebar() {
             <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ onlyArchived: false })}>
               Reset
             </Button>
-            .
           </div>
           <SidebarSeparator />
         </>
@@ -82,13 +81,12 @@ export default function AppSidebar() {
       {/* Show by tags */}
       {settings.showByTags && (
         <>
-          <div className="flex flex-col gap-2 px-2 py-4">
+          <div className="flex flex-col gap-2 px-2 py-3">
             <div className="select-none pl-1 text-xs text-muted-foreground">
               Chats are filtered by tag.{' '}
               <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ showByTags: false })}>
                 Reset
               </Button>
-              .
             </div>
             {/* <SidebarSeparator /> */}
             <TagSelector
