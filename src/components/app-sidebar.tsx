@@ -88,7 +88,6 @@ export default function AppSidebar() {
                 Reset
               </Button>
             </div>
-            {/* <SidebarSeparator /> */}
             <TagSelector
               tags={availableTags}
               selectedTagName={selectedTagName}
