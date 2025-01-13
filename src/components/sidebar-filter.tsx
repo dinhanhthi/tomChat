@@ -42,6 +42,7 @@ export default function FilterButton({ settings, onSettingsChange, isChanged }: 
               Show also archived chats
             </Label>
             <Switch
+              disabled={settings.onlyArchived}
               id="also-archived"
               checked={settings.alsoArchived}
               onCheckedChange={checked => onSettingsChange({ alsoArchived: checked })}

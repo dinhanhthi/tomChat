@@ -52,6 +52,7 @@ export const useFilterSettings = () => {
 
     if (newSettings.onlyArchived) {
       updated.showByTags = false
+      updated.alsoArchived = true
     }
 
     const filteredUpdate: SidebarFilter = {
