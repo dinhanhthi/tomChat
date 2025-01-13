@@ -18,8 +18,8 @@ const buttonVariants = cva(
         link: '!h-auto !p-0 font-normal text-primary underline-offset-4 hover:underline'
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
+        default: 'h-9 px-4 py-2',
+        sm: 'h-8 rounded-md px-3',
         lg: 'h-11 rounded-md px-8',
         icon: 'group h-8 w-8 shrink-0 [&_svg]:size-4 [&_svg]:transition-transform [&_svg]:active:scale-90',
         iconBig:
@@ -42,10 +42,24 @@ export interface ButtonProps
   asChild?: boolean
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
   tooltipPosition?: 'top' | 'right' | 'bottom' | 'left'
+  delayDuration?: number
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, inSidebar, asChild = false, tooltip, tooltipPosition = 'right', ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      inSidebar,
+      asChild = false,
+      tooltip,
+      tooltipPosition = 'right',
+      delayDuration = 100,
+      ...props
+    },
+    ref
+  ) => {
     const Comp = asChild ? Slot : 'button'
 
     const button = <Comp className={cn(buttonVariants({ variant, size, inSidebar, className }))} ref={ref} {...props} />
@@ -61,7 +75,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     return (
-      <Tooltip>
+      <Tooltip delayDuration={delayDuration}>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent side={tooltipPosition} align="center" {...tooltip} />
       </Tooltip>
