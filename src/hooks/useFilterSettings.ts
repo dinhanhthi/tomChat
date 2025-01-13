@@ -43,9 +43,12 @@ export const useFilterSettings = () => {
   const updateSettings = (newSettings: Partial<SidebarFilter>) => {
     const updated = { ...settings, ...newSettings }
     
-    // Force onlyArchived to false when showByTags is enabled
-    if (updated.showByTags) {
+    if (newSettings.showByTags) {
       updated.onlyArchived = false
+    }
+
+    if (newSettings.onlyArchived) {
+      updated.showByTags = false
     }
 
     const filteredUpdate: SidebarFilter = {

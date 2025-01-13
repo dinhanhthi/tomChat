@@ -49,7 +49,6 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
   const handleSave = async () => {
     if (!chat) return
 
-    // Save new tags with their colors
     const newTags = chatTags.filter(tag => !availableTags.some(t => t.name === tag))
     if (newTags.length > 0) {
       const newTagsWithColors = newTags.reduce(
@@ -70,7 +69,14 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
       }
     })
 
+    /* ###Thi */ console.log(`👉👉👉 chatTags: `, chatTags)
+
     await updateChatMeta(chat.id, 'tags', chatTags)
+    if (chatTags.length === 0) {
+      await updateChatMeta(chat.id, 'hasNoTag', 1)
+    } else {
+      await updateChatMeta(chat.id, 'hasNoTag', 0)
+    }
     setTempTagColors({})
     setConfirmedColorChanges({})
     onOpenChange(false)

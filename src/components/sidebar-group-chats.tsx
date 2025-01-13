@@ -30,7 +30,7 @@ import { SidebarFilter } from '../hooks/useFilterSettings'
 import { TagData } from '../hooks/useTagStore'
 import { Chat } from '../interface'
 import { removeChat, toggleChatStatus, updateChatMeta } from '../lib/chats'
-import { cn } from '../lib/utils'
+import { cn, getLighterColor } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import { useAlertDialog } from './dialog-confirm'
 import { RenameDialog } from './dialog-rename'
@@ -181,7 +181,7 @@ export default function SidebarGroupChats(props: {
                               delayDuration={700}
                             />
                             {settings?.showTagIndicators && chatTags && chatTags?.length > 0 && (
-                              <div className="flex w-full flex-row items-center gap-1.5 overflow-hidden hover:overflow-auto [&::-webkit-scrollbar]:hidden">
+                              <div className="flex w-full flex-row items-center gap-2 overflow-hidden hover:overflow-auto [&::-webkit-scrollbar]:hidden">
                                 {[...chatTags]
                                   .sort((a, b) => a.localeCompare(b))
                                   .map(tag => {
@@ -191,9 +191,10 @@ export default function SidebarGroupChats(props: {
                                         <Tooltip>
                                           <TooltipTrigger asChild>
                                             <div
-                                              className="h-2 w-3 shrink-0 rounded-full"
+                                              className="h-2 w-4 shrink-0 border rounded-full drop-shadow-md"
                                               style={{
-                                                backgroundColor: tagData?.color
+                                                backgroundColor: getLighterColor(tagData?.color),
+                                                borderColor: getLighterColor(tagData?.color)
                                               }}
                                             ></div>
                                           </TooltipTrigger>

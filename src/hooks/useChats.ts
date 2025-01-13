@@ -2,6 +2,7 @@ import { db } from '@/db/database'
 import { Collection } from 'dexie'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Chat } from '../interface'
+import { NO_TAG } from '../lib/constants'
 
 export const useChats = ({
   onlyArchived,
@@ -17,7 +18,11 @@ export const useChats = ({
     let filteredChats: Collection<Chat, string, Chat>
 
     if (tagName) {
-      filteredChats = chatTable.where('tags').anyOfIgnoreCase(tagName)
+      if (tagName !== NO_TAG) {
+        filteredChats = chatTable.where('tags').anyOfIgnoreCase(tagName)
+      } else {
+        filteredChats = chatTable.where('hasNoTag').equals(1)
+      }
     } else {
       filteredChats = onlyArchived
       ? chatTable.where('archived').equals('true')

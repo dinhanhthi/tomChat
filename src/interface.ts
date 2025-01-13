@@ -12,6 +12,7 @@ export class Chat {
   pinned: 'true' | 'false'
   archived: 'true' | 'false'
   tags?: string[]
+  hasNoTag?: 1 | 0
   searchResult?: {
     messageId?: string
     highlightedTitle?: string
@@ -31,6 +32,7 @@ export class Chat {
     this.pinned = partial?.pinned ?? 'false'
     this.archived = partial?.archived ?? 'false'
     this.tags = partial?.tags ?? []
+    this.hasNoTag = partial?.hasNoTag ?? 1
     this.searchResult = partial?.searchResult
   }
 }
