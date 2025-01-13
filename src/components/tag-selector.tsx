@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, ChevronsUpDown } from 'lucide-react'
+import { Check, ChevronsUpDown, Tag } from 'lucide-react'
 import * as React from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils'
 import { TagData } from '../hooks/useTagStore'
 import { NO_TAG } from '../lib/constants'
+import TagIndicator from './tag-indicator'
 import { SIDEBAR_WIDTH } from './ui/sidebar'
 
 export function TagSelector({
@@ -24,7 +25,7 @@ export function TagSelector({
 }) {
   const [open, setOpen] = React.useState(false)
 
-  const editedTags = [{ name: NO_TAG, color: '#666' }, ...tags.sort((a, b) => a.name.localeCompare(b.name))]
+  const editedTags = [{ name: NO_TAG, color: '#666666' }, ...tags.sort((a, b) => a.name.localeCompare(b.name))]
   const selectedTag = editedTags.find(tag => tag.name === selectedTagName)
 
   return (
@@ -36,10 +37,8 @@ export function TagSelector({
           aria-expanded={open}
           className={cn('h-8 w-full justify-between px-2 text-xs', className)}
         >
-          <div className="flex flex-1 items-center gap-2">
-            {selectedTag && (
-              <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: selectedTag.color }} />
-            )}
+          <div className="flex flex-1 items-center gap-1.5">
+            {selectedTag && <TagIndicator tagColor={selectedTag?.color} />}
             {selectedTag ? selectedTag.name : 'Select tag...'}
           </div>
           <ChevronsUpDown className="h-4 opacity-50" />
@@ -68,7 +67,7 @@ export function TagSelector({
                     setOpen(false)
                   }}
                 >
-                  <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: tag.color }} />
+                  <TagIndicator tagColor={tag.color} />
                   {tag.name}
                   <Check className={cn('ml-auto', selectedTagName === tag.name ? 'opacity-100' : 'opacity-0')} />
                 </CommandItem>

@@ -30,13 +30,14 @@ import { SidebarFilter } from '../hooks/useFilterSettings'
 import { TagData } from '../hooks/useTagStore'
 import { Chat } from '../interface'
 import { removeChat, toggleChatStatus, updateChatMeta } from '../lib/chats'
-import { cn, getLighterColor } from '../lib/utils'
+import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import { useAlertDialog } from './dialog-confirm'
 import { RenameDialog } from './dialog-rename'
 import { TagsDialog } from './dialog-tags'
 import { EmojiPickerButton } from './emoji-picker-button'
 import OverflowTooltip from './overflow-tooltip'
+import TagIndicator from './tag-indicator'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { Skeleton } from './ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip'
@@ -190,13 +191,7 @@ export default function SidebarGroupChats(props: {
                                       <TooltipProvider key={tag} delayDuration={1}>
                                         <Tooltip>
                                           <TooltipTrigger asChild>
-                                            <div
-                                              className="h-2 w-4 shrink-0 border rounded-full drop-shadow-md"
-                                              style={{
-                                                backgroundColor: getLighterColor(tagData?.color),
-                                                borderColor: getLighterColor(tagData?.color)
-                                              }}
-                                            ></div>
+                                            <TagIndicator tagColor={tagData?.color} />
                                           </TooltipTrigger>
                                           <TooltipContent className="flex flex-nowrap items-center gap-1.5 whitespace-nowrap">
                                             <Tag className="h-3 w-3" />

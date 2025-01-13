@@ -5,6 +5,7 @@ import { MoreHorizontal, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { useAlertDialog } from './dialog-confirm'
+import TagIndicator from './tag-indicator'
 
 interface TagItemProps {
   name: string
@@ -102,7 +103,7 @@ export function TagItem({
       }}
       className="group relative flex items-center gap-2"
     >
-      <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: tempColor }} />
+      <TagIndicator tagColor={tempColor} />
       <span>{name}</span>
       <div className="absolute right-2 flex items-center gap-1">
         {showRemove && (
