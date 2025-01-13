@@ -18,8 +18,8 @@ const buttonVariants = cva(
         link: '!h-auto !p-0 font-normal text-primary underline-offset-4 hover:underline'
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
+        default: 'h-9 px-4 py-2',
+        sm: 'h-8 rounded-md px-3',
         lg: 'h-11 rounded-md px-8',
         icon: 'group h-8 w-8 shrink-0 [&_svg]:size-4 [&_svg]:transition-transform [&_svg]:active:scale-90',
         iconBig:

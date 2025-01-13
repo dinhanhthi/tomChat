@@ -125,7 +125,7 @@ export default function AppSidebar() {
             )}
 
             {!chats?.length && (
-              <div className="flex h-full items-center justify-center px-6 text-slate-400">No chat saved!</div>
+              <div className="flex h-full items-center justify-center px-6 text-slate-400">No chat found!</div>
             )}
           </>
         )}

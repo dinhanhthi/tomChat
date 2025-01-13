@@ -128,3 +128,21 @@ export async function updateHasNoTagProp() {
 
   toast.success('Updated hasNoTag prop!')
 }
+
+export async function bulkUpdateChatProperty(field: keyof Chat, value: any) {
+  const chatsToUpdate = await db.chats.toArray()
+
+  if (!chatsToUpdate.length) {
+    toast.info('No chats found!')
+    return
+  }
+
+  await db.chats.bulkUpdate(
+    chatsToUpdate.map(chat => ({
+      key: chat.id,
+      changes: { [field]: value }
+    }))
+  )
+
+  toast.success(`Bulk updated ${field} property!`)
+}
