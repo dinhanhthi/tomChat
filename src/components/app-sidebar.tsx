@@ -11,6 +11,7 @@ import { groupChatsByDates } from '../lib/utils'
 import XChatBrand from './brand'
 import FilterButton from './sidebar-filter'
 import SidebarGroupChats, { SidebarGroupChatsSkeleton } from './sidebar-group-chats'
+import { TagSelector } from './tag-selector'
 import { Button } from './ui/button'
 
 export const SPECIAL_HISTORY_LABELS: Record<string, string> = {
@@ -25,9 +26,10 @@ export default function AppSidebar() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const { settings, updateSettings, isChanged } = useFilterSettings()
+  const [selectedTagName, setSelectedTagName] = useState<string>('')
   const { chats } = useChats({
     onlyArchived: settings.onlyArchived,
-    tagName: settings.showByTags ? 'dinhanhthi' : undefined
+    tagName: settings.showByTags && selectedTagName ? selectedTagName : undefined
   })
   const { tags: availableTags } = useTagStore()
 
@@ -63,6 +65,7 @@ export default function AppSidebar() {
 
       <SidebarSeparator />
 
+      {/* Only archived */}
       {settings.onlyArchived && (
         <>
           <div className="select-none px-4 py-2 text-xs text-muted-foreground">
@@ -71,6 +74,28 @@ export default function AppSidebar() {
               Reset
             </Button>
             .
+          </div>
+          <SidebarSeparator />
+        </>
+      )}
+
+      {/* Show by tags */}
+      {settings.showByTags && (
+        <>
+          <div className="flex flex-col gap-2 px-2 py-4">
+            <div className="select-none pl-1 text-xs text-muted-foreground">
+              Chats are filtered by tag.{' '}
+              <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ showByTags: false })}>
+                Reset
+              </Button>
+              .
+            </div>
+            {/* <SidebarSeparator /> */}
+            <TagSelector
+              tags={availableTags}
+              selectedTagName={selectedTagName}
+              setSelectedTagName={setSelectedTagName}
+            />
           </div>
           <SidebarSeparator />
         </>

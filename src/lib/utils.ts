@@ -212,6 +212,7 @@ function hexToRgba(color: string, opacity: number = 0.1): string {
   return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`
 }
 
-export function getLighterColor(color: string, opacity: number = 0.2): string {
+export function getLighterColor(color?: string, opacity: number = 0.2) {
+  if (!color) return color
   return hexToRgba(color, opacity)
 }

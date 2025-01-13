@@ -107,3 +107,24 @@ export async function updateTagsProp() {
 
   toast.success('Updated tags prop!')
 }
+
+export async function updateHasNoTagProp() {
+  const chatsToUpdate = await db.chats.toArray()
+
+  if (!chatsToUpdate.length) {
+    toast.info('No chats found!')
+    return
+  }
+
+  await db.chats.bulkUpdate(
+    chatsToUpdate.map(chat => {
+      const hasNoTag = !chat.tags || chat.tags.length === 0 ? 1 : 0
+      return {
+        key: chat.id,
+        changes: { hasNoTag }
+      }
+    })
+  )
+
+  toast.success('Updated hasNoTag prop!')
+}
