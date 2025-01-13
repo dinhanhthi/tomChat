@@ -38,6 +38,7 @@ import { TagsDialog } from './dialog-tags'
 import { EmojiPickerButton } from './emoji-picker-button'
 import OverflowTooltip from './overflow-tooltip'
 import TagIndicator from './tag-indicator'
+import { Button } from './ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { Skeleton } from './ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip'
@@ -190,8 +191,10 @@ export default function SidebarGroupChats(props: {
                                     return (
                                       <TooltipProvider key={tag} delayDuration={1}>
                                         <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <TagIndicator tagColor={tagData?.color} />
+                                          <TooltipTrigger>
+                                            <Button onClick={handleTagIndicatorClicked} asChild>
+                                              <TagIndicator tagColor={tagData?.color} />
+                                            </Button>
                                           </TooltipTrigger>
                                           <TooltipContent className="flex flex-nowrap items-center gap-1.5 whitespace-nowrap">
                                             <Tag className="h-3 w-3" />

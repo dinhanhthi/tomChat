@@ -14,11 +14,10 @@ export function TagBadge({ name, color, onRemove, className }: TagBadgeProps) {
   return (
     <Badge
       variant="secondary"
-      className={`flex items-center gap-1.5 border-[0.5px] bg-transparent font-normal ${className}`}
+      className={`flex items-center gap-1.5 border-[0.5px] bg-transparent text-slate-700 font-normal ${className}`}
       style={{
-        // backgroundColor: getLighterColor(color),
-        color,
-        borderColor: getLighterColor(color)
+        backgroundColor: getLighterColor(color, 0.25),
+        borderColor: getLighterColor(color, 0.15)
       }}
     >
       <TagIndicator tagColor={color} />

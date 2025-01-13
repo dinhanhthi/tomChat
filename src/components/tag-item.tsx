@@ -4,6 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { MoreHorizontal, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
+import { cn } from '../lib/utils'
 import { useAlertDialog } from './dialog-confirm'
 import TagIndicator from './tag-indicator'
 
@@ -117,12 +118,14 @@ export function TagItem({
             <Trash2 className="h-4 w-4 text-muted-foreground hover:text-foreground" />
           </Button>
         )}
-        <Popover open={colorPickerOpen && isSelected} onOpenChange={handlePopoverOpenChange}>
+        <Popover modal={true} open={colorPickerOpen && isSelected} onOpenChange={handlePopoverOpenChange}>
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="invisible h-6 w-6 group-hover:visible"
+              className={cn('invisible h-6 w-6 group-hover:visible', {
+                visible: colorPickerOpen && isSelected
+              })}
               onMouseDown={e => e.preventDefault()}
               onClick={handlePopoverTriggerClick}
             >
