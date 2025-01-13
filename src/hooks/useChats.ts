@@ -26,12 +26,17 @@ export const useChats = ({
         filteredChats = chatTable.where('hasNoTag').equals(1)
       }
     } else {
+      // filteredChats = onlyArchived
+      //   ? chatTable.where('archived').equals('true')
+      //   : alsoArchived
+      //     ? chatTable.where('archived').anyOf(['true', 'false'])
+      //     : chatTable.where('archived').equals('false')
       filteredChats = onlyArchived
         ? chatTable.where('archived').equals('true')
-        : alsoArchived
-          ? chatTable.where('archived').anyOf(['true', 'false'])
-          : chatTable.where('archived').equals('false')
+        : chatTable.where('archived').anyOf(['true', 'false'])
     }
+
+    filteredChats = filteredChats.and(chat => (alsoArchived ? true : chat.archived === 'false'))
 
     if (limit) {
       filteredChats = filteredChats.limit(limit)

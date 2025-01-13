@@ -69,7 +69,7 @@ export default function AppSidebar() {
       {/* Only archived */}
       {settings.onlyArchived && (
         <>
-          <div className="inline-flex select-none items-center gap-1 px-2 py-3 text-xs text-muted-foreground">
+          <div className="inline-flex select-none items-center gap-1 p-3 text-xs text-muted-foreground">
             <Archive className="inline-block h-3 w-3" />
             Only archived chats are shown.{' '}
             <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ onlyArchived: false })}>
@@ -82,7 +82,7 @@ export default function AppSidebar() {
 
       {!settings.onlyArchived && settings.alsoArchived && (
         <>
-          <div className="inline-flex select-none items-center gap-1 px-2 py-3 text-xs text-muted-foreground">
+          <div className="inline-flex select-none items-center gap-1 p-3 text-xs text-muted-foreground">
             <Archive className="inline-block h-3 w-3" />
             Also show archived chats.{' '}
             <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ alsoArchived: false })}>
@@ -96,8 +96,8 @@ export default function AppSidebar() {
       {/* Show by tags */}
       {settings.showByTags && (
         <>
-          <div className="flex flex-col gap-2 px-2 py-3">
-            <div className="inline-flex select-none items-center gap-1 pl-1 text-xs text-muted-foreground">
+          <div className="flex flex-col gap-2 p-3">
+            <div className="inline-flex select-none items-center gap-1 text-xs text-muted-foreground">
               <Tag className="inline-block h-3 w-3" />
               Chats are filtered by tag.{' '}
               <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ showByTags: false })}>
