@@ -42,10 +42,24 @@ export interface ButtonProps
   asChild?: boolean
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
   tooltipPosition?: 'top' | 'right' | 'bottom' | 'left'
+  delayDuration?: number
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, inSidebar, asChild = false, tooltip, tooltipPosition = 'right', ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      inSidebar,
+      asChild = false,
+      tooltip,
+      tooltipPosition = 'right',
+      delayDuration = 100,
+      ...props
+    },
+    ref
+  ) => {
     const Comp = asChild ? Slot : 'button'
 
     const button = <Comp className={cn(buttonVariants({ variant, size, inSidebar, className }))} ref={ref} {...props} />
@@ -61,7 +75,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     return (
-      <Tooltip>
+      <Tooltip delayDuration={delayDuration}>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent side={tooltipPosition} align="center" {...tooltip} />
       </Tooltip>

@@ -1,6 +1,6 @@
 'use client'
 
-import { CircleUserRound, Edit, MessageSquareShare, Pencil, Search, SlidersHorizontal } from 'lucide-react'
+import { CircleUserRound, Edit, MessageSquareShare, Pencil, Search, SlidersHorizontal, Settings, LogIn, HelpCircle } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChatClient } from '../hooks/useChatClient'
@@ -16,6 +16,13 @@ import { useSearchDialogStore } from './search-dialog-wrapper'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { SidebarTrigger } from './ui/sidebar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu'
+import { UserMenu } from './user-menu'
 
 export default function AppHeader() {
   const router = useRouter()
@@ -132,9 +139,7 @@ export default function AppHeader() {
           <Button variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
             <SlidersHorizontal />
           </Button>
-          <Button variant="ghost" size="iconBig" tooltip="Profile" tooltipPosition="bottom">
-            <CircleUserRound />
-          </Button>
+          <UserMenu />
         </div>
       </header>
       <RenameDialog
