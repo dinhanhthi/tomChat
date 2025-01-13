@@ -165,7 +165,7 @@ export default function SidebarGroupChats(props: {
                         )}
                         asChild
                       >
-                        <Link className="flex h-fit flex-row !items-start" href={`/chat/${chat.id}`}>
+                        <Link className="z-40 flex h-fit flex-row !items-start" href={`/chat/${chat.id}`}>
                           <EmojiPickerButton
                             popupOpen={emojiPickerChat?.id === chat.id}
                             onPopupOpenChange={() => setEmojiPickerChat(null)}
@@ -182,7 +182,7 @@ export default function SidebarGroupChats(props: {
                               delayDuration={700}
                             />
                             {settings?.showTagIndicators && chatTags && chatTags?.length > 0 && (
-                              <div className="flex w-full flex-row items-center gap-2 overflow-hidden hover:overflow-auto [&::-webkit-scrollbar]:hidden">
+                              <div className="z-50 flex w-full flex-row items-center gap-2 overflow-hidden hover:overflow-auto [&::-webkit-scrollbar]:hidden">
                                 {[...chatTags]
                                   .sort((a, b) => a.localeCompare(b))
                                   .map(tag => {
@@ -190,7 +190,7 @@ export default function SidebarGroupChats(props: {
                                     return (
                                       <TooltipProvider key={tag} delayDuration={1}>
                                         <Tooltip>
-                                          <TooltipTrigger asChild>
+                                          <TooltipTrigger className="z-50">
                                             <TagIndicator tagColor={tagData?.color} />
                                           </TooltipTrigger>
                                           <TooltipContent className="flex flex-nowrap items-center gap-1.5 whitespace-nowrap">

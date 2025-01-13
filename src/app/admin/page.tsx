@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { bulkUpdateChatProperty } from '@/lib/chats'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ControllerRenderProps, useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import * as z from 'zod'
 
 const FormSchema = z.object({
@@ -46,8 +45,8 @@ export default function AdminPage() {
     <div className="container mx-auto flex flex-col gap-4 p-8">
       <div>Use this page to interact directly with the database.</div>
 
-      <section className="rounded-xl border border-gray-200 p-4 flex flex-col gap-4">
-        <div>Modify the chat property</div>
+      <section className="flex flex-col gap-4 rounded-xl border border-gray-200 p-4">
+        <h2 className="text-lg font-medium">Modify value of a property for all chats</h2>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -66,8 +65,8 @@ export default function AdminPage() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                    <SelectItem value="archived">archived</SelectItem>
-                    <SelectItem value="hasNoTag">hasNoTag</SelectItem>
+                      <SelectItem value="archived">archived</SelectItem>
+                      <SelectItem value="hasNoTag">hasNoTag</SelectItem>
                       <SelectItem value="pinned">pinned</SelectItem>
                       <SelectItem value="tags">tags</SelectItem>
                     </SelectContent>
@@ -83,12 +82,18 @@ export default function AdminPage() {
                 <FormItem className="flex min-w-0 flex-1 flex-row items-center gap-4">
                   <FormLabel className="whitespace-nowrap">New Value</FormLabel>
                   <FormControl>
-                    <Input className="!mt-0 h-9" placeholder="Enter new value" autoComplete="false" {...field} />
+                    <Input
+                      autoComplete="off"
+                      className="!mt-0 h-9"
+                      placeholder="Enter new value"
+                      auto-complete="false"
+                      {...field}
+                    />
                   </FormControl>
                 </FormItem>
               )}
             />
-            <Button className='h-9 rounded-3xl' variant="default" type="submit">
+            <Button className="h-9 rounded-3xl" variant="default" type="submit">
               Update
             </Button>
           </form>
