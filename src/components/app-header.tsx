@@ -143,7 +143,7 @@ export default function AppHeader() {
           <Button variant="ghost" size="iconBig" tooltip="Share this chat" tooltipPosition="bottom">
             <MessageSquareShare />
           </Button>
-          <Button variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
+          <Button variant="ghost" size="iconBig" tooltip="xChat Setting" tooltipPosition="bottom">
             <SlidersHorizontal />
           </Button>
           <UserMenu />

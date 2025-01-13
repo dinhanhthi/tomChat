@@ -52,6 +52,10 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
 
   // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
   const { messages, setMessages, input, setInput, handleSubmit, isLoading, stop } = useChat({
+    body: {
+      // apiKey: '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',
+      apiKey: 'xxx'
+    },
     onFinish: async (message, options) => {
       await addMessage(chatId, {
         ...message,
