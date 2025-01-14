@@ -1,4 +1,4 @@
-# 🦐 xChat
+# 🦐 tomChat
 
 An UI to run seamlessly LLM services (OpenAI, Claude, Gemini, Mistral,...)
 

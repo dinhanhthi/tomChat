@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { generatePastelColor } from '../lib/utils'
 
-const TAGS_STORAGE_KEY = 'xchat-tags'
+const TAGS_STORAGE_KEY = 'tomChat-tags'
 
 export interface TagData {
   name: string

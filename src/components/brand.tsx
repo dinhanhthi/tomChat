@@ -1,8 +1,9 @@
 import Image from 'next/image'
 import Logo from '../../public/logo.svg'
+import { BRAND_NAME } from '../lib/constants'
 import { cn } from '../lib/utils'
 
-export default function XChatBrand({
+export default function BrandLogoWithText({
   className = 'gap-1.5',
   size = 20,
   textClassName = 'text-sm',
@@ -26,13 +27,13 @@ export default function XChatBrand({
         className
       )}
     >
-      <Image src={Logo} alt="xChat" width={size} height={size} className="shrink-0" />
+      <Image src={Logo} alt="tomChat" width={size} height={size} className="shrink-0" />
       <div
         className={cn('font-medium text-sidebar-primary', textClassName, {
           'text-primary': colored
         })}
       >
-        xChat
+        {BRAND_NAME}
       </div>
     </div>
   )
