@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { useTagStore } from '../hooks/useTagStore'
 import { Chat } from '../interface'
 import { updateChatMeta } from '../lib/chats'
-import { generatePastelColor } from '../lib/utils'
+import { cn, generatePastelColor } from '../lib/utils'
 import { TagBadge } from './tag-badge'
 import { TagItem } from './tag-item'
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command'
@@ -190,38 +190,42 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
               onValueChange={setInputValue}
               onKeyDown={handleKeyDown}
             />
-            <CommandList>
-              <CommandEmpty>
-                {/*
-                  There is an error when we type space, the real create new tag item disappears and empty section shows up instead. this div is a fake only shown when a space is typed.
-                */}
-                <div className="p-1 text-foreground">
-                  <div className="group">
-                    <div
+            <CommandList className={cn({
+              'border-t': showCreateOption || availableTags.length > 0,
+            })}>
+              {showCreateOption && (
+                <>
+                  <CommandEmpty>
+                    {/*
+                There is an error when we type space, the real create new tag item disappears and empty section shows up instead. this div is a fake only shown when a space is typed.
+              */}
+                    <div className="p-1 text-foreground">
+                      <div className="group">
+                        <div
+                          onSelect={() => handleSelectTag(inputValue)}
+                          className="relative flex cursor-default select-none items-start gap-2 rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+                          data-selected="true"
+                          data-value={inputValue}
+                          aria-selected="true"
+                        >
+                          <span className="whitespace-nowrap">Create new tag:</span>{' '}
+                          <span className="ml-1 font-medium">{inputValue}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CommandEmpty>
+
+                  <CommandGroup>
+                    <CommandItem
+                      value={inputValue}
                       onSelect={() => handleSelectTag(inputValue)}
-                      className="relative flex cursor-default select-none items-start gap-2 rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled=true]:pointer-events-none data-[selected='true']:bg-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
-                      data-selected="true"
-                      data-value={inputValue}
-                      aria-selected="true"
+                      className="items-start text-sm"
                     >
                       <span className="whitespace-nowrap">Create new tag:</span>{' '}
                       <span className="ml-1 font-medium">{inputValue}</span>
-                    </div>
-                  </div>
-                </div>
-              </CommandEmpty>
-
-              {showCreateOption && (
-                <CommandGroup>
-                  <CommandItem
-                    value={inputValue}
-                    onSelect={() => handleSelectTag(inputValue)}
-                    className="items-start text-sm"
-                  >
-                    <span className="whitespace-nowrap">Create new tag:</span>{' '}
-                    <span className="ml-1 font-medium">{inputValue}</span>
-                  </CommandItem>
-                </CommandGroup>
+                    </CommandItem>
+                  </CommandGroup>
+                </>
               )}
 
               {availableTags.length > 0 && (
