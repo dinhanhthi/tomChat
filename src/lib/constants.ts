@@ -1,3 +1,5 @@
+export const BRAND_NAME = 'tomChat'
+export const BRAND_DESCRIPTION = 'An UI to run seamlessly LLM services (OpenAI, Claude, Gemini, Mistral,...)'
 export const MODAL_BG_CLASS = 'bg-black/30'
 export const MODAL_RADIUS = '!rounded-2xl'
 export const N_WELCOME_SEARCH_RESULTS = 7

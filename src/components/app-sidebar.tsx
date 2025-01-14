@@ -8,7 +8,7 @@ import { useChats } from '../hooks/useChats'
 import { useFilterSettings } from '../hooks/useFilterSettings'
 import { useTagStore } from '../hooks/useTagStore'
 import { groupChatsByDates } from '../lib/utils'
-import XChatBrand from './brand'
+import BrandLogoWithText from './brand'
 import FilterButton from './sidebar-filter'
 import SidebarGroupChats, { SidebarGroupChatsSkeleton } from './sidebar-group-chats'
 import { TagSelector } from './tag-selector'
@@ -57,7 +57,7 @@ export default function AppSidebar() {
       <SidebarHeader className="justify-betweens flex h-14 flex-row gap-2">
         <div className="flex flex-1 flex-row items-center gap-2 px-2">
           <button onClick={backToHome}>
-            <XChatBrand size={24} className="gap-1.5" wrap={false} colored={true} />
+            <BrandLogoWithText size={24} className="gap-1.5" wrap={false} colored={true} />
           </button>
           <div className="rounded-lg border border-slate-300 px-2 font-mono text-[0.6rem] text-slate-600">v0.0.0</div>
         </div>
@@ -72,7 +72,11 @@ export default function AppSidebar() {
           <div className="inline-flex select-none items-center gap-1 p-3 text-xs text-muted-foreground">
             <Archive className="inline-block h-3 w-3" />
             Only archived chats are shown.{' '}
-            <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ onlyArchived: false })}>
+            <Button
+              variant={'link'}
+              className="text-xs"
+              onClick={() => updateSettings({ onlyArchived: false, alsoArchived: false })}
+            >
               Reset
             </Button>
           </div>
