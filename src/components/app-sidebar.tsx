@@ -52,6 +52,8 @@ export default function AppSidebar() {
     router.push('/')
   }
 
+  const showHeaderStatus = settings.onlyArchived || settings.alsoArchived || settings.showByTags
+
   return (
     <Sidebar className="x-min-hw-0" collapsible="offcanvas">
       <SidebarHeader className="justify-betweens flex h-14 flex-row gap-2">
@@ -64,58 +66,53 @@ export default function AppSidebar() {
         <FilterButton settings={settings} isChanged={isChanged} onSettingsChange={updateSettings} />
       </SidebarHeader>
 
-      <SidebarSeparator />
+      {!showHeaderStatus && <SidebarSeparator />}
 
-      {/* Only archived */}
-      {settings.onlyArchived && (
-        <>
-          <div className="inline-flex select-none items-center gap-1 p-3 text-xs text-muted-foreground">
-            <Archive className="inline-block h-3 w-3" />
-            Only archived chats are shown.{' '}
-            <Button
-              variant={'link'}
-              className="text-xs"
-              onClick={() => updateSettings({ onlyArchived: false, alsoArchived: false })}
-            >
-              Reset
-            </Button>
-          </div>
-          <SidebarSeparator />
-        </>
-      )}
-
-      {!settings.onlyArchived && settings.alsoArchived && (
-        <>
-          <div className="inline-flex select-none items-center gap-1 p-3 text-xs text-muted-foreground">
-            <Archive className="inline-block h-3 w-3" />
-            Also show archived chats.{' '}
-            <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ alsoArchived: false })}>
-              Reset
-            </Button>
-          </div>
-          <SidebarSeparator />
-        </>
-      )}
-
-      {/* Show by tags */}
-      {settings.showByTags && (
-        <>
-          <div className="flex flex-col gap-2 p-3">
-            <div className="inline-flex select-none items-center gap-1 text-xs text-muted-foreground">
-              <Tag className="inline-block h-3 w-3" />
-              Chats are filtered by tag.{' '}
-              <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ showByTags: false })}>
+      {showHeaderStatus && (
+        <div className="border-y border-sidebar-border bg-orange-50 flex flex-col divide-y">
+          {/* Only archived */}
+          {settings.onlyArchived && (
+            <div className="inline-flex select-none items-center gap-1 p-3 text-xs text-muted-foreground">
+              <Archive className="inline-block h-3 w-3" />
+              Only archived chats are shown.{' '}
+              <Button
+                variant={'link'}
+                className="text-xs"
+                onClick={() => updateSettings({ onlyArchived: false, alsoArchived: false })}
+              >
                 Reset
               </Button>
             </div>
-            <TagSelector
-              tags={availableTags}
-              selectedTagName={selectedTagName}
-              setSelectedTagName={setSelectedTagName}
-            />
-          </div>
-          <SidebarSeparator />
-        </>
+          )}
+
+          {!settings.onlyArchived && settings.alsoArchived && (
+            <div className="inline-flex select-none items-center gap-1 p-3 text-xs text-muted-foreground">
+              <Archive className="inline-block h-3 w-3" />
+              Also show archived chats.{' '}
+              <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ alsoArchived: false })}>
+                Reset
+              </Button>
+            </div>
+          )}
+
+          {/* Show by tags */}
+          {settings.showByTags && (
+            <div className="flex flex-col gap-2 p-3">
+              <div className="inline-flex select-none items-center gap-1 text-xs text-muted-foreground">
+                <Tag className="inline-block h-3 w-3" />
+                Chats are filtered by tag.{' '}
+                <Button variant={'link'} className="text-xs" onClick={() => updateSettings({ showByTags: false })}>
+                  Reset
+                </Button>
+              </div>
+              <TagSelector
+                tags={availableTags}
+                selectedTagName={selectedTagName}
+                setSelectedTagName={setSelectedTagName}
+              />
+            </div>
+          )}
+        </div>
       )}
 
       <SidebarContent>

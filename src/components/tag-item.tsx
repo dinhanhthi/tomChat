@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { CommandItem } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { MoreHorizontal, Trash2 } from 'lucide-react'
+import { MoreVertical, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 import { cn } from '../lib/utils'
@@ -123,13 +123,14 @@ export function TagItem({
             <Button
               variant="ghost"
               size="icon"
-              className={cn('invisible h-6 w-6 group-hover:visible', {
-                visible: colorPickerOpen && isSelected
+              className={cn('invisible h-6 w-6 hover:bg-white group-hover:visible', {
+                visible: colorPickerOpen && isSelected,
+                'bg-white': colorPickerOpen && isSelected
               })}
               onMouseDown={e => e.preventDefault()}
               onClick={handlePopoverTriggerClick}
             >
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreVertical className="h-4 w-4" />
             </Button>
           </PopoverTrigger>
           <PopoverContent

@@ -13,12 +13,12 @@ import {
 import {
   Archive,
   ArchiveX,
+  EllipsisVertical,
   MessageSquareShare,
   MoreHorizontal,
   Pencil,
   Pin,
   PinOff,
-  Settings2,
   Tag,
   Trash2
 } from 'lucide-react'
@@ -216,8 +216,10 @@ export default function SidebarGroupChats(props: {
                     onOpenChange={() => setDropdownOpen(open => (open ? null : chat))}
                   >
                     <DropdownMenuTrigger asChild>
-                      <SidebarMenuAction showOnHover className={cn('top-1 z-20 h-6 w-6 bg-white hover:!bg-white')}>
-                        <Settings2 />
+                      <SidebarMenuAction showOnHover className={cn('top-1 z-20 h-6 w-6 hover:!bg-white', {
+                        'bg-white': dropdownOpen?.id === chat.id
+                      })}>
+                        <EllipsisVertical />
                         <span className="sr-only">More</span>
                       </SidebarMenuAction>
                     </DropdownMenuTrigger>
