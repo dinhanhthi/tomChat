@@ -14,7 +14,7 @@
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
   "trailingComma": "none",
-  "tailwindStylesheet": "./src/app/globals.scss",
+  "tailwindStylesheet": "./src/styles/globals.scss",
   "tailwindConfig": "./tailwind.config.ts",
   "tailwindAttributes": ["textClassName", "overlayClassName"],
   "tailwindFunctions": ["cn", "clsx", "cva"]

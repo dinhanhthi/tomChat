@@ -1,10 +1,17 @@
 'use client'
 
+import Placeholder from '@tiptap/extension-placeholder'
+import { EditorContent, useEditor } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
 import { UseChatHelpers } from 'ai/react/dist'
 import { Globe, Paperclip } from 'lucide-react'
-import { useRef } from 'react'
-import TextareaAutosize from 'react-textarea-autosize'
+import dynamic from 'next/dynamic'
 import { v4 as uuidv4 } from 'uuid'
+
+import { Extension } from '@tiptap/core'
+
+
+import Typography from '@tiptap/extension-typography'
 import { generateTitleFromUserMessage } from '../app/actions'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
@@ -12,11 +19,51 @@ import { TokenIcon } from '../icons/TokenIcon'
 import { addMessage, createChat } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
+import '../styles/tiptap.scss'
 import Container from './container'
 import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
 import SimpleTooltip from './ui/simple-tooltip'
+
+const ShiftEnterExtension = Extension.create({
+  name: 'shiftEnterHandler',
+  addKeyboardShortcuts() {
+    return {
+      'Shift-Enter': () => {
+        if (this.editor.isActive('codeBlock')) {
+          const isEmpty = this.editor.state.selection.$head.parent.content.size === 0
+          
+          if (isEmpty) {
+            return this.editor.commands.exitCode()
+          }
+          
+          return this.editor.commands.insertContent('\n')
+        }
+
+        if (this.editor.isActive('listItem')) {
+          const isEmpty = this.editor.state.selection.$head.parent.content.size === 0
+          
+          if (isEmpty) {
+            this.editor.commands.liftListItem('listItem')
+            return true
+          }
+          
+          this.editor.commands.splitListItem('listItem')
+          return true
+        }
+        
+        // For regular paragraphs and other blocks
+        return this.editor.commands.splitBlock()
+      }
+    }
+  }
+
+})
+
+const DynamicEditorContent = dynamic(() => Promise.resolve(EditorContent), {
+  ssr: false
+})
 
 export default function AppInputMsg(props: {
   chatId: string
@@ -33,7 +80,33 @@ export default function AppInputMsg(props: {
 }) {
   const { chatId, className, useChatParams } = props
   const { setActiveId } = useChatStore()
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const editor = useEditor({
+    // https://tiptap.dev/docs/editor/extensions/functionality/starterkit
+    extensions: [
+      StarterKit.configure({
+        codeBlock: {
+          exitOnArrowDown: true
+        },
+        heading: {
+          levels: [1, 2, 3],
+        }
+      }),
+      ShiftEnterExtension,
+      // CustomListItem,
+      Typography,
+      Placeholder.configure({
+        placeholder: 'Ask something...'
+      })
+    ],
+
+    content: useChatParams.input,
+    onUpdate: ({ editor }) => {
+      const content = editor.getText()
+      useChatParams.setInput(content)
+    },
+    immediatelyRender: false // SSR
+  })
 
   const { chat } = useChatClient(chatId)
 
@@ -89,19 +162,10 @@ export default function AppInputMsg(props: {
           onSubmit={handleClientSubmit}
           className="x-flex-1 flex w-full flex-col overflow-hidden rounded-3xl border-gray-200 bg-gray-100"
         >
-          <TextareaAutosize
-            rows={1}
-            autoComplete="off"
-            tabIndex={0}
-            autoCorrect="off"
-            ref={textareaRef}
-            value={useChatParams.input}
-            onChange={handleClientInputChange}
-            className="max-h-[calc(25dvh)] min-h-6 resize-none overflow-auto bg-transparent p-2 pl-4 pt-4 focus-visible:outline-none"
-            placeholder="Ask something..."
-            onKeyDown={handleKeyDown}
-            autoFocus
-          />
+          <div className="max-h-[calc(25dvh)] min-h-6 overflow-auto bg-transparent p-2 pl-4 pt-4">
+            <DynamicEditorContent editor={editor} className="pM-prose max-w-none focus-visible:outline-none" />
+          </div>
+
           <div className="flex flex-row items-center justify-between gap-4 p-2 pr-3 pt-0">
             <div className="flex flex-row items-center">
               {/* Attach */}
