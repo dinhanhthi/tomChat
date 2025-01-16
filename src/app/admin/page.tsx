@@ -9,18 +9,7 @@ import { bulkUpdateChatProperty } from '@/lib/chats'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ControllerRenderProps, useForm } from 'react-hook-form'
 import * as z from 'zod'
-
-// Type-safe property selection
-const CHAT_PROPERTIES = ['archived', 'hasNoTag', 'pinned', 'tags'] as const
-type ChatProperty = (typeof CHAT_PROPERTIES)[number]
-
-// Value types corresponding to Chat properties
-type PropertyValues = {
-  archived: 'true' | 'false'
-  hasNoTag: 1 | 0
-  pinned: 'true' | 'false'
-  tags: string[]
-}
+import TagIndicator from '../../components/tag-indicator'
 
 const FormSchema = z.discriminatedUnion('property', [
   z.object({
@@ -45,11 +34,7 @@ type FormValues = z.infer<typeof FormSchema>
 
 export default function AdminPage() {
   const form = useForm<FormValues>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      property: 'archived',
-      value: 'false'
-    }
+    resolver: zodResolver(FormSchema)
   })
   const { tags } = useTagStore()
   const selectedProperty = form.watch('property')
@@ -83,49 +68,61 @@ export default function AdminPage() {
       case 'archived':
       case 'pinned':
         return (
-          <Select onValueChange={field.onChange} value={field.value}>
-            <FormControl>
-              <SelectTrigger className="!mt-0 h-9 w-fit gap-4">
-                <SelectValue placeholder="Select a value" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectItem value="true">true</SelectItem>
-              <SelectItem value="false">false</SelectItem>
-            </SelectContent>
-          </Select>
+          <FormItem className="flex flex-row items-center gap-4">
+            <FormLabel className="whitespace-nowrap">Value</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger className="!mt-0 h-9 w-fit gap-4">
+                  <SelectValue placeholder="Select a value" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="true">true</SelectItem>
+                <SelectItem value="false">false</SelectItem>
+              </SelectContent>
+            </Select>
+          </FormItem>
         )
       case 'hasNoTag':
         return (
-          <Select onValueChange={field.onChange} value={field.value}>
-            <FormControl>
-              <SelectTrigger className="!mt-0 h-9 w-fit gap-4">
-                <SelectValue placeholder="Select a value" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectItem value="1">1</SelectItem>
-              <SelectItem value="0">0</SelectItem>
-            </SelectContent>
-          </Select>
+          <FormItem className="flex flex-row items-center gap-4">
+            <FormLabel className="whitespace-nowrap">Value</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger className="!mt-0 h-9 w-fit gap-4">
+                  <SelectValue placeholder="Select a value" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="0">0</SelectItem>
+              </SelectContent>
+            </Select>
+          </FormItem>
         )
       case 'tags':
         return (
-          <Select onValueChange={field.onChange} value={field.value}>
-            <FormControl>
-              <SelectTrigger className="!mt-0 h-9 w-fit gap-4">
-                <SelectValue placeholder="Select a value" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectItem value="empty">Empty</SelectItem>
-              {tags.map(tag => (
-                <SelectItem key={tag.name} value={tag.name}>
-                  {tag.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <FormItem className="flex flex-row items-center gap-4">
+            <FormLabel className="whitespace-nowrap">Value</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger className="!mt-0 h-9 w-fit gap-4">
+                  <SelectValue placeholder="Select a value" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="empty">Empty</SelectItem>
+                {tags.map(tag => (
+                  <SelectItem key={tag.name} value={tag.name}>
+                    <div className="flex flex-row flex-nowrap items-center gap-2">
+                      <TagIndicator tagColor={tag.color} />
+                      {tag.name}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FormItem>
         )
     }
   }
@@ -134,7 +131,7 @@ export default function AdminPage() {
     <div className="container mx-auto flex flex-col gap-8 p-8">
       <header>
         <h1 className="text-xl font-semibold">Admin Configs</h1>
-        <div className="text-sm text-muted-foreground mt-2">
+        <div className="mt-2 text-sm text-muted-foreground">
           This page provides direct database management capabilities. IMPORTANT: Actions performed here will modify the
           database directly. This interface is primarily intended for database restructuring and fixing legacy data
           formats in the conversation database.
@@ -155,10 +152,16 @@ export default function AdminPage() {
                 render={({ field }: { field: ControllerRenderProps<FormValues, 'property'> }) => (
                   <FormItem className="flex flex-row items-center gap-4">
                     <FormLabel className="whitespace-nowrap">Chat Property</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      onValueChange={value => {
+                        field.onChange(value)
+                        form.setValue('value', '')
+                      }}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger className="!mt-0 h-9 w-fit gap-4">
-                          <SelectValue placeholder="Select property" />
+                          <SelectValue placeholder="Select a property" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

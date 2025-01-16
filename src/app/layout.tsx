@@ -8,7 +8,7 @@ import { AlertDialogProvider } from '../components/dialog-confirm'
 import { SidebarProvider } from '../components/ui/sidebar'
 import { Toaster } from '../components/ui/sonner'
 import { cn } from '../lib/utils'
-import './globals.scss'
+import '../styles/globals.scss'
 import { BRAND_DESCRIPTION, BRAND_NAME } from '../lib/constants'
 
 const inter = Inter({ subsets: ['latin'] })
