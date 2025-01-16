@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .pM-p {
+    @apply my-1;
+  }
+
+  .pM-pre {
+    @apply rounded-lg bg-slate-500 text-sm text-white;
+  }
+
+  .pM-code {
+    @apply break-words rounded-md bg-gray-500 p-[1px_4px_2px_4px] font-mono text-[85%] font-normal before:content-[''] after:content-[''] text-white;
+  }
+
+  .pM-blockquote {
+    @apply border-l-2 border-slate-500 pl-2;
+
+    p:first-of-type::before {
+      content: '';
+    }
+
+    p:last-of-type::after {
+      content: '';
+    }
+  }
+
+  .pM-ul {
+    @apply list-disc;
+    li {
+      @apply ps-0;
+      &::marker {
+        @apply text-slate-500;
+      }
+    }
+  }
+
+  .pM-h1 {
+    @apply text-2xl font-semibold;
+  }
+
+  .pM-h2 {
+    @apply text-xl font-semibold;
+  }
+
+  .pM-h3 {
+    @apply text-lg;
+  }
+
+  .pM-img {
+    @apply mb-2;
+  }
+
+  .pM-prose {
+    @apply prose max-w-none p-0 leading-normal;
+    @apply prose-p:pM-p;
+    @apply prose-pre:pM-pre;
+    @apply prose-blockquote:pM-blockquote;
+    @apply prose-ul:pM-ul;
+    @apply prose-code:pM-code;
+    @apply prose-h1:pM-h1;
+    @apply prose-h2:pM-h2;
+    @apply prose-h3:pM-h3;
+    @apply prose-img:!pM-img;
+
+    .tiptap {
+      *:first-child {
+        @apply mt-0;
+      }
+      *:last-child {
+        @apply mb-0;
+      }
+      & > * {
+        @apply my-2;
+      }
+    }
+  }
+}
+
+.ProseMirror {
+  outline: none;
+
+  p.is-editor-empty {
+    margin: 0;
+
+    &:first-child::before {
+      color: #adb5bd;
+      content: attr(data-placeholder);
+      float: left;
+      height: 0;
+      pointer-events: none;
+    }
+  }
+}
+
+// Syntax highlighting
+.hljs {
+  &-comment,
+  &-quote {
+    color: #6a737d;
+  }
+
+  &-keyword,
+  &-selector-tag,
+  &-subst {
+    color: #d73a49;
+  }
+
+  &-literal,
+  &-number,
+  &-tag .hljs-attr,
+  &-template-variable,
+  &-variable {
+    color: #005cc5;
+  }
+
+  &-doctag,
+  &-string {
+    color: #032f62;
+  }
+
+  &-section,
+  &-selector-id,
+  &-title {
+    color: #6f42c1;
+  }
+}

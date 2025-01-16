@@ -1,5 +1,6 @@
-import { Send } from 'lucide-react'
+import { AudioLines, Send } from 'lucide-react'
 import { memo } from 'react'
+import { cn } from '../lib/utils'
 import { Button } from './ui/button'
 
 function PureSendButton({ submitForm, input }: { submitForm: () => void; input: string }) {
@@ -9,12 +10,15 @@ function PureSendButton({ submitForm, input }: { submitForm: () => void; input: 
         e.preventDefault()
         submitForm()
       }}
-      className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white hover:bg-primary hover:text-white [&_svg]:size-[15px]"
+      className={cn(
+        'flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white hover:bg-primary hover:text-white'
+      )}
       variant="ghost"
       size="iconBig"
-      disabled={input === ''}
+      tooltip={input !== '' ? 'Send message' : 'Use voice mode'}
     >
-      <Send className="mt-1 -rotate-45" />
+      {input !== '' && <Send className="mt-1 -rotate-45" />}
+      {input == '' && <AudioLines />}
     </Button>
   )
 }

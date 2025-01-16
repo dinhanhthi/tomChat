@@ -91,7 +91,7 @@ export default function AppHeader() {
         <div className="x-flex-1 group flex items-center gap-2">
           <div className="flex items-center">
             <SidebarTrigger
-              tooltip={`Toggle sidebar (${isMac ? '⌘' : 'Ctrl'}+B)`}
+              tooltip={`Toggle sidebar (${isMac ? '⌘' : 'Ctrl'}+⇧+B)`}
               tooltipPosition="bottom"
               className="group-data-[collapsible=icon]:opacity-0"
             />
