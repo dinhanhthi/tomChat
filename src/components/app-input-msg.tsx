@@ -12,6 +12,9 @@ import {
   Braces,
   Code,
   Globe,
+  Heading1,
+  Heading2,
+  Heading3,
   Italic,
   Library,
   List,
@@ -20,8 +23,10 @@ import {
   LucideIcon,
   Paperclip,
   Quote,
+  Redo,
   Strikethrough,
   Underline,
+  Undo,
   X
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
@@ -43,7 +48,6 @@ import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
 import SimpleTooltip from './ui/simple-tooltip'
-import styles from '../styles/toolbar.module.css'
 
 const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
@@ -107,6 +111,8 @@ export default function AppInputMsg(props: {
   const { setActiveId } = useChatStore()
   const [pastedImages, setPastedImages] = useState<PastedImage[]>([])
   const [showInputTools, setShowInputTools] = useState(false)
+  const [searchEnabled, setSearchEnabled] = useState(false)
+  const [showPromptCollection, setShowPromptCollection] = useState(false)
 
   const editor = useEditor({
     // https://tiptap.dev/docs/editor/extensions/functionality/starterkit
@@ -236,15 +242,19 @@ export default function AppInputMsg(props: {
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
       <div className="w-0"></div>
       <div className="x-flex-1 flex flex-col items-center">
-        <div className={styles.toolbarContainer}>
+        <div className="h-11 w-full overflow-hidden">
           <div
-            className={cn(
-              styles.toolbar,
-              'w-full px-5',
-              showInputTools ? styles.toolbarVisible : styles.toolbarHidden
-            )}
+            className={cn('w-full origin-bottom px-5 transition-all duration-200', {
+              'translate-y-full opacity-0': !showInputTools,
+              'translate-y-0 opacity-100': showInputTools
+            })}
           >
             <div className="flex w-full flex-row items-center gap-2 rounded-t-xl border-slate-200 bg-gray-100 p-2">
+              <TextToolButton icon={Undo} onClick={() => {}} tooltip="Undo" />
+              <TextToolButton icon={Redo} onClick={() => {}} tooltip="Redo" />
+              <TextToolButton icon={Heading1} onClick={() => {}} tooltip="Heading H1" />
+              <TextToolButton icon={Heading2} onClick={() => {}} tooltip="Heading H2" />
+              <TextToolButton icon={Heading3} onClick={() => {}} tooltip="Heading H3" />
               <TextToolButton icon={Bold} onClick={() => {}} tooltip="Bold" />
               <TextToolButton icon={Italic} onClick={() => {}} tooltip="Italic" />
               <TextToolButton icon={Underline} onClick={() => {}} tooltip="Underline" />
@@ -263,11 +273,11 @@ export default function AppInputMsg(props: {
         >
           {/* Image previews */}
           {pastedImages.length > 0 && (
-            <div className="flex flex-wrap gap-2 overflow-hidden rounded-tl-2xl px-2 pt-2">
+            <div className="flex w-full gap-2 overflow-auto rounded-tl-2xl px-2 pb-2 pt-2">
               {pastedImages.map(image => (
                 <div
                   key={image.id}
-                  className="group relative h-20 w-20 overflow-hidden rounded-lg border border-gray-200"
+                  className="group relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-gray-200"
                 >
                   {image.loading ? (
                     <div className="flex h-full w-full items-center justify-center bg-gray-100">
@@ -289,71 +299,41 @@ export default function AppInputMsg(props: {
             </div>
           )}
 
-          <div className="max-h-[calc(25dvh)] min-h-6 overflow-auto bg-transparent p-2 pt-3">
+          <div className="max-h-[calc(25dvh)] min-h-6 overflow-auto bg-transparent p-2">
             <DynamicEditorContent editor={editor} className="pM-prose max-w-none focus-visible:outline-none" />
           </div>
 
           <div className="flex flex-row items-center justify-between gap-4 pr-1">
             <div className="flex flex-row items-center gap-1">
               {/* Attach */}
-              <Button
-                onClick={e => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                }}
-                className="rounded-xl rounded-bl-2xl hover:bg-gray-200 [&_svg]:size-[22px]"
-                variant="ghost"
-                size="iconBig"
-                tooltip="Attach files"
-                tooltipPosition="bottom"
-              >
-                <Paperclip />
-              </Button>
+              <FooterButton icon={Paperclip} onClick={() => {}} tooltip="Attach files" />
               {/* Web Search */}
-              <Button
-                onClick={e => {
-                  e.preventDefault()
-                  e.stopPropagation()
+              <FooterButton
+                icon={Globe}
+                onClick={() => {
+                  setSearchEnabled(!searchEnabled)
                 }}
-                className="rounded-xl hover:bg-gray-200 [&_svg]:size-[22px]"
-                variant="ghost"
-                size="iconBig"
                 tooltip="Search the web"
-                tooltipPosition="bottom"
-              >
-                <Globe />
-              </Button>
+                active={searchEnabled}
+              />
               {/* Text tools */}
-              <Button
-                onClick={e => {
-                  e.preventDefault()
-                  e.stopPropagation()
+              <FooterButton
+                icon={Baseline}
+                onClick={() => {
                   setShowInputTools(!showInputTools)
                 }}
-                className={cn('rounded-xl hover:bg-gray-200 [&_svg]:size-[22px]', {
-                  'bg-gray-200 text-primary hover:text-primary': showInputTools
-                })}
-                variant="ghost"
-                size="iconBig"
-                tooltip="Input tools"
-                tooltipPosition="bottom"
-              >
-                <Baseline />
-              </Button>
+                tooltip="Text tools"
+                active={showInputTools}
+              />
               {/* Prompt collection */}
-              <Button
-                onClick={e => {
-                  e.preventDefault()
-                  e.stopPropagation()
+              <FooterButton
+                icon={Library}
+                onClick={() => {
+                  setShowPromptCollection(!showPromptCollection)
                 }}
-                className="rounded-xl hover:bg-gray-200 [&_svg]:size-[22px]"
-                variant="ghost"
-                size="iconBig"
                 tooltip="Prompt collection"
-                tooltipPosition="bottom"
-              >
-                <Library />
-              </Button>
+                active={showPromptCollection}
+              />
             </div>
             <div className="flex h-full flex-row items-end pb-1">
               <SimpleTooltip text="Usage of this chat">
@@ -378,6 +358,43 @@ export default function AppInputMsg(props: {
         </div>
       </div>
     </Container>
+  )
+}
+
+const FooterButton = ({
+  icon: Icon,
+  onClick,
+  tooltip,
+  tooltipPosition = 'bottom',
+  className,
+  active
+}: {
+  icon: LucideIcon
+  onClick: (e: React.MouseEvent) => void
+  tooltip?: string
+  tooltipPosition?: 'top' | 'bottom' | 'left' | 'right'
+  className?: string
+  active?: boolean
+}) => {
+  return (
+    <Button
+      onClick={e => {
+        e.preventDefault()
+        e.stopPropagation()
+        onClick(e)
+      }}
+      className={cn(
+        'rounded-xl hover:bg-gray-200 [&_svg]:size-[22px]',
+        active && 'bg-gray-200 text-primary hover:text-primary',
+        className
+      )}
+      variant="ghost"
+      size="iconBig"
+      tooltip={tooltip}
+      tooltipPosition={tooltipPosition}
+    >
+      <Icon />
+    </Button>
   )
 }
 
