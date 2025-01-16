@@ -25,7 +25,6 @@ import {
   Quote,
   Redo,
   Strikethrough,
-  Underline,
   Undo,
   X
 } from 'lucide-react'
@@ -250,20 +249,95 @@ export default function AppInputMsg(props: {
             })}
           >
             <div className="flex w-full flex-row items-center gap-2 rounded-t-xl border-slate-200 bg-gray-100 p-2">
-              <TextToolButton icon={Undo} onClick={() => {}} tooltip="Undo" />
-              <TextToolButton icon={Redo} onClick={() => {}} tooltip="Redo" />
-              <TextToolButton icon={Heading1} onClick={() => {}} tooltip="Heading H1" />
-              <TextToolButton icon={Heading2} onClick={() => {}} tooltip="Heading H2" />
-              <TextToolButton icon={Heading3} onClick={() => {}} tooltip="Heading H3" />
-              <TextToolButton icon={Bold} onClick={() => {}} tooltip="Bold" />
-              <TextToolButton icon={Italic} onClick={() => {}} tooltip="Italic" />
-              <TextToolButton icon={Underline} onClick={() => {}} tooltip="Underline" />
-              <TextToolButton icon={Strikethrough} onClick={() => {}} tooltip="Strikethrough" />
-              <TextToolButton icon={Code} onClick={() => {}} tooltip="Mark as code" />
-              <TextToolButton icon={Braces} onClick={() => {}} tooltip="Code block" />
-              <TextToolButton icon={List} onClick={() => {}} tooltip="Bulleted list" />
-              <TextToolButton icon={ListOrdered} onClick={() => {}} tooltip="Numbered list list" />
-              <TextToolButton icon={Quote} onClick={() => {}} tooltip="Quote" />
+              <TextToolButton
+                icon={Undo}
+                onClick={() => editor?.chain().focus().undo().run()}
+                tooltip="Undo"
+                editor={editor}
+              />
+              <TextToolButton
+                icon={Redo}
+                onClick={() => editor?.chain().focus().redo().run()}
+                tooltip="Redo"
+                editor={editor}
+              />
+              <TextToolButton
+                icon={Heading1}
+                onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
+                tooltip="Heading H1"
+                active={editor?.isActive('heading', { level: 1 })}
+                editor={editor}
+              />
+              <TextToolButton
+                icon={Heading2}
+                onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+                tooltip="Heading H2"
+                active={editor?.isActive('heading', { level: 2 })}
+                editor={editor}
+              />
+              <TextToolButton
+                icon={Heading3}
+                onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
+                tooltip="Heading H3"
+                active={editor?.isActive('heading', { level: 3 })}
+                editor={editor}
+              />
+              <TextToolButton
+                icon={Bold}
+                onClick={() => editor?.chain().focus().toggleBold().run()}
+                tooltip="Bold"
+                active={editor?.isActive('bold')}
+                editor={editor}
+              />
+              <TextToolButton
+                icon={Italic}
+                onClick={() => editor?.chain().focus().toggleItalic().run()}
+                tooltip="Italic"
+                active={editor?.isActive('italic')}
+                editor={editor}
+              />
+              <TextToolButton
+                icon={Strikethrough}
+                onClick={() => editor?.chain().focus().toggleStrike().run()}
+                tooltip="Strikethrough"
+                active={editor?.isActive('strike')}
+                editor={editor}
+              />
+              <TextToolButton
+                icon={Code}
+                onClick={() => editor?.chain().focus().toggleCode().run()}
+                tooltip="Mark as code"
+                active={editor?.isActive('code')}
+                editor={editor}
+              />
+              <TextToolButton
+                icon={Braces}
+                onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
+                tooltip="Code block"
+                active={editor?.isActive('codeBlock')}
+                editor={editor}
+              />
+              <TextToolButton
+                icon={List}
+                onClick={() => editor?.chain().focus().toggleBulletList().run()}
+                tooltip="Bulleted list"
+                active={editor?.isActive('bulletList')}
+                editor={editor}
+              />
+              <TextToolButton
+                icon={ListOrdered}
+                onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+                tooltip="Numbered list"
+                active={editor?.isActive('orderedList')}
+                editor={editor}
+              />
+              <TextToolButton
+                icon={Quote}
+                onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+                tooltip="Quote"
+                active={editor?.isActive('blockquote')}
+                editor={editor}
+              />
             </div>
           </div>
         </div>
@@ -404,7 +478,8 @@ const TextToolButton = ({
   tooltip,
   tooltipPosition = 'top',
   className,
-  active
+  active,
+  editor
 }: {
   icon: LucideIcon
   onClick: (e: React.MouseEvent) => void
@@ -412,6 +487,7 @@ const TextToolButton = ({
   tooltipPosition?: 'top' | 'bottom' | 'left' | 'right'
   className?: string
   active?: boolean
+  editor: any
 }) => {
   return (
     <Button
