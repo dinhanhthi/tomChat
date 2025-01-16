@@ -7,6 +7,7 @@ import { UseChatHelpers } from 'ai/react/dist'
 import { Globe, Paperclip } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { v4 as uuidv4 } from 'uuid'
+import Image from '@tiptap/extension-image'
 
 import { Extension } from '@tiptap/core'
 
@@ -97,8 +98,34 @@ export default function AppInputMsg(props: {
       Typography,
       Placeholder.configure({
         placeholder: 'Ask something...'
-      })
+      }),
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+      }),
     ],
+
+    editorProps: {
+      handlePaste: (view, event) => {
+        const items = Array.from(event.clipboardData?.items || [])
+        const image = items.find(item => /image/.test(item.type))
+
+        if (image) {
+          event.preventDefault()
+          const blob = image.getAsFile()
+          const reader = new FileReader()
+          
+          reader.onload = (e) => {
+            const base64 = e.target?.result
+            editor?.commands.setImage({ src: base64 as string })
+          }
+          
+          reader.readAsDataURL(blob as Blob)
+          return true
+        }
+        return false
+      },
+    },
 
     content: useChatParams.input,
     onUpdate: ({ editor }) => {

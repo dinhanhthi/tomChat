@@ -49,6 +49,10 @@
     @apply text-lg;
   }
 
+  .pM-img {
+    @apply mb-2;
+  }
+
   .pM-prose {
     @apply prose prose-sm max-w-none p-0 leading-normal;
     @apply prose-p:pM-p;
@@ -59,6 +63,7 @@
     @apply prose-h1:pM-h1;
     @apply prose-h2:pM-h2;
     @apply prose-h3:pM-h3;
+    @apply prose-img:!pM-img;
 
     .tiptap {
       *:first-child {

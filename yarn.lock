@@ -3844,6 +3844,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tiptap/extension-image@npm:^2.11.2":
+  version: 2.11.2
+  resolution: "@tiptap/extension-image@npm:2.11.2"
+  peerDependencies:
+    "@tiptap/core": ^2.7.0
+  checksum: 10c0/a5b8f799a60f9306bdf4ed1631fad48b81f27db43eac99a2fd46dffbb694f8a9a2255c96bca39315fc0464ce551a51521b76488e99a3d52bfb1fa2947041a49a
+  languageName: node
+  linkType: hard
+
 "@tiptap/extension-italic@npm:^2.11.2":
   version: 2.11.2
   resolution: "@tiptap/extension-italic@npm:2.11.2"
@@ -13178,6 +13187,7 @@ __metadata:
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/react": "npm:^16.1.0"
+    "@tiptap/extension-image": "npm:^2.11.2"
     "@tiptap/extension-placeholder": "npm:^2.11.2"
     "@tiptap/extension-typography": "npm:^2.11.2"
     "@tiptap/react": "npm:^2.11.2"
