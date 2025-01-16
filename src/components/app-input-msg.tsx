@@ -1,16 +1,33 @@
 'use client'
 
+import { Extension } from '@tiptap/core'
+import Image from '@tiptap/extension-image'
 import Placeholder from '@tiptap/extension-placeholder'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { UseChatHelpers } from 'ai/react/dist'
-import { Globe, Paperclip, Loader2, X, Baseline, Library } from 'lucide-react'
+import {
+  Baseline,
+  Bold,
+  Braces,
+  Code,
+  Globe,
+  Italic,
+  Library,
+  List,
+  ListOrdered,
+  Loader2,
+  LucideIcon,
+  Paperclip,
+  Quote,
+  Strikethrough,
+  Underline,
+  X
+} from 'lucide-react'
 import dynamic from 'next/dynamic'
-import { v4 as uuidv4 } from 'uuid'
-import Image from '@tiptap/extension-image'
-import { useState } from 'react'
-import { Extension } from '@tiptap/core'
 import NextImage from 'next/image'
+import { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 import Typography from '@tiptap/extension-typography'
 import { generateTitleFromUserMessage } from '../app/actions'
@@ -26,6 +43,7 @@ import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
 import SimpleTooltip from './ui/simple-tooltip'
+import styles from '../styles/toolbar.module.css'
 
 const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
@@ -34,32 +52,31 @@ const ShiftEnterExtension = Extension.create({
       'Shift-Enter': () => {
         if (this.editor.isActive('codeBlock')) {
           const isEmpty = this.editor.state.selection.$head.parent.content.size === 0
-          
+
           if (isEmpty) {
             return this.editor.commands.exitCode()
           }
-          
+
           return this.editor.commands.insertContent('\n')
         }
 
         if (this.editor.isActive('listItem')) {
           const isEmpty = this.editor.state.selection.$head.parent.content.size === 0
-          
+
           if (isEmpty) {
             this.editor.commands.liftListItem('listItem')
             return true
           }
-          
+
           this.editor.commands.splitListItem('listItem')
           return true
         }
-        
+
         // For regular paragraphs and other blocks
         return this.editor.commands.splitBlock()
       }
     }
   }
-
 })
 
 const DynamicEditorContent = dynamic(() => Promise.resolve(EditorContent), {
@@ -89,6 +106,7 @@ export default function AppInputMsg(props: {
   const { chatId, className, useChatParams } = props
   const { setActiveId } = useChatStore()
   const [pastedImages, setPastedImages] = useState<PastedImage[]>([])
+  const [showInputTools, setShowInputTools] = useState(false)
 
   const editor = useEditor({
     // https://tiptap.dev/docs/editor/extensions/functionality/starterkit
@@ -98,7 +116,7 @@ export default function AppInputMsg(props: {
           exitOnArrowDown: true
         },
         heading: {
-          levels: [1, 2, 3],
+          levels: [1, 2, 3]
         }
       }),
       ShiftEnterExtension,
@@ -109,8 +127,8 @@ export default function AppInputMsg(props: {
       }),
       Image.configure({
         inline: true,
-        allowBase64: true,
-      }),
+        allowBase64: true
+      })
     ],
 
     editorProps: {
@@ -125,27 +143,26 @@ export default function AppInputMsg(props: {
 
           const id = uuidv4()
           const reader = new FileReader()
-          
-          setPastedImages(prev => [...prev, {
-            id,
-            file,
-            previewUrl: URL.createObjectURL(file),
-            loading: true
-          }])
-          
+
+          setPastedImages(prev => [
+            ...prev,
+            {
+              id,
+              file,
+              previewUrl: URL.createObjectURL(file),
+              loading: true
+            }
+          ])
+
           reader.onload = () => {
-            setPastedImages(prev => 
-              prev.map(img => 
-                img.id === id ? { ...img, loading: false } : img
-              )
-            )
+            setPastedImages(prev => prev.map(img => (img.id === id ? { ...img, loading: false } : img)))
           }
-          
+
           reader.readAsDataURL(file)
           return true
         }
         return false
-      },
+      }
     },
 
     content: useChatParams.input,
@@ -178,7 +195,7 @@ export default function AppInputMsg(props: {
         // Handle both text and images here
         const content = useChatParams.input
         const images = pastedImages.map(img => img.file)
-        
+
         if (!chat) {
           const title = await generateTitleFromUserMessage(content).catch(e => {
             const errMsg = `Error when generating the title for this chat: ${e instanceof Error ? e.message : 'Unknown error!'}. Using a part of the user input instead.`
@@ -218,15 +235,36 @@ export default function AppInputMsg(props: {
     <Container className={cn('flex flex-row gap-4 pt-4 md:gap-5 lg:gap-6', className)}>
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
       <div className="w-0"></div>
-      <div className="x-flex-1 flex flex-col items-center gap-2">
+      <div className="x-flex-1 flex flex-col items-center">
+        <div className={styles.toolbarContainer}>
+          <div
+            className={cn(
+              styles.toolbar,
+              'w-full px-5',
+              showInputTools ? styles.toolbarVisible : styles.toolbarHidden
+            )}
+          >
+            <div className="flex w-full flex-row items-center gap-2 rounded-t-xl border-slate-200 bg-gray-100 p-2">
+              <TextToolButton icon={Bold} onClick={() => {}} tooltip="Bold" />
+              <TextToolButton icon={Italic} onClick={() => {}} tooltip="Italic" />
+              <TextToolButton icon={Underline} onClick={() => {}} tooltip="Underline" />
+              <TextToolButton icon={Strikethrough} onClick={() => {}} tooltip="Strikethrough" />
+              <TextToolButton icon={Code} onClick={() => {}} tooltip="Mark as code" />
+              <TextToolButton icon={Braces} onClick={() => {}} tooltip="Code block" />
+              <TextToolButton icon={List} onClick={() => {}} tooltip="Bulleted list" />
+              <TextToolButton icon={ListOrdered} onClick={() => {}} tooltip="Numbered list list" />
+              <TextToolButton icon={Quote} onClick={() => {}} tooltip="Quote" />
+            </div>
+          </div>
+        </div>
         <form
           onSubmit={handleClientSubmit}
-          className="x-flex-1 flex w-full flex-col rounded-3xl p-2 border-gray-200 bg-gray-100"
+          className="x-flex-1 mb-2 flex w-full flex-col rounded-3xl border-gray-200 bg-gray-100 p-3"
         >
           {/* Image previews */}
           {pastedImages.length > 0 && (
-            <div className="flex flex-wrap gap-2 rounded-tl-2xl overflow-hidden px-2 pt-2">
-              {pastedImages.map((image) => (
+            <div className="flex flex-wrap gap-2 overflow-hidden rounded-tl-2xl px-2 pt-2">
+              {pastedImages.map(image => (
                 <div
                   key={image.id}
                   className="group relative h-20 w-20 overflow-hidden rounded-lg border border-gray-200"
@@ -237,12 +275,7 @@ export default function AppInputMsg(props: {
                     </div>
                   ) : (
                     <>
-                      <NextImage
-                        src={image.previewUrl}
-                        alt="Pasted image"
-                        fill
-                        className="object-cover"
-                      />
+                      <NextImage src={image.previewUrl} alt="Pasted image" fill className="object-cover" />
                       <button
                         onClick={() => removeImage(image.id)}
                         className="absolute right-1 top-1 rounded-full bg-black/50 p-1 opacity-0 transition-opacity group-hover:opacity-100"
@@ -295,11 +328,14 @@ export default function AppInputMsg(props: {
                 onClick={e => {
                   e.preventDefault()
                   e.stopPropagation()
+                  setShowInputTools(!showInputTools)
                 }}
-                className="rounded-xl hover:bg-gray-200 [&_svg]:size-[22px]"
+                className={cn('rounded-xl hover:bg-gray-200 [&_svg]:size-[22px]', {
+                  'bg-gray-200 text-primary hover:text-primary': showInputTools
+                })}
                 variant="ghost"
                 size="iconBig"
-                tooltip="Text tools"
+                tooltip="Input tools"
                 tooltipPosition="bottom"
               >
                 <Baseline />
@@ -337,11 +373,43 @@ export default function AppInputMsg(props: {
             {!useChatParams.isLoading && <SendButton submitForm={handleClientSubmit} input={useChatParams.input} />}
           </div>
         </form>
-        {/* <div className="select-none text-[0.7rem] text-muted-foreground">Usage of this chat: $0.5, tokens: 100.</div> */}
         <div className="select-none text-xs text-muted-foreground">
           AI can make mistakes. Double check important info.
         </div>
       </div>
     </Container>
+  )
+}
+
+const TextToolButton = ({
+  icon: Icon,
+  onClick,
+  tooltip,
+  tooltipPosition = 'top',
+  className,
+  active
+}: {
+  icon: LucideIcon
+  onClick: (e: React.MouseEvent) => void
+  tooltip?: string
+  tooltipPosition?: 'top' | 'bottom' | 'left' | 'right'
+  className?: string
+  active?: boolean
+}) => {
+  return (
+    <Button
+      onClick={e => {
+        e.preventDefault()
+        e.stopPropagation()
+        onClick(e)
+      }}
+      className={cn('h-6 w-6 rounded-md hover:bg-gray-200 [&_svg]:size-[16px]', active && 'bg-gray-200', className)}
+      variant="ghost"
+      size="icon"
+      tooltip={tooltip}
+      tooltipPosition={tooltipPosition}
+    >
+      <Icon />
+    </Button>
   )
 }
