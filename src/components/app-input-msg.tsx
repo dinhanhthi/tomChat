@@ -4,13 +4,13 @@ import Placeholder from '@tiptap/extension-placeholder'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { UseChatHelpers } from 'ai/react/dist'
-import { Globe, Paperclip } from 'lucide-react'
+import { Globe, Paperclip, Loader2, X, Baseline, Library } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { v4 as uuidv4 } from 'uuid'
 import Image from '@tiptap/extension-image'
-
+import { useState } from 'react'
 import { Extension } from '@tiptap/core'
-
+import NextImage from 'next/image'
 
 import Typography from '@tiptap/extension-typography'
 import { generateTitleFromUserMessage } from '../app/actions'
@@ -66,6 +66,13 @@ const DynamicEditorContent = dynamic(() => Promise.resolve(EditorContent), {
   ssr: false
 })
 
+type PastedImage = {
+  id: string
+  file: File
+  previewUrl: string
+  loading?: boolean
+}
+
 export default function AppInputMsg(props: {
   chatId: string
   className?: string
@@ -81,6 +88,7 @@ export default function AppInputMsg(props: {
 }) {
   const { chatId, className, useChatParams } = props
   const { setActiveId } = useChatStore()
+  const [pastedImages, setPastedImages] = useState<PastedImage[]>([])
 
   const editor = useEditor({
     // https://tiptap.dev/docs/editor/extensions/functionality/starterkit
@@ -112,15 +120,28 @@ export default function AppInputMsg(props: {
 
         if (image) {
           event.preventDefault()
-          const blob = image.getAsFile()
+          const file = image.getAsFile()
+          if (!file) return false
+
+          const id = uuidv4()
           const reader = new FileReader()
           
-          reader.onload = (e) => {
-            const base64 = e.target?.result
-            editor?.commands.setImage({ src: base64 as string })
+          setPastedImages(prev => [...prev, {
+            id,
+            file,
+            previewUrl: URL.createObjectURL(file),
+            loading: true
+          }])
+          
+          reader.onload = () => {
+            setPastedImages(prev => 
+              prev.map(img => 
+                img.id === id ? { ...img, loading: false } : img
+              )
+            )
           }
           
-          reader.readAsDataURL(blob as Blob)
+          reader.readAsDataURL(file)
           return true
         }
         return false
@@ -154,8 +175,12 @@ export default function AppInputMsg(props: {
 
     try {
       if (useChatParams) {
+        // Handle both text and images here
+        const content = useChatParams.input
+        const images = pastedImages.map(img => img.file)
+        
         if (!chat) {
-          const title = await generateTitleFromUserMessage(useChatParams.input).catch(e => {
+          const title = await generateTitleFromUserMessage(content).catch(e => {
             const errMsg = `Error when generating the title for this chat: ${e instanceof Error ? e.message : 'Unknown error!'}. Using a part of the user input instead.`
             xtoast.warning(errMsg)
             return useChatParams.input.slice(0, 50)
@@ -163,21 +188,30 @@ export default function AppInputMsg(props: {
           await createChat(title, chatId)
         }
 
-        useChatParams.handleSubmit()
-
+        // Here you can handle images separately or combine them with the message
+        // For example:
         await addMessage(chatId, {
           id: uuidv4(),
           role: 'user',
-          content: useChatParams.input,
+          content,
+          // images: images, // You'll need to modify your message type to include images
           createdAt: new Date(),
           chatId
         })
+
+        // Clear images after successful submission
+        setPastedImages([])
+        useChatParams.handleSubmit()
       }
     } catch (error) {
       xtoast.error(
         `${error instanceof Error ? error.message : 'There is an unknown error when submitting a new message!'}`
       )
     }
+  }
+
+  const removeImage = (id: string) => {
+    setPastedImages(prev => prev.filter(img => img.id !== id))
   }
 
   return (
@@ -187,14 +221,47 @@ export default function AppInputMsg(props: {
       <div className="x-flex-1 flex flex-col items-center gap-2">
         <form
           onSubmit={handleClientSubmit}
-          className="x-flex-1 flex w-full flex-col overflow-hidden rounded-3xl border-gray-200 bg-gray-100"
+          className="x-flex-1 flex w-full flex-col rounded-3xl p-2 border-gray-200 bg-gray-100"
         >
-          <div className="max-h-[calc(25dvh)] min-h-6 overflow-auto bg-transparent p-2 pl-4 pt-4">
+          {/* Image previews */}
+          {pastedImages.length > 0 && (
+            <div className="flex flex-wrap gap-2 rounded-tl-2xl overflow-hidden px-2 pt-2">
+              {pastedImages.map((image) => (
+                <div
+                  key={image.id}
+                  className="group relative h-20 w-20 overflow-hidden rounded-lg border border-gray-200"
+                >
+                  {image.loading ? (
+                    <div className="flex h-full w-full items-center justify-center bg-gray-100">
+                      <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+                    </div>
+                  ) : (
+                    <>
+                      <NextImage
+                        src={image.previewUrl}
+                        alt="Pasted image"
+                        fill
+                        className="object-cover"
+                      />
+                      <button
+                        onClick={() => removeImage(image.id)}
+                        className="absolute right-1 top-1 rounded-full bg-black/50 p-1 opacity-0 transition-opacity group-hover:opacity-100"
+                      >
+                        <X className="h-3 w-3 text-white" />
+                      </button>
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="max-h-[calc(25dvh)] min-h-6 overflow-auto bg-transparent p-2 pt-3">
             <DynamicEditorContent editor={editor} className="pM-prose max-w-none focus-visible:outline-none" />
           </div>
 
-          <div className="flex flex-row items-center justify-between gap-4 p-2 pr-3 pt-0">
-            <div className="flex flex-row items-center">
+          <div className="flex flex-row items-center justify-between gap-4 pr-1">
+            <div className="flex flex-row items-center gap-1">
               {/* Attach */}
               <Button
                 onClick={e => {
@@ -205,7 +272,7 @@ export default function AppInputMsg(props: {
                 variant="ghost"
                 size="iconBig"
                 tooltip="Attach files"
-                tooltipPosition="left"
+                tooltipPosition="bottom"
               >
                 <Paperclip />
               </Button>
@@ -219,9 +286,37 @@ export default function AppInputMsg(props: {
                 variant="ghost"
                 size="iconBig"
                 tooltip="Search the web"
-                tooltipPosition="right"
+                tooltipPosition="bottom"
               >
                 <Globe />
+              </Button>
+              {/* Text tools */}
+              <Button
+                onClick={e => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                }}
+                className="rounded-xl hover:bg-gray-200 [&_svg]:size-[22px]"
+                variant="ghost"
+                size="iconBig"
+                tooltip="Text tools"
+                tooltipPosition="bottom"
+              >
+                <Baseline />
+              </Button>
+              {/* Prompt collection */}
+              <Button
+                onClick={e => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                }}
+                className="rounded-xl hover:bg-gray-200 [&_svg]:size-[22px]"
+                variant="ghost"
+                size="iconBig"
+                tooltip="Prompt collection"
+                tooltipPosition="bottom"
+              >
+                <Library />
               </Button>
             </div>
             <div className="flex h-full flex-row items-end pb-1">

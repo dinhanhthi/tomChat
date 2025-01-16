@@ -54,7 +54,7 @@
   }
 
   .pM-prose {
-    @apply prose prose-sm max-w-none p-0 leading-normal;
+    @apply prose max-w-none p-0 leading-normal;
     @apply prose-p:pM-p;
     @apply prose-pre:pM-pre;
     @apply prose-blockquote:pM-blockquote;
