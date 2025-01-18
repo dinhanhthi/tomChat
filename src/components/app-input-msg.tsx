@@ -50,6 +50,15 @@ const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
   addKeyboardShortcuts() {
     return {
+      // Enter: () => {
+      //   // Get the editor's parent component to access handleClientSubmit
+      //   const editorElement = this.editor.view.dom
+      //   const form = editorElement.closest('form')
+      //   if (form) {
+      //     form.requestSubmit()
+      //   }
+      //   return true
+      // },
       'Shift-Enter': () => {
         if (this.editor.isActive('codeBlock')) {
           const isEmpty = this.editor.state.selection.$head.parent.content.size === 0
@@ -120,10 +129,10 @@ export default function AppInputMsg(props: {
         },
         heading: {
           levels: [1, 2, 3]
-        }
+        },
+        hardBreak: false // Disable hard break on Enter
       }),
       ShiftEnterExtension,
-      // CustomListItem,
       Typography,
       Placeholder.configure({
         placeholder: 'Ask something...'
@@ -165,9 +174,16 @@ export default function AppInputMsg(props: {
           return true
         }
         return false
-      }
+      },
+      handleKeyDown: (view, event) => {
+        // Submit on Enter, Shift+Enter for new line
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault()
+          handleClientSubmit()
+          return true
+        }
+      },
     },
-
     content: useChatParams.input,
     onUpdate: ({ editor }) => {
       const content = editor.getText()
@@ -177,17 +193,6 @@ export default function AppInputMsg(props: {
   })
 
   const { chat } = useChatClient(chatId)
-
-  const handleClientInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (useChatParams) useChatParams.setInput(event.target.value)
-  }
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault()
-      handleClientSubmit()
-    }
-  }
 
   const handleClientSubmit = async () => {
     window.history.replaceState({}, '', `/chat/${chatId}`)
@@ -222,6 +227,9 @@ export default function AppInputMsg(props: {
         // Clear images after successful submission
         setPastedImages([])
         useChatParams.handleSubmit()
+
+        // Clear the editor content after submitting
+        editor?.commands.clearContent()
       }
     } catch (error) {
       xtoast.error(
@@ -377,18 +385,7 @@ export default function AppInputMsg(props: {
 
           <div className="flex flex-row items-center justify-between gap-4 pr-1">
             <div className="flex flex-row items-center gap-1">
-              {/* Attach */}
               <FooterButton icon={Paperclip} onClick={() => {}} tooltip="Attach files" />
-              {/* Web Search */}
-              <FooterButton
-                icon={Globe}
-                onClick={() => {
-                  setSearchEnabled(!searchEnabled)
-                }}
-                tooltip="Search the web"
-                active={searchEnabled}
-              />
-              {/* Text tools */}
               <FooterButton
                 icon={Baseline}
                 onClick={() => {
@@ -397,7 +394,6 @@ export default function AppInputMsg(props: {
                 tooltip="Text tools"
                 active={showInputTools}
               />
-              {/* Prompt collection */}
               <FooterButton
                 icon={Library}
                 onClick={() => {
@@ -406,7 +402,6 @@ export default function AppInputMsg(props: {
                 tooltip="Prompt collection"
                 active={showPromptCollection}
               />
-              {/* Web Search */}
               <FooterButton
                 icon={Globe}
                 onClick={() => {
@@ -468,8 +463,8 @@ const FooterButton = ({
         onClick(e)
       }}
       className={cn(
-        'overflow-hidden rounded-xl transition-all duration-300 hover:bg-[#ddd] [&_svg]:size-[22px]',
-        active && 'rounded-3xl bg-[#ddd] text-primary hover:text-primary',
+        'overflow-hidden rounded-xl transition-all duration-300 hover:bg-[#e1e1e1] [&_svg]:size-[22px]',
+        active && 'rounded-3xl bg-[#e1e1e1] text-primary hover:text-primary',
         title && 'w-auto px-2',
         title && active && 'bg-[#d3edfa] hover:bg-sky-200',
         className
@@ -482,7 +477,12 @@ const FooterButton = ({
       <div className="flex w-full items-center justify-center">
         <Icon className="flex-shrink-0" />
         {title && (
-          <div className={cn('w-0 opacity-0 transition-all duration-200 text-primary', active && 'ml-1 w-auto pr-1 opacity-100')}>
+          <div
+            className={cn(
+              'w-0 text-primary opacity-0 transition-all duration-200',
+              active && 'ml-1 w-auto pr-1 opacity-100'
+            )}
+          >
             {title}
           </div>
         )}

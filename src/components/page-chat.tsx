@@ -1,7 +1,6 @@
 'use client'
 
 import { useChat } from 'ai/react'
-import { Ghost } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -14,7 +13,6 @@ import ScrollToBottomButton from './btn-scroll-to-bottom'
 import Container from './container'
 import LoadingBar from './loading-bar'
 import MessagePreview from './message-preview'
-import { Button } from './ui/button'
 
 export default function PageChat({ chatId, className }: { chatId: string; className?: string }) {
   const router = useRouter()
