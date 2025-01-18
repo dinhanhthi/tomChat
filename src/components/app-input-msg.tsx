@@ -37,7 +37,6 @@ import Typography from '@tiptap/extension-typography'
 import { generateTitleFromUserMessage } from '../app/actions'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
-import { TokenIcon } from '../icons/TokenIcon'
 import { addMessage, createChat } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
@@ -46,7 +45,6 @@ import Container from './container'
 import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
-import SimpleTooltip from './ui/simple-tooltip'
 
 const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
@@ -408,6 +406,16 @@ export default function AppInputMsg(props: {
                 tooltip="Prompt collection"
                 active={showPromptCollection}
               />
+              {/* Web Search */}
+              <FooterButton
+                icon={Globe}
+                onClick={() => {
+                  setSearchEnabled(!searchEnabled)
+                }}
+                tooltip="Search the web"
+                active={searchEnabled}
+                title="Web"
+              />
             </div>
             {/* <div className="flex h-full flex-row items-end pb-1">
               <SimpleTooltip text="Usage of this chat">
@@ -441,7 +449,8 @@ const FooterButton = ({
   tooltip,
   tooltipPosition = 'bottom',
   className,
-  active
+  active,
+  title
 }: {
   icon: LucideIcon
   onClick: (e: React.MouseEvent) => void
@@ -449,6 +458,7 @@ const FooterButton = ({
   tooltipPosition?: 'top' | 'bottom' | 'left' | 'right'
   className?: string
   active?: boolean
+  title?: string
 }) => {
   return (
     <Button
@@ -458,8 +468,10 @@ const FooterButton = ({
         onClick(e)
       }}
       className={cn(
-        'rounded-xl hover:bg-gray-200 [&_svg]:size-[22px]',
-        active && 'bg-gray-200 text-primary hover:text-primary',
+        'overflow-hidden rounded-xl transition-all duration-300 hover:bg-[#ddd] [&_svg]:size-[22px]',
+        active && 'rounded-3xl bg-[#ddd] text-primary hover:text-primary',
+        title && 'w-auto px-2',
+        title && active && 'bg-[#d3edfa] hover:bg-sky-200',
         className
       )}
       variant="ghost"
@@ -467,7 +479,14 @@ const FooterButton = ({
       tooltip={tooltip}
       tooltipPosition={tooltipPosition}
     >
-      <Icon />
+      <div className="flex w-full items-center justify-center">
+        <Icon className="flex-shrink-0" />
+        {title && (
+          <div className={cn('w-0 opacity-0 transition-all duration-200 text-primary', active && 'ml-1 w-auto pr-1 opacity-100')}>
+            {title}
+          </div>
+        )}
+      </div>
     </Button>
   )
 }
