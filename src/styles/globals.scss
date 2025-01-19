@@ -60,6 +60,14 @@
   x-mark {
     @apply font-medium text-gray-900 text-primary;
   }
+
+  .user-message {
+    :not(pre) {
+      code {
+        @apply bg-[#dfe4eb];
+      }
+    }
+  }
 }
 
 @layer base {

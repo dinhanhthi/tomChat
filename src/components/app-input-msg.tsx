@@ -46,6 +46,7 @@ import Container from './container'
 import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
+import TurndownService from 'turndown'
 
 const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
@@ -91,6 +92,8 @@ type PastedImage = {
   previewUrl: string
   loading?: boolean
 }
+
+const turndownService = new TurndownService()
 
 export default function AppInputMsg(props: {
   chatId: string
@@ -179,8 +182,9 @@ export default function AppInputMsg(props: {
     },
     content: useChatParams.input,
     onUpdate: ({ editor }) => {
-      const content = editor.getText()
-      useChatParams.setInput(content)
+      const html = editor.getHTML()
+      const markdown = turndownService.turndown(html)
+      useChatParams.setInput(markdown)
     },
     immediatelyRender: false // SSR
   })
