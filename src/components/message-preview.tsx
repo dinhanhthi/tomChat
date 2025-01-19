@@ -37,7 +37,7 @@ export default function MessagePreview(props: MessagePreviewProps) {
         className={cn(
           'flex w-full scroll-mt-[20px] flex-row items-start gap-4 md:gap-5 lg:gap-6',
           {
-            'ml-auto max-w-[70%] rounded-2xl bg-gray-100 p-4': isUser
+            'ml-auto max-w-[70%] rounded-2xl bg-gray-100 p-4 user-message': isUser
           },
           className
         )}
