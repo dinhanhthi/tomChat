@@ -249,7 +249,7 @@ export default function AppInputMsg(props: {
       <div className="x-flex-1 flex flex-col items-center">
         <div
           className={cn('w-full origin-bottom px-5 transition-all duration-200', {
-            'translate-y-full opacity-0': !showInputTools,
+            'translate-y-full opacity-0 pointer-events-none': !showInputTools,
             '-translate-y-1 opacity-100': showInputTools
           })}
         >

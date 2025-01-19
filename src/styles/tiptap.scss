@@ -7,12 +7,15 @@
     @apply my-1;
   }
 
-  .pM-pre {
-    @apply rounded-lg bg-slate-500 text-sm text-white;
-  }
-
   .pM-code {
     @apply break-words rounded-md bg-gray-500 p-[1px_4px_2px_4px] font-mono text-[85%] font-normal before:content-[''] after:content-[''] text-white;
+  }
+
+  .pM-pre {
+    @apply rounded-lg bg-slate-500 text-sm text-white;
+    code {
+      @apply before:content-none after:content-none pl-0;
+    }
   }
 
   .pM-blockquote {
@@ -56,10 +59,10 @@
   .pM-prose {
     @apply prose max-w-none p-0 leading-normal;
     @apply prose-p:pM-p;
-    @apply prose-pre:pM-pre;
     @apply prose-blockquote:pM-blockquote;
     @apply prose-ul:pM-ul;
     @apply prose-code:pM-code;
+    @apply prose-pre:pM-pre;
     @apply prose-h1:pM-h1;
     @apply prose-h2:pM-h2;
     @apply prose-h3:pM-h3;
@@ -92,6 +95,12 @@
       height: 0;
       pointer-events: none;
     }
+  }
+
+  // Hide trailing break in code blocks
+  pre > code > .ProseMirror-trailingBreak {
+    height: 0!important;
+    line-height: 0!important;
   }
 }
 
