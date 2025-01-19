@@ -182,7 +182,7 @@ export default function AppInputMsg(props: {
           handleClientSubmit()
           return true
         }
-      },
+      }
     },
     content: useChatParams.input,
     onUpdate: ({ editor }) => {
@@ -247,104 +247,102 @@ export default function AppInputMsg(props: {
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
       <div className="w-0"></div>
       <div className="x-flex-1 flex flex-col items-center">
-        <div className="h-11 w-full overflow-hidden">
-          <div
-            className={cn('w-full origin-bottom px-5 transition-all duration-200', {
-              'translate-y-full opacity-0': !showInputTools,
-              'translate-y-0 opacity-100': showInputTools
-            })}
-          >
-            <div className="flex w-full flex-row items-center gap-2 rounded-t-xl border-slate-200 bg-gray-100 p-2">
-              <TextToolButton
-                icon={Undo}
-                onClick={() => editor?.chain().focus().undo().run()}
-                tooltip="Undo"
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Redo}
-                onClick={() => editor?.chain().focus().redo().run()}
-                tooltip="Redo"
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Heading1}
-                onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
-                tooltip="Heading H1"
-                active={editor?.isActive('heading', { level: 1 })}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Heading2}
-                onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-                tooltip="Heading H2"
-                active={editor?.isActive('heading', { level: 2 })}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Heading3}
-                onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
-                tooltip="Heading H3"
-                active={editor?.isActive('heading', { level: 3 })}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Bold}
-                onClick={() => editor?.chain().focus().toggleBold().run()}
-                tooltip="Bold"
-                active={editor?.isActive('bold')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Italic}
-                onClick={() => editor?.chain().focus().toggleItalic().run()}
-                tooltip="Italic"
-                active={editor?.isActive('italic')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Strikethrough}
-                onClick={() => editor?.chain().focus().toggleStrike().run()}
-                tooltip="Strikethrough"
-                active={editor?.isActive('strike')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Code}
-                onClick={() => editor?.chain().focus().toggleCode().run()}
-                tooltip="Mark as code"
-                active={editor?.isActive('code')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Braces}
-                onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
-                tooltip="Code block"
-                active={editor?.isActive('codeBlock')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={List}
-                onClick={() => editor?.chain().focus().toggleBulletList().run()}
-                tooltip="Bulleted list"
-                active={editor?.isActive('bulletList')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={ListOrdered}
-                onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-                tooltip="Numbered list"
-                active={editor?.isActive('orderedList')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Quote}
-                onClick={() => editor?.chain().focus().toggleBlockquote().run()}
-                tooltip="Quote"
-                active={editor?.isActive('blockquote')}
-                editor={editor}
-              />
-            </div>
+        <div
+          className={cn('w-full origin-bottom px-5 transition-all duration-200', {
+            'translate-y-full opacity-0': !showInputTools,
+            '-translate-y-1 opacity-100': showInputTools
+          })}
+        >
+          <div className="flex w-full flex-row items-center gap-2 rounded-t-xl border-slate-200 bg-gray-100 p-2">
+            <TextToolButton
+              icon={Undo}
+              onClick={() => editor?.chain().focus().undo().run()}
+              tooltip="Undo"
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Redo}
+              onClick={() => editor?.chain().focus().redo().run()}
+              tooltip="Redo"
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Heading1}
+              onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
+              tooltip="Heading H1"
+              active={editor?.isActive('heading', { level: 1 })}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Heading2}
+              onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+              tooltip="Heading H2"
+              active={editor?.isActive('heading', { level: 2 })}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Heading3}
+              onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
+              tooltip="Heading H3"
+              active={editor?.isActive('heading', { level: 3 })}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Bold}
+              onClick={() => editor?.chain().focus().toggleBold().run()}
+              tooltip="Bold"
+              active={editor?.isActive('bold')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Italic}
+              onClick={() => editor?.chain().focus().toggleItalic().run()}
+              tooltip="Italic"
+              active={editor?.isActive('italic')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Strikethrough}
+              onClick={() => editor?.chain().focus().toggleStrike().run()}
+              tooltip="Strikethrough"
+              active={editor?.isActive('strike')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Code}
+              onClick={() => editor?.chain().focus().toggleCode().run()}
+              tooltip="Mark as code"
+              active={editor?.isActive('code')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Braces}
+              onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
+              tooltip="Code block"
+              active={editor?.isActive('codeBlock')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={List}
+              onClick={() => editor?.chain().focus().toggleBulletList().run()}
+              tooltip="Bulleted list"
+              active={editor?.isActive('bulletList')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={ListOrdered}
+              onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+              tooltip="Numbered list"
+              active={editor?.isActive('orderedList')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Quote}
+              onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+              tooltip="Quote"
+              active={editor?.isActive('blockquote')}
+              editor={editor}
+            />
           </div>
         </div>
         <form
