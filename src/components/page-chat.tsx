@@ -137,7 +137,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
                   <div className="is-typing text-sm italic text-muted-foreground">I'm thinking, please wait</div>
                 )}
 
-                <div ref={messagesEndRef} className="h-4 min-h-8 min-w-8 shrink-0"></div>
+                <div ref={messagesEndRef} className="h-4 min-h-4 min-w-8 shrink-0"></div>
               </div>
             )}
           </Container>
