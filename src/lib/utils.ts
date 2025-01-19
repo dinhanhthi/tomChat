@@ -172,7 +172,7 @@ export const generatePastelColor = () => {
 }
 
 export function getOperatingSystem(): 'windows' | 'mac' | 'linux' | 'unknown' {
-  if (typeof window === 'undefined') return 'unknown'
+  // if (typeof window === 'undefined') return 'unknown' // disabled to ignore the hydration error
 
   const platform = (navigator as any).userAgentData?.platform || navigator.platform
   const userAgent = navigator.userAgent.toLowerCase()
