@@ -30,7 +30,7 @@ import {
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import NextImage from 'next/image'
-import { useState } from 'react'
+import { RefObject, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import Typography from '@tiptap/extension-typography'
@@ -41,6 +41,7 @@ import { addMessage, createChat } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import '../styles/tiptap.scss'
+import ScrollToBottomButton from './btn-scroll-to-bottom'
 import Container from './container'
 import SendButton from './send-button'
 import StopButton from './stop-button'
@@ -50,15 +51,6 @@ const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
   addKeyboardShortcuts() {
     return {
-      // Enter: () => {
-      //   // Get the editor's parent component to access handleClientSubmit
-      //   const editorElement = this.editor.view.dom
-      //   const form = editorElement.closest('form')
-      //   if (form) {
-      //     form.requestSubmit()
-      //   }
-      //   return true
-      // },
       'Shift-Enter': () => {
         if (this.editor.isActive('codeBlock')) {
           const isEmpty = this.editor.state.selection.$head.parent.content.size === 0
@@ -112,8 +104,9 @@ export default function AppInputMsg(props: {
     isLoading: UseChatHelpers['isLoading']
     stop: UseChatHelpers['stop']
   }
+  messagesContainerRef: RefObject<HTMLElement | null>
 }) {
-  const { chatId, className, useChatParams } = props
+  const { chatId, className, useChatParams, messagesContainerRef } = props
   const { setActiveId } = useChatStore()
   const [pastedImages, setPastedImages] = useState<PastedImage[]>([])
   const [showInputTools, setShowInputTools] = useState(false)
@@ -246,11 +239,14 @@ export default function AppInputMsg(props: {
     <Container className={cn('flex flex-row gap-4 pt-4 md:gap-5 lg:gap-6', className)}>
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
       <div className="w-0"></div>
-      <div className="x-flex-1 flex flex-col items-center">
+      <div className="x-flex-1 relative flex flex-col items-center">
+        <ScrollToBottomButton className={cn('absolute top-[-50px] right-1/2', {
+          'translate-y-[-40px]': showInputTools
+        })} targetRef={messagesContainerRef} />
         <div
-          className={cn('w-full origin-bottom px-5 transition-all duration-200', {
-            'translate-y-full opacity-0 pointer-events-none': !showInputTools,
-            '-translate-y-1 opacity-100': showInputTools
+          className={cn('absolute left-0 top-[-47px] z-10 w-full origin-bottom px-5 transition-all duration-200', {
+            'pointer-events-none translate-y-full opacity-0': !showInputTools,
+            'translate-y-1 opacity-100': showInputTools
           })}
         >
           <div className="flex w-full flex-row items-center gap-2 rounded-t-xl border-slate-200 bg-gray-100 p-2">
@@ -347,7 +343,7 @@ export default function AppInputMsg(props: {
         </div>
         <form
           onSubmit={handleClientSubmit}
-          className="x-flex-1 mb-2 flex w-full flex-col rounded-3xl border-gray-200 bg-gray-100 p-3"
+          className="x-flex-1 z-20 mb-2 flex w-full flex-col rounded-3xl border-gray-200 bg-gray-100 p-3"
         >
           {/* Image previews */}
           {pastedImages.length > 0 && (

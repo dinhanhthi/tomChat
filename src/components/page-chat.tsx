@@ -9,7 +9,6 @@ import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import AppInputMsg from './app-input-msg'
 import BrandLogoWithText from './brand'
-import ScrollToBottomButton from './btn-scroll-to-bottom'
 import Container from './container'
 import LoadingBar from './loading-bar'
 import MessagePreview from './message-preview'
@@ -142,10 +141,10 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
               </div>
             )}
           </Container>
-          <ScrollToBottomButton className="absolute bottom-[150px] right-1/2" targetRef={messagesContainerRef} />
         </div>
         <AppInputMsg
           chatId={chatId}
+          messagesContainerRef={messagesContainerRef}
           className="pb-4"
           useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading, stop }}
         />
