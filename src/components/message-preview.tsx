@@ -18,10 +18,11 @@ interface MessagePreviewProps {
   className?: string
   message: exMessage
   isLoading: UseChatHelpers['isLoading']
+  isLast?: boolean
 }
 
 export default function MessagePreview(props: MessagePreviewProps) {
-  const { message, className, isLoading } = props
+  const { message, className, isLoading, isLast } = props
   const isUser = message.role === 'user'
   const { isFavoriteMessage, toggleFavoriteMessage } = useFavoriteMessages()
 
@@ -61,8 +62,12 @@ export default function MessagePreview(props: MessagePreviewProps) {
           >
             {processMarkdownString(message.content)}
           </RemarkMarkdown>
-          {!isUser && !isLoading && (
-            <div className="ml-auto flex flex-row items-center text-muted-foreground">
+          {!isUser && (
+            <div
+              className={cn('ml-auto flex flex-row items-center text-muted-foreground', {
+                invisible: isLoading && isLast
+              })}
+            >
               <Button
                 onClick={toggleFavorite}
                 variant="ghost"

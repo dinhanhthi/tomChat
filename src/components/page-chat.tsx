@@ -116,7 +116,12 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
                 {messages
                   .filter(msg => !!msg.content)
                   .map((msg, i) => (
-                    <MessagePreview key={msg.id ?? i} message={msg} isLoading={isLoading} />
+                    <MessagePreview
+                      key={msg.id ?? i}
+                      message={msg}
+                      isLoading={isLoading}
+                      isLast={i === messages.filter(msg => !!msg.content).length - 1}
+                    />
                   ))}
                 {!messages.length && (
                   <div className="x-flex-1 flex flex-col items-center justify-center gap-4 opacity-30">
