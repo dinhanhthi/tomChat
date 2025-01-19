@@ -158,7 +158,7 @@ export default function SidebarGroupChats(props: {
                       <SidebarMenuButton
                         isActive={chat.id === chatId}
                         className={cn(
-                          'px-1 text-sm hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0',
+                          'pr-1 pl-2 text-sm hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0',
                           {
                             '!bg-sidebar-hover': emojiPickerChat?.id === chat.id || dropdownOpen?.id === chat.id
                           }
@@ -224,10 +224,10 @@ export default function SidebarGroupChats(props: {
                       </SidebarMenuAction>
                     </DropdownMenuTrigger>
                     {chat.pinned === 'true' && chat.archived !== 'true' && (
-                      <Pin className="absolute right-1.5 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
+                      <Pin className="absolute right-2 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
                     )}
                     {chat.archived === 'true' && (
-                      <Archive className="absolute right-1.5 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
+                      <Archive className="absolute right-2 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
                     )}
                     <DropdownMenuContent
                       className="w-fit rounded-lg"
