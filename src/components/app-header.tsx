@@ -5,9 +5,10 @@ import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
+import { useOperatingSystem } from '../hooks/useOperatingSystem'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { Chat } from '../interface'
 import { updateChatMeta } from '../lib/chats'
-import { getOperatingSystem } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import { RenameDialog } from './dialog-rename'
 import { EmojiPickerButton } from './emoji-picker-button'
@@ -17,7 +18,6 @@ import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { SidebarTrigger } from './ui/sidebar'
 import { UserMenu } from './user-menu'
-import { usePageTitle } from '../hooks/usePageTitle'
 
 export default function AppHeader() {
   const router = useRouter()
@@ -27,6 +27,7 @@ export default function AppHeader() {
   const chatId = id || activeId
   const { chat } = useChatClient(chatId as string)
   const { title: pageTitle, icon: pageIcon, isEmoji } = usePageTitle()
+  const os = useOperatingSystem()
 
   const [emojiOpen, setEmojiOpen] = useState(false)
 
@@ -61,11 +62,9 @@ export default function AppHeader() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [setIsOpen])
 
-  const isMac = getOperatingSystem() === 'mac'
-
   const renderIcon = () => {
-    if (!pageIcon) return null;
-    
+    if (!pageIcon) return null
+
     if (chat && isEmoji) {
       return (
         <EmojiPickerButton
@@ -78,12 +77,12 @@ export default function AppHeader() {
           tooltip="Change Icon"
           tooltipPosition="bottom"
         />
-      );
+      )
     }
 
-    const IconComponent = pageIcon as LucideIcon;
-    return <IconComponent className="mr-1 h-5 w-5" />;
-  };
+    const IconComponent = pageIcon as LucideIcon
+    return <IconComponent className="mr-1 h-5 w-5" />
+  }
 
   return (
     <>
@@ -91,7 +90,7 @@ export default function AppHeader() {
         <div className="x-flex-1 group flex items-center gap-2">
           <div className="flex items-center">
             <SidebarTrigger
-              tooltip={`Toggle sidebar (${isMac ? '⌘' : 'Ctrl'}+⇧+B)`}
+              tooltip={`Toggle sidebar (${os === 'mac' ? '⌘' : 'Ctrl'}+⇧+B)`}
               tooltipPosition="bottom"
               className="group-data-[collapsible=icon]:opacity-0"
             />
@@ -111,7 +110,7 @@ export default function AppHeader() {
           {pageTitle && (
             <>
               <Separator orientation="vertical" className="mr-2 h-4" />
-              <div className="x-flex-1 font-medium flex items-center gap-2 truncate pl-1 pr-4 text-[1.05rem]">
+              <div className="x-flex-1 flex items-center gap-2 truncate pl-1 pr-4 text-[1.05rem] font-medium">
                 {renderIcon()}
                 <OverflowTooltip text={pageTitle} position="bottom" delayDuration={1}></OverflowTooltip>
                 {chat && (
@@ -135,7 +134,7 @@ export default function AppHeader() {
             onClick={() => setIsOpen(true)}
             variant="ghost"
             size="iconBig"
-            tooltip={`Search chat (${isMac ? '⌘' : 'Ctrl'}+K)`}
+            tooltip={`Search chat (${os === 'mac' ? '⌘' : 'Ctrl'}+K)`}
             tooltipPosition="bottom"
           >
             <Search />
