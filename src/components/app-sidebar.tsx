@@ -69,7 +69,7 @@ export default function AppSidebar() {
       {!showHeaderStatus && <SidebarSeparator />}
 
       {showHeaderStatus && (
-        <div className="border-y border-sidebar-border bg-orange-50 flex flex-col divide-y">
+        <div className="border-y border-sidebar-border bg-[#eee] flex flex-col divide-y">
           {/* Only archived */}
           {settings.onlyArchived && (
             <div className="inline-flex select-none items-center gap-1 p-3 text-xs text-muted-foreground">
