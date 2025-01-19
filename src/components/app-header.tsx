@@ -1,6 +1,6 @@
 'use client'
 
-import { Edit, LucideIcon, MessageSquareShare, Pencil, Search, SlidersHorizontal } from 'lucide-react'
+import { Edit, Info, LucideIcon, MessageSquareShare, Pencil, Search, SlidersHorizontal } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChatClient } from '../hooks/useChatClient'
@@ -134,17 +134,24 @@ export default function AppHeader() {
             onClick={() => setIsOpen(true)}
             variant="ghost"
             size="iconBig"
-            tooltip={`Search chat (${os === 'mac' ? '⌘' : 'Ctrl'}+K)`}
+            tooltip={`Search chats (${os === 'mac' ? '⌘' : 'Ctrl'}+K)`}
             tooltipPosition="bottom"
           >
             <Search />
           </Button>
+
+          <Button variant="ghost" size="iconBig" tooltip="This chat's info" tooltipPosition="bottom">
+            <Info />
+          </Button>
+
           <Button variant="ghost" size="iconBig" tooltip="Share this chat" tooltipPosition="bottom">
             <MessageSquareShare />
           </Button>
+
           <Button variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
             <SlidersHorizontal />
           </Button>
+          
           <UserMenu />
         </div>
       </header>

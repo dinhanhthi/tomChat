@@ -26,11 +26,6 @@ export const useChats = ({
         filteredChats = chatTable.where('hasNoTag').equals(1)
       }
     } else {
-      // filteredChats = onlyArchived
-      //   ? chatTable.where('archived').equals('true')
-      //   : alsoArchived
-      //     ? chatTable.where('archived').anyOf(['true', 'false'])
-      //     : chatTable.where('archived').equals('false')
       filteredChats = onlyArchived
         ? chatTable.where('archived').equals('true')
         : chatTable.where('archived').anyOf(['true', 'false'])
