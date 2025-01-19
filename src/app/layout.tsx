@@ -20,7 +20,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       {/* There is an overflow problem here, cannot find the solution except putting overflow-hidden here! */}
       <body className={cn(inter.className, 'overflow-hidden')}>
         <TooltipProvider>

@@ -37,7 +37,6 @@ import Typography from '@tiptap/extension-typography'
 import { generateTitleFromUserMessage } from '../app/actions'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
-import { TokenIcon } from '../icons/TokenIcon'
 import { addMessage, createChat } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
@@ -46,12 +45,20 @@ import Container from './container'
 import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
-import SimpleTooltip from './ui/simple-tooltip'
 
 const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
   addKeyboardShortcuts() {
     return {
+      // Enter: () => {
+      //   // Get the editor's parent component to access handleClientSubmit
+      //   const editorElement = this.editor.view.dom
+      //   const form = editorElement.closest('form')
+      //   if (form) {
+      //     form.requestSubmit()
+      //   }
+      //   return true
+      // },
       'Shift-Enter': () => {
         if (this.editor.isActive('codeBlock')) {
           const isEmpty = this.editor.state.selection.$head.parent.content.size === 0
@@ -122,10 +129,10 @@ export default function AppInputMsg(props: {
         },
         heading: {
           levels: [1, 2, 3]
-        }
+        },
+        hardBreak: false // Disable hard break on Enter
       }),
       ShiftEnterExtension,
-      // CustomListItem,
       Typography,
       Placeholder.configure({
         placeholder: 'Ask something...'
@@ -167,9 +174,16 @@ export default function AppInputMsg(props: {
           return true
         }
         return false
+      },
+      handleKeyDown: (view, event) => {
+        // Submit on Enter, Shift+Enter for new line
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault()
+          handleClientSubmit()
+          return true
+        }
       }
     },
-
     content: useChatParams.input,
     onUpdate: ({ editor }) => {
       const content = editor.getText()
@@ -179,17 +193,6 @@ export default function AppInputMsg(props: {
   })
 
   const { chat } = useChatClient(chatId)
-
-  const handleClientInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (useChatParams) useChatParams.setInput(event.target.value)
-  }
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault()
-      handleClientSubmit()
-    }
-  }
 
   const handleClientSubmit = async () => {
     window.history.replaceState({}, '', `/chat/${chatId}`)
@@ -224,6 +227,9 @@ export default function AppInputMsg(props: {
         // Clear images after successful submission
         setPastedImages([])
         useChatParams.handleSubmit()
+
+        // Clear the editor content after submitting
+        editor?.commands.clearContent()
       }
     } catch (error) {
       xtoast.error(
@@ -241,104 +247,102 @@ export default function AppInputMsg(props: {
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
       <div className="w-0"></div>
       <div className="x-flex-1 flex flex-col items-center">
-        <div className="h-11 w-full overflow-hidden">
-          <div
-            className={cn('w-full origin-bottom px-5 transition-all duration-200', {
-              'translate-y-full opacity-0': !showInputTools,
-              'translate-y-0 opacity-100': showInputTools
-            })}
-          >
-            <div className="flex w-full flex-row items-center gap-2 rounded-t-xl border-slate-200 bg-gray-100 p-2">
-              <TextToolButton
-                icon={Undo}
-                onClick={() => editor?.chain().focus().undo().run()}
-                tooltip="Undo"
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Redo}
-                onClick={() => editor?.chain().focus().redo().run()}
-                tooltip="Redo"
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Heading1}
-                onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
-                tooltip="Heading H1"
-                active={editor?.isActive('heading', { level: 1 })}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Heading2}
-                onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-                tooltip="Heading H2"
-                active={editor?.isActive('heading', { level: 2 })}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Heading3}
-                onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
-                tooltip="Heading H3"
-                active={editor?.isActive('heading', { level: 3 })}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Bold}
-                onClick={() => editor?.chain().focus().toggleBold().run()}
-                tooltip="Bold"
-                active={editor?.isActive('bold')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Italic}
-                onClick={() => editor?.chain().focus().toggleItalic().run()}
-                tooltip="Italic"
-                active={editor?.isActive('italic')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Strikethrough}
-                onClick={() => editor?.chain().focus().toggleStrike().run()}
-                tooltip="Strikethrough"
-                active={editor?.isActive('strike')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Code}
-                onClick={() => editor?.chain().focus().toggleCode().run()}
-                tooltip="Mark as code"
-                active={editor?.isActive('code')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Braces}
-                onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
-                tooltip="Code block"
-                active={editor?.isActive('codeBlock')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={List}
-                onClick={() => editor?.chain().focus().toggleBulletList().run()}
-                tooltip="Bulleted list"
-                active={editor?.isActive('bulletList')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={ListOrdered}
-                onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-                tooltip="Numbered list"
-                active={editor?.isActive('orderedList')}
-                editor={editor}
-              />
-              <TextToolButton
-                icon={Quote}
-                onClick={() => editor?.chain().focus().toggleBlockquote().run()}
-                tooltip="Quote"
-                active={editor?.isActive('blockquote')}
-                editor={editor}
-              />
-            </div>
+        <div
+          className={cn('w-full origin-bottom px-5 transition-all duration-200', {
+            'translate-y-full opacity-0': !showInputTools,
+            '-translate-y-1 opacity-100': showInputTools
+          })}
+        >
+          <div className="flex w-full flex-row items-center gap-2 rounded-t-xl border-slate-200 bg-gray-100 p-2">
+            <TextToolButton
+              icon={Undo}
+              onClick={() => editor?.chain().focus().undo().run()}
+              tooltip="Undo"
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Redo}
+              onClick={() => editor?.chain().focus().redo().run()}
+              tooltip="Redo"
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Heading1}
+              onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
+              tooltip="Heading H1"
+              active={editor?.isActive('heading', { level: 1 })}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Heading2}
+              onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+              tooltip="Heading H2"
+              active={editor?.isActive('heading', { level: 2 })}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Heading3}
+              onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
+              tooltip="Heading H3"
+              active={editor?.isActive('heading', { level: 3 })}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Bold}
+              onClick={() => editor?.chain().focus().toggleBold().run()}
+              tooltip="Bold"
+              active={editor?.isActive('bold')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Italic}
+              onClick={() => editor?.chain().focus().toggleItalic().run()}
+              tooltip="Italic"
+              active={editor?.isActive('italic')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Strikethrough}
+              onClick={() => editor?.chain().focus().toggleStrike().run()}
+              tooltip="Strikethrough"
+              active={editor?.isActive('strike')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Code}
+              onClick={() => editor?.chain().focus().toggleCode().run()}
+              tooltip="Mark as code"
+              active={editor?.isActive('code')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Braces}
+              onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
+              tooltip="Code block"
+              active={editor?.isActive('codeBlock')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={List}
+              onClick={() => editor?.chain().focus().toggleBulletList().run()}
+              tooltip="Bulleted list"
+              active={editor?.isActive('bulletList')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={ListOrdered}
+              onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+              tooltip="Numbered list"
+              active={editor?.isActive('orderedList')}
+              editor={editor}
+            />
+            <TextToolButton
+              icon={Quote}
+              onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+              tooltip="Quote"
+              active={editor?.isActive('blockquote')}
+              editor={editor}
+            />
           </div>
         </div>
         <form
@@ -379,18 +383,7 @@ export default function AppInputMsg(props: {
 
           <div className="flex flex-row items-center justify-between gap-4 pr-1">
             <div className="flex flex-row items-center gap-1">
-              {/* Attach */}
               <FooterButton icon={Paperclip} onClick={() => {}} tooltip="Attach files" />
-              {/* Web Search */}
-              <FooterButton
-                icon={Globe}
-                onClick={() => {
-                  setSearchEnabled(!searchEnabled)
-                }}
-                tooltip="Search the web"
-                active={searchEnabled}
-              />
-              {/* Text tools */}
               <FooterButton
                 icon={Baseline}
                 onClick={() => {
@@ -399,7 +392,6 @@ export default function AppInputMsg(props: {
                 tooltip="Text tools"
                 active={showInputTools}
               />
-              {/* Prompt collection */}
               <FooterButton
                 icon={Library}
                 onClick={() => {
@@ -408,8 +400,17 @@ export default function AppInputMsg(props: {
                 tooltip="Prompt collection"
                 active={showPromptCollection}
               />
+              <FooterButton
+                icon={Globe}
+                onClick={() => {
+                  setSearchEnabled(!searchEnabled)
+                }}
+                tooltip="Search the web"
+                active={searchEnabled}
+                title="Web"
+              />
             </div>
-            <div className="flex h-full flex-row items-end pb-1">
+            {/* <div className="flex h-full flex-row items-end pb-1">
               <SimpleTooltip text="Usage of this chat">
                 <div className="flex h-fit select-none flex-row divide-x divide-slate-300 rounded-md border-gray-300 px-2 text-xs text-gray-400">
                   <div className="flex flex-row flex-nowrap items-center gap-0.5 whitespace-nowrap pr-1.5">
@@ -420,7 +421,7 @@ export default function AppInputMsg(props: {
                   <div className="pl-1.5">$15.00</div>
                 </div>
               </SimpleTooltip>
-            </div>
+            </div> */}
             {useChatParams.isLoading && (
               <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />
             )}
@@ -441,7 +442,8 @@ const FooterButton = ({
   tooltip,
   tooltipPosition = 'bottom',
   className,
-  active
+  active,
+  title
 }: {
   icon: LucideIcon
   onClick: (e: React.MouseEvent) => void
@@ -449,6 +451,7 @@ const FooterButton = ({
   tooltipPosition?: 'top' | 'bottom' | 'left' | 'right'
   className?: string
   active?: boolean
+  title?: string
 }) => {
   return (
     <Button
@@ -458,8 +461,10 @@ const FooterButton = ({
         onClick(e)
       }}
       className={cn(
-        'rounded-xl hover:bg-gray-200 [&_svg]:size-[22px]',
-        active && 'bg-gray-200 text-primary hover:text-primary',
+        'overflow-hidden rounded-xl transition-all duration-300 hover:bg-[#e1e1e1] [&_svg]:size-[22px]',
+        active && 'rounded-3xl bg-[#e1e1e1] text-primary hover:text-primary',
+        title && 'w-auto px-2',
+        title && active && 'bg-[#d3edfa] hover:bg-sky-200',
         className
       )}
       variant="ghost"
@@ -467,7 +472,19 @@ const FooterButton = ({
       tooltip={tooltip}
       tooltipPosition={tooltipPosition}
     >
-      <Icon />
+      <div className="flex w-full items-center justify-center">
+        <Icon className="flex-shrink-0" />
+        {title && (
+          <div
+            className={cn(
+              'w-0 text-primary opacity-0 transition-all duration-200',
+              active && 'ml-1 w-auto pr-1 opacity-100'
+            )}
+          >
+            {title}
+          </div>
+        )}
+      </div>
     </Button>
   )
 }

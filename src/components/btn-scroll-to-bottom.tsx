@@ -14,7 +14,7 @@ const ScrollToBottomButton: React.FC<ScrollToBottomButtonProps> = ({ targetRef, 
     if (!targetRef.current) return
 
     const { scrollTop, scrollHeight, clientHeight } = targetRef.current
-    const isNotAtBottom = scrollTop + clientHeight < scrollHeight - 10
+    const isNotAtBottom = scrollTop + clientHeight < scrollHeight - 50
     setShowButton(isNotAtBottom)
   }
 
@@ -34,13 +34,17 @@ const ScrollToBottomButton: React.FC<ScrollToBottomButtonProps> = ({ targetRef, 
     return () => currentRef.removeEventListener('scroll', handleScroll)
   }, [targetRef])
 
-  if (!showButton) return null
-
   return (
     <button
       onClick={scrollToBottom}
       className={cn(
-        'absolute bottom-4 right-0 z-50 w-fit rounded-full border border-slate-100 bg-white p-1 text-slate-500 shadow-sm transition-all duration-200 hover:shadow-lg',
+        'absolute bottom-4 right-0 z-50 w-fit rounded-full border border-slate-100 bg-white p-1 text-slate-500 shadow-sm',
+        'transition-all duration-300 ease-in-out',
+        'pointer-events-none', // Disable interactions when hidden
+        showButton 
+          ? 'translate-y-0 scale-100 opacity-100 pointer-events-auto'
+          : 'translate-y-8 scale-0 opacity-0',
+        'hover:scale-110', // Add hover scaling effect
         className
       )}
       aria-label="Scroll to bottom"

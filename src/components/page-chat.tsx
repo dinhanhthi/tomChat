@@ -1,7 +1,6 @@
 'use client'
 
 import { useChat } from 'ai/react'
-import { Ghost } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -14,7 +13,6 @@ import ScrollToBottomButton from './btn-scroll-to-bottom'
 import Container from './container'
 import LoadingBar from './loading-bar'
 import MessagePreview from './message-preview'
-import { Button } from './ui/button'
 
 export default function PageChat({ chatId, className }: { chatId: string; className?: string }) {
   const router = useRouter()
@@ -118,7 +116,12 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
                 {messages
                   .filter(msg => !!msg.content)
                   .map((msg, i) => (
-                    <MessagePreview key={msg.id ?? i} message={msg} isLoading={isLoading} />
+                    <MessagePreview
+                      key={msg.id ?? i}
+                      message={msg}
+                      isLoading={isLoading}
+                      isLast={i === messages.filter(msg => !!msg.content).length - 1}
+                    />
                   ))}
                 {!messages.length && (
                   <div className="x-flex-1 flex flex-col items-center justify-center gap-4 opacity-30">
@@ -135,7 +138,7 @@ export default function PageChat({ chatId, className }: { chatId: string; classN
                   <div className="is-typing text-sm italic text-muted-foreground">I'm thinking, please wait</div>
                 )}
 
-                <div ref={messagesEndRef} className="h-8 min-h-8 min-w-8 shrink-0"></div>
+                <div ref={messagesEndRef} className="h-4 min-h-8 min-w-8 shrink-0"></div>
               </div>
             )}
           </Container>
