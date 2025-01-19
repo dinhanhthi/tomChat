@@ -18,7 +18,7 @@ interface TagStore {
 }
 
 const getInitialTags = (): TagData[] => {
-  // if (typeof window === 'undefined') return [] // disabled to ignore the hydration error
+  if (typeof window === 'undefined') return [] // disabled to ignore the hydration error
   const storedTags = localStorage.getItem(TAGS_STORAGE_KEY)
   if (!storedTags) return []
 
