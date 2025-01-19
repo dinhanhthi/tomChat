@@ -14,7 +14,7 @@ const ScrollToBottomButton: React.FC<ScrollToBottomButtonProps> = ({ targetRef, 
     if (!targetRef.current) return
 
     const { scrollTop, scrollHeight, clientHeight } = targetRef.current
-    const isNotAtBottom = scrollTop + clientHeight < scrollHeight - 10
+    const isNotAtBottom = scrollTop + clientHeight < scrollHeight - 50
     setShowButton(isNotAtBottom)
   }
 
