@@ -190,9 +190,11 @@ export function TagsDialog({ chat, open, onOpenChange }: TagsDialogProps) {
               onValueChange={setInputValue}
               onKeyDown={handleKeyDown}
             />
-            <CommandList className={cn({
-              'border-t': showCreateOption || availableTags.length > 0,
-            })}>
+            <CommandList
+              className={cn({
+                'border-t': showCreateOption || availableTags.length > 0
+              })}
+            >
               {showCreateOption && (
                 <>
                   <CommandEmpty>

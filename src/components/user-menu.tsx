@@ -10,16 +10,18 @@ export function UserMenu() {
   const [showTooltip, setShowTooltip] = useState(true)
 
   return (
-    <DropdownMenu onOpenChange={(open) => {
-      if (open) setShowTooltip(false)
-      else setTimeout(() => setShowTooltip(true), 100)
-    }}>
+    <DropdownMenu
+      onOpenChange={open => {
+        if (open) setShowTooltip(false)
+        else setTimeout(() => setShowTooltip(true), 100)
+      }}
+    >
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="iconBig" 
-          tooltip={showTooltip ? "User menu" : undefined} 
-          tooltipPosition="bottom" 
+        <Button
+          variant="ghost"
+          size="iconBig"
+          tooltip={showTooltip ? 'User menu' : undefined}
+          tooltipPosition="bottom"
           delayDuration={500}
         >
           <CircleUserRound />
