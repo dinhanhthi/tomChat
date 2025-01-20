@@ -38,7 +38,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import TurndownService from 'turndown'
 import { generateTitleFromUserMessage } from '../app/actions'
 import { useChatClient } from '../hooks/useChatClient'
-import { useChatStore } from '../hooks/useChatStore'
+import { useChatIdStore } from '../hooks/useChatIdStore'
 import { addMessage, createChat } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
@@ -111,7 +111,7 @@ export default function AppInputMsg(props: {
   messagesContainerRef: RefObject<HTMLElement | null>
 }) {
   const { className, useChatParams, messagesContainerRef } = props
-  const { chatId } = useChatStore()
+  const { chatId } = useChatIdStore()
   const [pastedImages, setPastedImages] = useState<PastedImage[]>([])
   const [showInputTools, setShowInputTools] = useState(false)
   const [searchEnabled, setSearchEnabled] = useState(false)

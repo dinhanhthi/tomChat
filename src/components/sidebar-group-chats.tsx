@@ -25,7 +25,7 @@ import {
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { useChatStore } from '../hooks/useChatStore'
+import { useChatIdStore } from '../hooks/useChatIdStore'
 import { SidebarFilter } from '../hooks/useFilterSettings'
 import { TagData } from '../hooks/useTagStore'
 import { Chat } from '../interface'
@@ -52,7 +52,7 @@ export default function SidebarGroupChats(props: {
   const { isMobile } = useSidebar()
   const { showAlert } = useAlertDialog()
   const router = useRouter()
-  const { chatId } = useChatStore()
+  const { chatId } = useChatIdStore()
   const [renameChat, setRenameChat] = useState<Chat | null>(null)
   const [emojiPickerChat, setEmojiPickerChat] = useState<Chat | null>(null)
   const [dropdownOpen, setDropdownOpen] = useState<Chat | null>(null)

@@ -1,7 +1,7 @@
 import { LucideIcon, Settings } from 'lucide-react'
 import { useParams, usePathname } from 'next/navigation'
 import { useChatClient } from './useChatClient'
-import { useChatStore } from './useChatStore'
+import { useChatIdStore } from './useChatIdStore'
 
 interface PageTitle {
   title: string
@@ -12,7 +12,7 @@ interface PageTitle {
 export function usePageTitle(): PageTitle {
   const pathname = usePathname()
   const { id } = useParams()
-  const { chatId } = useChatStore()
+  const { chatId } = useChatIdStore()
   const { chat } = useChatClient(chatId as string)
 
   if (pathname === '/admin') {
