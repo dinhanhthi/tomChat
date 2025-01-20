@@ -34,6 +34,8 @@ import { RefObject, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import Typography from '@tiptap/extension-typography'
+import { usePathname, useRouter } from 'next/navigation'
+import TurndownService from 'turndown'
 import { generateTitleFromUserMessage } from '../app/actions'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
@@ -46,7 +48,6 @@ import Container from './container'
 import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
-import TurndownService from 'turndown'
 
 const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
@@ -96,7 +97,7 @@ type PastedImage = {
 const turndownService = new TurndownService()
 
 export default function AppInputMsg(props: {
-  chatId: string
+  // chatId: string
   className?: string
   useChatParams: {
     input: UseChatHelpers['input']
@@ -109,12 +110,14 @@ export default function AppInputMsg(props: {
   }
   messagesContainerRef: RefObject<HTMLElement | null>
 }) {
-  const { chatId, className, useChatParams, messagesContainerRef } = props
-  const { setActiveId } = useChatStore()
+  const { className, useChatParams, messagesContainerRef } = props
+  const { chatId } = useChatStore()
   const [pastedImages, setPastedImages] = useState<PastedImage[]>([])
   const [showInputTools, setShowInputTools] = useState(false)
   const [searchEnabled, setSearchEnabled] = useState(false)
   const [showPromptCollection, setShowPromptCollection] = useState(false)
+  const pathname = usePathname()
+  const router = useRouter()
 
   const editor = useEditor({
     // https://tiptap.dev/docs/editor/extensions/functionality/starterkit
@@ -192,8 +195,9 @@ export default function AppInputMsg(props: {
   const { chat } = useChatClient(chatId)
 
   const handleClientSubmit = async () => {
-    window.history.replaceState({}, '', `/chat/${chatId}`)
-    setActiveId(chatId)
+    if (pathname === '/') {
+      window.history.pushState({}, '', `/chat/${chatId}`)
+    }
 
     try {
       if (useChatParams) {
@@ -244,9 +248,12 @@ export default function AppInputMsg(props: {
       {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
       <div className="w-0"></div>
       <div className="x-flex-1 relative flex flex-col items-center">
-        <ScrollToBottomButton className={cn('absolute top-[-50px] right-1/2', {
-          'translate-y-[-40px]': showInputTools
-        })} targetRef={messagesContainerRef} />
+        <ScrollToBottomButton
+          className={cn('absolute right-1/2 top-[-50px]', {
+            'translate-y-[-40px]': showInputTools
+          })}
+          targetRef={messagesContainerRef}
+        />
         <div
           className={cn('absolute left-0 top-[-47px] z-10 w-full origin-bottom px-5 transition-all duration-200', {
             'pointer-events-none translate-y-full opacity-0': !showInputTools,

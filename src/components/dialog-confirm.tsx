@@ -68,7 +68,7 @@ export function AlertDialogProvider({ children }: { children: React.ReactNode })
               {options.cancelText || 'Cancel'}
             </AlertDialogCancel>
             <AlertDialogAction
-              className={cn('focus-visible:!ring-0 focus-visible:!ring-offset-0 h-9', options.confirmClassName)}
+              className={cn('h-9 focus-visible:!ring-0 focus-visible:!ring-offset-0', options.confirmClassName)}
               onClick={handleConfirm}
             >
               {options.confirmText || 'Continue'}

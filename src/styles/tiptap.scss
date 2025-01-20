@@ -8,13 +8,13 @@
   }
 
   .pM-code {
-    @apply break-words rounded-md bg-gray-500 p-[1px_4px_2px_4px] font-mono text-[85%] font-normal before:content-[''] after:content-[''] text-white;
+    @apply break-words rounded-md bg-gray-500 p-[1px_4px_2px_4px] font-mono text-[85%] font-normal text-white before:content-[''] after:content-[''];
   }
 
   .pM-pre {
     @apply rounded-lg bg-slate-500 text-sm text-white;
     code {
-      @apply before:content-none after:content-none pl-0;
+      @apply pl-0 before:content-none after:content-none;
     }
   }
 
@@ -99,8 +99,8 @@
 
   // Hide trailing break in code blocks
   pre > code > .ProseMirror-trailingBreak {
-    height: 0!important;
-    line-height: 0!important;
+    height: 0 !important;
+    line-height: 0 !important;
   }
 }
 
