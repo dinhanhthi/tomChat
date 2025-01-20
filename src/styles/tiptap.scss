@@ -12,9 +12,9 @@
   }
 
   .pM-pre {
-    @apply rounded-lg bg-slate-500 text-sm text-white;
+    @apply rounded-lg bg-slate-500 text-base text-white font-normal;
     code {
-      @apply pl-0 before:content-none after:content-none;
+      @apply pl-0 before:content-none after:content-none bg-transparent border-none text-inherit;
     }
   }
 
@@ -40,6 +40,10 @@
     }
   }
 
+  .pM-li {
+    @apply my-0.5;
+  }
+
   .pM-h1 {
     @apply text-2xl font-semibold;
   }
@@ -61,6 +65,7 @@
     @apply prose-p:pM-p;
     @apply prose-blockquote:pM-blockquote;
     @apply prose-ul:pM-ul;
+    @apply prose-li:pM-li;
     @apply prose-code:pM-code;
     @apply prose-pre:pM-pre;
     @apply prose-h1:pM-h1;
