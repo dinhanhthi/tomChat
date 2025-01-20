@@ -4,7 +4,7 @@ import { useChat } from 'ai/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { useChatStore } from '../hooks/useChatStore'
+import { useChatIdStore } from '../hooks/useChatIdStore'
 import { addMessage, getChat, getMessages } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
@@ -22,7 +22,7 @@ export default function PageChat(props: PageChatProps) {
   const { className } = props
   const router = useRouter()
   const pathname = usePathname()
-  const { chatId } = useChatStore()
+  const { chatId } = useChatIdStore()
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const [isPageLoading, setIsPageLoading] = useState(true)

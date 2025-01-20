@@ -33,7 +33,7 @@ const useStore = create<ChatStore>()(
   )
 )
 
-export const useChatStore = () => {
+export const useChatIdStore = () => {
   const pathname = usePathname()
   const store = useStore()
 
