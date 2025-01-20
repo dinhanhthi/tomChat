@@ -29,7 +29,7 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
         >
           <div className="flex w-full items-center justify-center text-gray-500">
             <selectedModel.icon
-              className={cn('h-[22px] w-[22px] flex-shrink-0', {
+              className={cn('h-5 w-5 flex-shrink-0', {
                 'text-primary': open
               })}
             />
@@ -62,8 +62,8 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
                     setOpen(false)
                   }}
                 >
-                  <div className="flex flex-row items-center gap-1">
-                    <model.icon className="mr-2 h-3.5 w-3.5 opacity-85" />
+                  <div className="flex flex-row items-center gap-3">
+                    <model.icon className="h-4 w-4 opacity-85" />
                     <span className="whitespace-nowrap">{model.name}</span>
                   </div>
                   <Check className={cn('h-4 w-4', selectedModel.id === model.id ? 'opacity-100' : 'opacity-0')} />

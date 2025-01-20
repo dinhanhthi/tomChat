@@ -395,7 +395,7 @@ export default function AppInputMsg(props: {
           </div>
 
           <div className="flex flex-row items-center justify-between gap-4 pr-1">
-            <div className="flex flex-row items-center gap-1">
+            <div className="flex flex-row items-center gap-2">
               <FooterButton icon={Paperclip} onClick={() => {}} tooltip="Attach files" />
               <FooterButton
                 icon={Baseline}
