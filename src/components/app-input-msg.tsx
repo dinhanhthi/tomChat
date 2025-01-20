@@ -41,16 +41,16 @@ import { useChatClient } from '../hooks/useChatClient'
 import { useChatIdStore } from '../hooks/useChatIdStore'
 import { AppsIcon } from '../icons/AppsIcon'
 import { addMessage, createChat } from '../lib/chats'
+import { DEFAULT_MODEL_ID } from '../lib/models'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import '../styles/tiptap.scss'
 import ScrollToBottomButton from './btn-scroll-to-bottom'
 import Container from './container'
+import { ModelSelector } from './model-selector'
 import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
-import { ModelSelector } from './model-selector'
-import { allModels } from '../lib/models'
 
 const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
@@ -121,7 +121,7 @@ export default function AppInputMsg(props: {
   const [searchEnabled, setSearchEnabled] = useState(false)
   const [showPromptCollection, setShowPromptCollection] = useState(false)
   const [showApps, setShowApps] = useState(false)
-  const [selectedModel, setSelectedModel] = useState(allModels[0])
+  const [selectedModelId, setSelectedModelId] = useState(DEFAULT_MODEL_ID)
   const pathname = usePathname()
   const router = useRouter()
 
@@ -430,10 +430,7 @@ export default function AppInputMsg(props: {
                 active={searchEnabled}
                 title="Web"
               />
-              <ModelSelector
-                selectedModel={selectedModel}
-                onModelChange={setSelectedModel}
-              />
+              <ModelSelector selectedModelId={selectedModelId} onModelChange={setSelectedModelId} />
             </div>
             {/* <div className="flex h-full flex-row items-end pb-1">
               <SimpleTooltip text="Usage of this chat">

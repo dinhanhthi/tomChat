@@ -3,18 +3,19 @@
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
-import { AIModel, allModels } from '../lib/models'
+import { allModels } from '../lib/models'
 import { cn } from '../lib/utils'
 import { Button } from './ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 
 interface ModelSelectorProps {
-  selectedModel: AIModel
-  onModelChange: (model: AIModel) => void
+  selectedModelId: string
+  onModelChange: (model: string) => void
 }
 
-export function ModelSelector({ selectedModel, onModelChange }: ModelSelectorProps) {
+export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorProps) {
   const [open, setOpen] = useState(false)
+  const selectedModel = allModels.find(model => model.id === selectedModelId)!
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -27,9 +28,11 @@ export function ModelSelector({ selectedModel, onModelChange }: ModelSelectorPro
           })}
         >
           <div className="flex w-full items-center justify-center text-gray-500">
-            <selectedModel.icon className={cn('h-[22px] w-[22px] flex-shrink-0', {
-              'text-primary': open
-            })} />
+            <selectedModel.icon
+              className={cn('h-[22px] w-[22px] flex-shrink-0', {
+                'text-primary': open
+              })}
+            />
             <div
               className={cn(
                 'w-0 overflow-hidden font-normal text-primary opacity-0 transition-all duration-200 group-hover:ml-1 group-hover:w-auto group-hover:pr-1 group-hover:opacity-100',
@@ -55,15 +58,15 @@ export function ModelSelector({ selectedModel, onModelChange }: ModelSelectorPro
                   className="flex flex-row items-center justify-between"
                   key={model.id}
                   onSelect={() => {
-                    onModelChange(model)
+                    onModelChange(model.id)
                     setOpen(false)
                   }}
                 >
                   <div className="flex flex-row items-center gap-1">
-                    <model.icon className="mr-2 h-4 w-4 opacity-85" />
+                    <model.icon className="mr-2 h-3.5 w-3.5 opacity-85" />
                     <span className="whitespace-nowrap">{model.name}</span>
                   </div>
-                  <Check className={cn('mr-2 h-4 w-4', selectedModel.id === model.id ? 'opacity-100' : 'opacity-0')} />
+                  <Check className={cn('h-4 w-4', selectedModel.id === model.id ? 'opacity-100' : 'opacity-0')} />
                 </CommandItem>
               ))}
             </CommandGroup>
