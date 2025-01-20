@@ -483,8 +483,8 @@ const FooterButton = ({
         onClick(e)
       }}
       className={cn(
-        'overflow-hidden rounded-xl transition-all duration-300 hover:bg-[#e1e1e1] [&_svg]:size-[22px]',
-        active && 'rounded-3xl bg-[#e1e1e1] text-primary hover:text-primary',
+        'overflow-hidden rounded-xl transition-all duration-300 hover:bg-white [&_svg]:size-[22px] hover:shadow-sm',
+        active && 'rounded-3xl bg-white text-primary hover:text-primary shadow-sm',
         title && 'w-auto px-1.5',
         title && active && 'bg-[#d3edfa] hover:bg-[#d3edfa]',
         className

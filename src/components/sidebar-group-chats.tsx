@@ -138,7 +138,11 @@ export default function SidebarGroupChats(props: {
     setEmojiPickerChat(chat)
   }
 
-  const handleEmojiSelect = async (emoji: any) => {
+  const handleEmojiSelect = async (emoji: any, event?: MouseEvent) => {
+    if (event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
     if (!emojiPickerChat) return
     await updateChatMeta(emojiPickerChat.id, 'icon', emoji.native)
     setEmojiPickerChat(null)
@@ -173,7 +177,6 @@ export default function SidebarGroupChats(props: {
                             currentIcon={chat.icon}
                             onEmojiSelect={handleEmojiSelect}
                             handleBtnClick={e => handleIconChangeBtnClicked(e, chat)}
-                            tooltip="Change Icon"
                           />
                           <div className="flex min-w-0 flex-1 flex-col gap-1 leading-4">
                             <OverflowTooltip

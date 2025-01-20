@@ -23,9 +23,12 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
         <Button
           variant="ghost"
           role="combobox"
-          className={cn('group h-8 overflow-hidden rounded-xl px-2 transition-all duration-300 hover:bg-[#e3e3e3]', {
-            'rounded-3xl bg-[#e3e3e3]': open
-          })}
+          className={cn(
+            'group h-8 overflow-hidden rounded-xl px-2 transition-all duration-300 hover:bg-white hover:shadow-sm',
+            {
+              'rounded-3xl bg-white shadow-sm': open
+            }
+          )}
         >
           <div className="flex w-full items-center justify-center text-gray-500">
             <selectedModel.icon
