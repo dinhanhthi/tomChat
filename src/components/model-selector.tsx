@@ -31,11 +31,7 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
           )}
         >
           <div className="flex w-full items-center justify-center">
-            <selectedModel.colorIcon
-              className={cn('h-5 w-5 flex-shrink-0 group-hover:grayscale-0 text-gray-700', {
-                grayscale: !open
-              })}
-            />
+            <selectedModel.colorIcon className={cn('h-5 w-5 flex-shrink-0 text-gray-700')} />
             <div
               className={cn(
                 'w-0 overflow-hidden font-normal opacity-0 transition-all duration-200 group-hover:ml-1 group-hover:w-auto group-hover:pr-1 group-hover:opacity-100',
