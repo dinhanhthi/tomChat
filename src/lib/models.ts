@@ -24,6 +24,8 @@ export interface AIModel {
   shortName?: string
 }
 
+export const DEFAULT_MODEL_ID = 'gpt-4o-mini'
+
 // https://platform.openai.com/docs/models
 const openaiModels: AIModel[] = [
   {
