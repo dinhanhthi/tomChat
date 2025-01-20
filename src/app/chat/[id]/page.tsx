@@ -1,5 +1,5 @@
 import PageChat from '../../../components/page-chat'
 
-export default async function SingleChatPage(props: { params: Promise<{ id: string }> }) {
+export default async function SingleChatPage() {
   return <PageChat />
 }
