@@ -39,6 +39,7 @@ import TurndownService from 'turndown'
 import { generateTitleFromUserMessage } from '../app/actions'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatIdStore } from '../hooks/useChatIdStore'
+import { AppsIcon } from '../icons/AppsIcon'
 import { addMessage, createChat } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
@@ -48,6 +49,8 @@ import Container from './container'
 import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
+import { ModelSelector } from './model-selector'
+import { allModels } from '../lib/models'
 
 const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
@@ -96,8 +99,9 @@ type PastedImage = {
 
 const turndownService = new TurndownService()
 
+const placeholder = `Ask something... (Shift+Enter for new line)`
+
 export default function AppInputMsg(props: {
-  // chatId: string
   className?: string
   useChatParams: {
     input: UseChatHelpers['input']
@@ -116,6 +120,8 @@ export default function AppInputMsg(props: {
   const [showInputTools, setShowInputTools] = useState(false)
   const [searchEnabled, setSearchEnabled] = useState(false)
   const [showPromptCollection, setShowPromptCollection] = useState(false)
+  const [showApps, setShowApps] = useState(false)
+  const [selectedModel, setSelectedModel] = useState(allModels[0])
   const pathname = usePathname()
   const router = useRouter()
 
@@ -134,7 +140,7 @@ export default function AppInputMsg(props: {
       ShiftEnterExtension,
       Typography,
       Placeholder.configure({
-        placeholder: 'Ask something...'
+        placeholder: placeholder
       }),
       Image.configure({
         inline: true,
@@ -175,7 +181,6 @@ export default function AppInputMsg(props: {
         return false
       },
       handleKeyDown: (view, event) => {
-        // Submit on Enter, Shift+Enter for new line
         if (event.key === 'Enter' && !event.shiftKey) {
           event.preventDefault()
           handleClientSubmit()
@@ -386,6 +391,7 @@ export default function AppInputMsg(props: {
 
           <div className="max-h-[calc(25dvh)] min-h-6 overflow-auto bg-transparent p-2">
             <DynamicEditorContent editor={editor} className="pM-prose max-w-none focus-visible:outline-none" />
+            {!editor && <div className="h-6 text-[#adb5bd]">{placeholder}</div>}
           </div>
 
           <div className="flex flex-row items-center justify-between gap-4 pr-1">
@@ -408,6 +414,14 @@ export default function AppInputMsg(props: {
                 active={showPromptCollection}
               />
               <FooterButton
+                icon={AppsIcon as any}
+                onClick={() => {
+                  setShowApps(!showApps)
+                }}
+                tooltip="Apps"
+                active={showApps}
+              />
+              <FooterButton
                 icon={Globe}
                 onClick={() => {
                   setSearchEnabled(!searchEnabled)
@@ -415,6 +429,10 @@ export default function AppInputMsg(props: {
                 tooltip="Search the web"
                 active={searchEnabled}
                 title="Web"
+              />
+              <ModelSelector
+                selectedModel={selectedModel}
+                onModelChange={setSelectedModel}
               />
             </div>
             {/* <div className="flex h-full flex-row items-end pb-1">
@@ -470,8 +488,8 @@ const FooterButton = ({
       className={cn(
         'overflow-hidden rounded-xl transition-all duration-300 hover:bg-[#e1e1e1] [&_svg]:size-[22px]',
         active && 'rounded-3xl bg-[#e1e1e1] text-primary hover:text-primary',
-        title && 'w-auto px-2',
-        title && active && 'bg-[#d3edfa] hover:bg-sky-200',
+        title && 'w-auto px-1.5',
+        title && active && 'bg-[#d3edfa] hover:bg-[#d3edfa]',
         className
       )}
       variant="ghost"

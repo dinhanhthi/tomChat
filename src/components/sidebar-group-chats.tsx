@@ -79,7 +79,10 @@ export default function SidebarGroupChats(props: {
 
   const handleToggleArchive = async (e: React.MouseEvent, chat: Chat) => {
     e.stopPropagation()
-    await toggleChatStatus(chat.id, 'archived', chat.archived === 'true' ? 'false' : 'true')
+    if (chat.archived === 'false') {
+      router.push('/')
+    }
+    toggleChatStatus(chat.id, 'archived', chat.archived === 'true' ? 'false' : 'true')
   }
 
   const handleRename = async (newTitle: string) => {
