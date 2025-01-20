@@ -24,7 +24,7 @@ const buttonVariants = cva(
         lg: 'h-11 rounded-md px-8',
         icon: 'group h-8 w-8 shrink-0 text-gray-600 hover:text-gray-700 [&_svg]:size-4 [&_svg]:transition-transform [&_svg]:active:scale-90',
         iconBig:
-          'group h-9 w-9 shrink-0 text-gray-500 hover:text-gray-600 [&_svg]:size-5 [&_svg]:transition-transform [&_svg]:active:scale-90'
+          'group h-8 w-8 shrink-0 text-gray-500 hover:text-gray-600 [&_svg]:size-5 [&_svg]:transition-transform [&_svg]:active:scale-90'
       },
       inSidebar: {
         true: 'hover:bg-gray-200/70'

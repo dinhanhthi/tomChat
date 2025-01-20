@@ -4,7 +4,7 @@ import { Edit, Info, LucideIcon, MessageSquareShare, Pencil, Search, SlidersHori
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChatClient } from '../hooks/useChatClient'
-import { useChatStore } from '../hooks/useChatStore'
+import { useChatIdStore } from '../hooks/useChatIdStore'
 import { useOperatingSystem } from '../hooks/useOperatingSystem'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { Chat } from '../interface'
@@ -22,7 +22,7 @@ import { UserMenu } from './user-menu'
 export default function AppHeader() {
   const router = useRouter()
   const { setIsOpen } = useSearchDialogStore()
-  const { chatId } = useChatStore()
+  const { chatId } = useChatIdStore()
   const { chat } = useChatClient(chatId as string)
   const { title: pageTitle, icon: pageIcon, isEmoji } = usePageTitle()
   const os = useOperatingSystem()
