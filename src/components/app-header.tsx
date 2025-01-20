@@ -1,7 +1,7 @@
 'use client'
 
 import { Edit, Info, LucideIcon, MessageSquareShare, Pencil, Search, SlidersHorizontal } from 'lucide-react'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatStore } from '../hooks/useChatStore'
@@ -22,9 +22,7 @@ import { UserMenu } from './user-menu'
 export default function AppHeader() {
   const router = useRouter()
   const { setIsOpen } = useSearchDialogStore()
-  const { id } = useParams()
-  const { activeId } = useChatStore()
-  const chatId = id || activeId
+  const { chatId } = useChatStore()
   const { chat } = useChatClient(chatId as string)
   const { title: pageTitle, icon: pageIcon, isEmoji } = usePageTitle()
   const os = useOperatingSystem()
@@ -151,7 +149,7 @@ export default function AppHeader() {
           <Button variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
             <SlidersHorizontal />
           </Button>
-          
+
           <UserMenu />
         </div>
       </header>

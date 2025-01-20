@@ -23,7 +23,7 @@ import {
   Trash2
 } from 'lucide-react'
 import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useChatStore } from '../hooks/useChatStore'
 import { SidebarFilter } from '../hooks/useFilterSettings'
@@ -52,9 +52,7 @@ export default function SidebarGroupChats(props: {
   const { isMobile } = useSidebar()
   const { showAlert } = useAlertDialog()
   const router = useRouter()
-  const { id } = useParams()
-  const { activeId } = useChatStore()
-  const chatId = id || activeId
+  const { chatId } = useChatStore()
   const [renameChat, setRenameChat] = useState<Chat | null>(null)
   const [emojiPickerChat, setEmojiPickerChat] = useState<Chat | null>(null)
   const [dropdownOpen, setDropdownOpen] = useState<Chat | null>(null)
@@ -158,7 +156,7 @@ export default function SidebarGroupChats(props: {
                       <SidebarMenuButton
                         isActive={chat.id === chatId}
                         className={cn(
-                          'pr-1 pl-2 text-sm hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0',
+                          'pl-2 pr-1 text-sm hover:!bg-sidebar-hover group-hover/menu-item:!bg-sidebar-hover data-[active=true]:bg-gray-200 group-data-[collapsible=icon]:opacity-0',
                           {
                             '!bg-sidebar-hover': emojiPickerChat?.id === chat.id || dropdownOpen?.id === chat.id
                           }
@@ -216,9 +214,12 @@ export default function SidebarGroupChats(props: {
                     onOpenChange={() => setDropdownOpen(open => (open ? null : chat))}
                   >
                     <DropdownMenuTrigger asChild>
-                      <SidebarMenuAction showOnHover className={cn('top-1 z-20 h-6 w-6 hover:!bg-white', {
-                        'bg-white': dropdownOpen?.id === chat.id
-                      })}>
+                      <SidebarMenuAction
+                        showOnHover
+                        className={cn('top-1 z-20 h-6 w-6 hover:!bg-white', {
+                          'bg-white': dropdownOpen?.id === chat.id
+                        })}
+                      >
                         <EllipsisVertical />
                         <span className="sr-only">More</span>
                       </SidebarMenuAction>

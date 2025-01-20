@@ -7,9 +7,9 @@ import AppSidebar from '../components/app-sidebar'
 import { AlertDialogProvider } from '../components/dialog-confirm'
 import { SidebarProvider } from '../components/ui/sidebar'
 import { Toaster } from '../components/ui/sonner'
+import { BRAND_DESCRIPTION, BRAND_NAME } from '../lib/constants'
 import { cn } from '../lib/utils'
 import '../styles/globals.scss'
-import { BRAND_DESCRIPTION, BRAND_NAME } from '../lib/constants'
 
 const inter = Inter({ subsets: ['latin'] })
 
