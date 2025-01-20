@@ -24,25 +24,22 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
           variant="ghost"
           role="combobox"
           className={cn(
-            'group h-8 overflow-hidden rounded-xl px-2 transition-all duration-300 hover:bg-white hover:shadow-sm',
+            'group h-8 overflow-hidden rounded-xl px-2 transition-all duration-300 hover:bg-[#d8d8d8b3] hover:shadow-sm',
             {
-              'rounded-3xl bg-white shadow-sm': open
+              'rounded-3xl bg-[#d8d8d8b3] shadow-sm': open
             }
           )}
         >
-          <div className="flex w-full items-center justify-center text-gray-500">
-            <selectedModel.icon
-              className={cn('h-5 w-5 flex-shrink-0', {
-                'text-primary': open
-              })}
-            />
+          <div className="flex w-full items-center justify-center">
+            <selectedModel.colorIcon className={cn('h-5 w-5 flex-shrink-0 text-gray-700')} />
             <div
               className={cn(
-                'w-0 overflow-hidden font-normal text-primary opacity-0 transition-all duration-200 group-hover:ml-1 group-hover:w-auto group-hover:pr-1 group-hover:opacity-100',
+                'w-0 overflow-hidden font-normal opacity-0 transition-all duration-200 group-hover:ml-1 group-hover:w-auto group-hover:pr-1 group-hover:opacity-100',
                 {
                   'ml-1 w-auto pr-1 opacity-100': open
                 }
               )}
+              style={{ color: selectedModel.serviceColor }}
             >
               {selectedModel?.shortName || selectedModel?.name}
             </div>
@@ -66,7 +63,7 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
                   }}
                 >
                   <div className="flex flex-row items-center gap-3">
-                    <model.icon className="h-4 w-4 opacity-85" />
+                    <model.colorIcon className="h-4 w-4" />
                     <span className="whitespace-nowrap">{model.name}</span>
                   </div>
                   <Check className={cn('h-4 w-4', selectedModel.id === model.id ? 'opacity-100' : 'opacity-0')} />

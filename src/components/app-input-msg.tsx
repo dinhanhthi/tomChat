@@ -11,6 +11,7 @@ import {
   Bold,
   Braces,
   Code,
+  Eraser,
   Globe,
   Heading1,
   Heading2,
@@ -396,6 +397,7 @@ export default function AppInputMsg(props: {
 
           <div className="flex flex-row items-center justify-between gap-4 pr-1">
             <div className="flex flex-row items-center gap-2">
+              <FooterButton icon={Eraser} onClick={() => {}} tooltip="Clear context" />
               <FooterButton icon={Paperclip} onClick={() => {}} tooltip="Attach files" />
               <FooterButton
                 icon={Baseline}
@@ -483,14 +485,14 @@ const FooterButton = ({
         onClick(e)
       }}
       className={cn(
-        'overflow-hidden rounded-xl transition-all duration-300 hover:bg-white [&_svg]:size-[22px] hover:shadow-sm',
-        active && 'rounded-3xl bg-white text-primary hover:text-primary shadow-sm',
+        'overflow-hidden rounded-lg text-gray-700 transition-all duration-300 hover:bg-[#d8d8d8b3] hover:shadow-sm [&_svg]:size-[20px] hover:text-gray-900',
+        active && 'rounded-3xl bg-[#d8d8d8b3] text-primary shadow-sm hover:text-primary',
         title && 'w-auto px-1.5',
         title && active && 'bg-[#d3edfa] hover:bg-[#d3edfa]',
         className
       )}
       variant="ghost"
-      size="iconBig"
+      size="icon"
       tooltip={tooltip}
       tooltipPosition={tooltipPosition}
     >
