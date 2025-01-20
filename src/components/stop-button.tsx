@@ -18,7 +18,7 @@ function PureStopButton({
         stop()
         setMessages(messages => sanitizeUIMessages(messages))
       }}
-      className="relative flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white hover:bg-primary hover:text-white [&_svg]:size-[15px]"
+      className="relative flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white hover:bg-primary hover:text-white [&_svg]:size-[15px]"
       variant="ghost"
       size="iconBig"
     >

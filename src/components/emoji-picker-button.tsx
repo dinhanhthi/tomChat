@@ -71,7 +71,16 @@ export function EmojiPickerButton({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto border-none p-0 shadow-none" side="right" align="start" sideOffset={0}>
+      <PopoverContent
+        onClick={(e: React.MouseEvent) => {
+          e.stopPropagation()
+          e.preventDefault()
+        }}
+        className="w-auto border-none p-0 shadow-none"
+        side="right"
+        align="start"
+        sideOffset={0}
+      >
         <div className="max-h-[300px] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
           <Picker
             data={data}
