@@ -24,13 +24,13 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
           variant="ghost"
           role="combobox"
           className={cn(
-            'group h-8 overflow-hidden rounded-xl px-2 transition-all duration-300 hover:bg-white hover:shadow-sm',
+            'group h-8 overflow-hidden rounded-xl px-2 transition-all duration-300 hover:bg-[#d8d8d8b3] hover:shadow-sm',
             {
-              'rounded-3xl bg-white shadow-sm': open
+              'rounded-3xl bg-[#d8d8d8b3] shadow-sm': open
             }
           )}
         >
-          <div className="flex w-full items-center justify-center text-gray-500">
+          <div className="flex w-full items-center justify-center text-gray-700 group-hover:text-gray-800">
             <selectedModel.icon
               className={cn('h-5 w-5 flex-shrink-0', {
                 'text-primary': open
