@@ -13,19 +13,25 @@ export function GeminiIcon(props: SVGProps<SVGSVGElement>) {
 
 export function GeminiColorIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <defs>
-        <linearGradient id="lobe-icons-gemini-fill" x1="0%" x2="68.73%" y1="100%" y2="30.395%">
-          <stop offset="0%" stopColor="#1C7DFF"></stop>
-          <stop offset="52.021%" stopColor="#1C69FF"></stop>
-          <stop offset="100%" stopColor="#F0DCD6"></stop>
-        </linearGradient>
-      </defs>
+    <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" {...props}>
       <path
-        d="M12 24A14.304 14.304 0 000 12 14.304 14.304 0 0012 0a14.305 14.305 0 0012 12 14.305 14.305 0 00-12 12"
-        fill="url(#lobe-icons-gemini-fill)"
-        fillRule="nonzero"
-      ></path>
+        d="M16 8.016A8.522 8.522 0 008.016 16h-.032A8.521 8.521 0 000 8.016v-.032A8.521 8.521 0 007.984 0h.032A8.522 8.522 0 0016 7.984v.032z"
+        fill="url(#prefix__paint0_radial_980_20147)"
+      />
+      <defs>
+        <radialGradient
+          id="prefix__paint0_radial_980_20147"
+          cx="0"
+          cy="0"
+          r="1"
+          gradientUnits="userSpaceOnUse"
+          gradientTransform="matrix(16.1326 5.4553 -43.70045 129.2322 1.588 6.503)"
+        >
+          <stop offset=".067" stopColor="#9168C0" />
+          <stop offset=".343" stopColor="#5684D1" />
+          <stop offset=".672" stopColor="#1BA1E3" />
+        </radialGradient>
+      </defs>
     </svg>
   )
 }
