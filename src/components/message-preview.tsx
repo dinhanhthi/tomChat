@@ -17,12 +17,13 @@ import { Button } from './ui/button'
 interface MessagePreviewProps {
   className?: string
   message: exMessage
-  isLoading: UseChatHelpers['isLoading']
+  isLoading?: UseChatHelpers['isLoading']
   isLast?: boolean
+  smallText?: boolean
 }
 
 export default function MessagePreview(props: MessagePreviewProps) {
-  const { message, className, isLoading, isLast } = props
+  const { message, className, isLoading, isLast, smallText } = props
   const isUser = message.role === 'user'
   const { isFavoriteMessage, toggleFavoriteMessage } = useFavoriteMessages()
 
@@ -51,8 +52,10 @@ export default function MessagePreview(props: MessagePreviewProps) {
         )}
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <RemarkMarkdown
-            className={cn('x-prose text-[0.97rem]', {
-              'first:mt-2': !isUser
+            className={cn('x-prose', {
+              'first:mt-2': !isUser,
+              'text-[90%]': smallText,
+              'text-[95%]': !smallText
             })}
             remarkPlugins={[remarkMath, remarkGfm]}
             rehypePlugins={[rehypeKatex, rehypeHighlight]}
