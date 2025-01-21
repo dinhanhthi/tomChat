@@ -115,8 +115,8 @@ export default function AdminPage() {
                 {tags.map(tag => (
                   <SelectItem key={tag.name} value={tag.name}>
                     <div className="flex flex-row flex-nowrap items-center gap-2">
-                      <TagIndicator tagColor={tag.color} />
                       {tag.name}
+                      <TagIndicator tagColor={tag.color} />
                     </div>
                   </SelectItem>
                 ))}
