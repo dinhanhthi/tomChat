@@ -53,6 +53,7 @@ import { ModelSelector } from './model-selector'
 import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
+import { InputFooterMoreBtn } from './input-footer-more-btn'
 
 const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
@@ -422,7 +423,13 @@ export default function AppInputMsg(props: {
 
           <div className="flex flex-row items-center justify-between gap-4 pr-1">
             <div className="flex flex-row items-center gap-2">
-              <FooterButton icon={Eraser} onClick={() => {}} tooltip="Clear context" />
+              <InputFooterMoreBtn
+                onClearContext={() => {}}
+                onPromptCollection={() => setShowPromptCollection(!showPromptCollection)}
+                onApps={() => setShowApps(!showApps)}
+                showPromptCollection={showPromptCollection}
+                showApps={showApps}
+              />
               <FooterButton icon={Paperclip} onClick={() => {}} tooltip="Attach files" />
               <FooterButton
                 icon={Baseline}
@@ -431,22 +438,6 @@ export default function AppInputMsg(props: {
                 }}
                 tooltip={`Text tools (${os === 'mac' ? '⌘' : 'Ctrl'}+Shift+A)`}
                 active={showInputTools}
-              />
-              <FooterButton
-                icon={Library}
-                onClick={() => {
-                  setShowPromptCollection(!showPromptCollection)
-                }}
-                tooltip="Prompt collection"
-                active={showPromptCollection}
-              />
-              <FooterButton
-                icon={AppsIcon as any}
-                onClick={() => {
-                  setShowApps(!showApps)
-                }}
-                tooltip="Apps"
-                active={showApps}
               />
               <FooterButton
                 icon={Globe}
@@ -510,7 +501,7 @@ const FooterButton = ({
         onClick(e)
       }}
       className={cn(
-        'overflow-hidden rounded-lg text-gray-700 transition-all duration-300 hover:bg-[#d8d8d8b3] hover:text-gray-900 hover:shadow-sm [&_svg]:size-[20px]',
+        'overflow-hidden rounded-lg text-gray-600 transition-all duration-300 hover:bg-[#d8d8d8b3] hover:text-gray-800 hover:shadow-sm [&_svg]:size-[20px]',
         active && 'rounded-3xl bg-[#d8d8d8b3] text-primary shadow-sm hover:text-primary',
         title && 'w-auto px-1.5',
         title && active && 'bg-[#d3edfa] hover:bg-[#d3edfa]',
@@ -544,8 +535,7 @@ const TextToolButton = ({
   tooltip,
   tooltipPosition = 'top',
   className,
-  active,
-  editor
+  active
 }: {
   icon: LucideIcon
   onClick: (e: React.MouseEvent) => void
