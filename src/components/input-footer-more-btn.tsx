@@ -3,6 +3,7 @@
 import { Blocks, EllipsisVertical, Eraser, Library } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '../lib/utils'
+import { inputFooterBtnHover } from './app-input-msg'
 import { Button } from './ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 
@@ -49,7 +50,10 @@ export function InputFooterMoreBtn({
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-lg text-gray-600 transition-all duration-300 hover:bg-[#d8d8d8b3] hover:text-gray-800 hover:shadow-sm [&_svg]:size-[20px]"
+          className={cn(
+            'rounded-lg text-gray-600 transition-all duration-300 [&_svg]:size-[20px]',
+            inputFooterBtnHover
+          )}
         >
           <EllipsisVertical />
         </Button>

@@ -5,6 +5,7 @@ import { Check, ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
 import { allModels } from '../lib/models'
 import { cn } from '../lib/utils'
+import { inputFooterBtnFixed, inputFooterBtnHover } from './app-input-msg'
 import { Button } from './ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 
@@ -25,8 +26,10 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
           role="combobox"
           className={cn(
             'group h-7 overflow-hidden rounded-xl px-2 transition-all duration-300 hover:bg-[#d8d8d8b3] hover:shadow-sm',
+            inputFooterBtnHover,
             {
-              'rounded-3xl bg-[#d8d8d8b3] shadow-sm': open
+              'rounded-3xl shadow-sm': open,
+              [inputFooterBtnFixed]: open
             }
           )}
         >

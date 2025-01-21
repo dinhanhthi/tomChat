@@ -6,28 +6,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { UseChatHelpers } from 'ai/react/dist'
-import {
-  Baseline,
-  Bold,
-  Braces,
-  Code,
-  Globe,
-  Heading1,
-  Heading2,
-  Heading3,
-  Italic,
-  List,
-  ListOrdered,
-  Loader2,
-  LucideIcon,
-  Paperclip,
-  Quote,
-  Redo,
-  Settings2,
-  Strikethrough,
-  Undo,
-  X
-} from 'lucide-react'
+import { Baseline, Globe, Loader2, LucideIcon, Paperclip, Settings2, X } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import NextImage from 'next/image'
 import { RefObject, useEffect, useState } from 'react'
@@ -51,6 +30,7 @@ import { InputFooterMoreBtn } from './input-footer-more-btn'
 import { ModelSelector } from './model-selector'
 import SendButton from './send-button'
 import StopButton from './stop-button'
+import TextToolsGroup from './text-tool-group'
 import { Button } from './ui/button'
 
 const ShiftEnterExtension = Extension.create({
@@ -101,6 +81,11 @@ type PastedImage = {
 const turndownService = new TurndownService()
 
 const placeholder = `Ask something... (Shift+Enter for new line)`
+
+export const inputFooterBtnHover = 'hover:bg-slate-200 hover:text-gray-800 hover:shadow-sm'
+export const inputFooterBtnFixed = 'bg-slate-200 text-gray-800 shadow-sm rounded-3xl'
+export const inputFooterBtnActive = 'bg-slate-200 text-primary shadow-sm rounded-3xl hover:text-primary'
+export const inputBg = 'border-slate-200 bg-slate-100'
 
 export default function AppInputMsg(props: {
   className?: string
@@ -274,202 +259,94 @@ export default function AppInputMsg(props: {
   }
 
   return (
-    <Container className={cn('flex flex-row gap-4 pt-4 md:gap-5 lg:gap-6', className)}>
-      {/* Fake div to use the gap, this is the same as in messages' container, copied from ChatGPT. */}
-      <div className="w-0"></div>
-      <div className="x-flex-1 relative flex flex-col items-center">
-        <ScrollToBottomButton
-          className={cn('absolute right-1/2 top-[-50px]', {
-            'translate-y-[-40px]': showInputTools
-          })}
-          targetRef={messagesContainerRef}
-        />
-        <div
-          className={cn('absolute left-0 top-[-47px] z-10 w-full origin-bottom px-5 transition-all duration-200', {
-            'pointer-events-none translate-y-full opacity-0': !showInputTools,
-            'translate-y-1 opacity-100': showInputTools
-          })}
-        >
-          <div className="flex w-full flex-row items-center gap-2 rounded-t-xl border-slate-200 bg-gray-100 p-2">
-            <TextToolButton
-              icon={Undo}
-              onClick={() => editor?.chain().focus().undo().run()}
-              tooltip="Undo"
-              editor={editor}
-            />
-            <TextToolButton
-              icon={Redo}
-              onClick={() => editor?.chain().focus().redo().run()}
-              tooltip="Redo"
-              editor={editor}
-            />
-            <TextToolButton
-              icon={Heading1}
-              onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
-              tooltip="Heading H1"
-              active={editor?.isActive('heading', { level: 1 })}
-              editor={editor}
-            />
-            <TextToolButton
-              icon={Heading2}
-              onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
-              tooltip="Heading H2"
-              active={editor?.isActive('heading', { level: 2 })}
-              editor={editor}
-            />
-            <TextToolButton
-              icon={Heading3}
-              onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
-              tooltip="Heading H3"
-              active={editor?.isActive('heading', { level: 3 })}
-              editor={editor}
-            />
-            <TextToolButton
-              icon={Bold}
-              onClick={() => editor?.chain().focus().toggleBold().run()}
-              tooltip="Bold"
-              active={editor?.isActive('bold')}
-              editor={editor}
-            />
-            <TextToolButton
-              icon={Italic}
-              onClick={() => editor?.chain().focus().toggleItalic().run()}
-              tooltip="Italic"
-              active={editor?.isActive('italic')}
-              editor={editor}
-            />
-            <TextToolButton
-              icon={Strikethrough}
-              onClick={() => editor?.chain().focus().toggleStrike().run()}
-              tooltip="Strikethrough"
-              active={editor?.isActive('strike')}
-              editor={editor}
-            />
-            <TextToolButton
-              icon={Code}
-              onClick={() => editor?.chain().focus().toggleCode().run()}
-              tooltip="Mark as code"
-              active={editor?.isActive('code')}
-              editor={editor}
-            />
-            <TextToolButton
-              icon={Braces}
-              onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
-              tooltip="Code block"
-              active={editor?.isActive('codeBlock')}
-              editor={editor}
-            />
-            <TextToolButton
-              icon={List}
-              onClick={() => editor?.chain().focus().toggleBulletList().run()}
-              tooltip="Bulleted list"
-              active={editor?.isActive('bulletList')}
-              editor={editor}
-            />
-            <TextToolButton
-              icon={ListOrdered}
-              onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-              tooltip="Numbered list"
-              active={editor?.isActive('orderedList')}
-              editor={editor}
-            />
-            <TextToolButton
-              icon={Quote}
-              onClick={() => editor?.chain().focus().toggleBlockquote().run()}
-              tooltip="Quote"
-              active={editor?.isActive('blockquote')}
-              editor={editor}
-            />
-          </div>
-        </div>
-        <form
-          onSubmit={handleClientSubmit}
-          className="x-flex-1 z-20 mb-2 flex w-full flex-col rounded-3xl border-gray-200 bg-gray-100 p-3"
-        >
-          {/* Image previews */}
-          {pastedImages.length > 0 && (
-            <div className="flex w-full gap-2 overflow-auto rounded-tl-2xl px-2 pb-2 pt-2">
-              {pastedImages.map(image => (
-                <div
-                  key={image.id}
-                  className="group relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-gray-200"
-                >
-                  {image.loading ? (
-                    <div className="flex h-full w-full items-center justify-center bg-gray-100">
-                      <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
-                    </div>
-                  ) : (
-                    <>
-                      <NextImage src={image.previewUrl} alt="Pasted image" fill className="object-cover" />
-                      <button
-                        onClick={() => removeImage(image.id)}
-                        className="absolute right-1 top-1 rounded-full bg-black/50 p-1 opacity-0 transition-opacity group-hover:opacity-100"
-                      >
-                        <X className="h-3 w-3 text-white" />
-                      </button>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="max-h-[calc(25dvh)] min-h-6 overflow-auto bg-transparent p-2 pb-4">
-            <DynamicEditorContent editor={editor} className="pM-prose max-w-none focus-visible:outline-none" />
-            {!editor && <div className="h-6 text-[#adb5bd]">{placeholder}</div>}
-          </div>
-
-          <div className="flex flex-row items-center justify-between gap-4 pr-1">
-            <div className="flex flex-row items-center gap-1.5">
-              <InputFooterMoreBtn
-                onClearContext={() => {}}
-                onPromptCollection={() => setShowPromptCollection(!showPromptCollection)}
-                onApps={() => setShowApps(!showApps)}
-                showPromptCollection={showPromptCollection}
-                showApps={showApps}
-              />
-              <FooterButton icon={Settings2} onClick={() => {}} tooltip="This chat's configs" />
-              <FooterButton icon={Paperclip} onClick={() => {}} tooltip="Attach files" />
-              <FooterButton
-                icon={Baseline}
-                onClick={() => {
-                  setShowInputTools(!showInputTools)
-                }}
-                tooltip={`Text tools (${os === 'mac' ? '⌘' : 'Ctrl'}+Shift+A)`}
-                active={showInputTools}
-              />
-              <FooterButton
-                icon={Globe}
-                onClick={() => {
-                  setSearchEnabled(!searchEnabled)
-                }}
-                tooltip={`Search the web (${os === 'mac' ? '⌘' : 'Ctrl'}+Shift+F)`}
-                active={searchEnabled}
-                title="Web"
-              />
-              <ModelSelector selectedModelId={selectedModelId} onModelChange={setSelectedModelId} />
-            </div>
-            {/* <div className="flex h-full flex-row items-end pb-1">
-              <SimpleTooltip text="Usage of this chat">
-                <div className="flex h-fit select-none flex-row divide-x divide-slate-300 rounded-md border-gray-300 px-2 text-xs text-gray-400">
-                  <div className="flex flex-row flex-nowrap items-center gap-0.5 whitespace-nowrap pr-1.5">
-                    <TokenIcon className="h-4 w-4" />
-                    <span>1.2K</span>
+    <Container className={cn('relative flex w-full flex-col items-center', className)}>
+      <ScrollToBottomButton
+        className={cn('absolute right-1/2 top-[-50px]', {
+          'translate-y-[-40px]': showInputTools
+        })}
+        targetRef={messagesContainerRef}
+      />
+      <div
+        className={cn('absolute left-0 top-[-47px] z-10 w-full origin-bottom px-8 transition-all duration-200', {
+          'pointer-events-none translate-y-full opacity-0': !showInputTools,
+          'translate-y-1 opacity-100': showInputTools
+        })}
+      >
+        <TextToolsGroup editor={editor} />
+      </div>
+      <form
+        onSubmit={handleClientSubmit}
+        className={cn('x-flex-1 z-20 mb-2 flex w-full flex-col overflow-hidden rounded-3xl py-3', inputBg)}
+      >
+        {/* Image previews */}
+        {pastedImages.length > 0 && (
+          <div className="flex w-full gap-2 overflow-auto rounded-tl-2xl px-2 pb-2 pt-2">
+            {pastedImages.map(image => (
+              <div
+                key={image.id}
+                className="group relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-gray-200"
+              >
+                {image.loading ? (
+                  <div className="flex h-full w-full items-center justify-center bg-gray-100">
+                    <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
                   </div>
-
-                  <div className="pl-1.5">$15.00</div>
-                </div>
-              </SimpleTooltip>
-            </div> */}
-            {useChatParams.isLoading && (
-              <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />
-            )}
-            {!useChatParams.isLoading && <SendButton submitForm={handleClientSubmit} input={useChatParams.input} />}
+                ) : (
+                  <>
+                    <NextImage src={image.previewUrl} alt="Pasted image" fill className="object-cover" />
+                    <button
+                      onClick={() => removeImage(image.id)}
+                      className="absolute right-1 top-1 rounded-full bg-black/50 p-1 opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      <X className="h-3 w-3 text-white" />
+                    </button>
+                  </>
+                )}
+              </div>
+            ))}
           </div>
-        </form>
-        <div className="select-none text-xs text-muted-foreground">
-          AI can make mistakes. Double check important info.
+        )}
+
+        <div className="max-h-[calc(25dvh)] min-h-6 overflow-auto bg-transparent p-2 px-5 pb-4">
+          <DynamicEditorContent editor={editor} className="pM-prose max-w-none focus-visible:outline-none" />
+          {!editor && <div className="h-6 text-[#adb5bd]">{placeholder}</div>}
         </div>
+
+        <div className="flex flex-row items-center justify-between gap-4 px-3">
+          <div className="flex flex-row items-center gap-1.5">
+            <InputFooterMoreBtn
+              onClearContext={() => {}}
+              onPromptCollection={() => setShowPromptCollection(!showPromptCollection)}
+              onApps={() => setShowApps(!showApps)}
+              showPromptCollection={showPromptCollection}
+              showApps={showApps}
+            />
+            <FooterButton icon={Settings2} onClick={() => {}} tooltip="This chat's configs" />
+            <FooterButton icon={Paperclip} onClick={() => {}} tooltip="Attach files" />
+            <FooterButton
+              icon={Baseline}
+              onClick={() => {
+                setShowInputTools(!showInputTools)
+              }}
+              tooltip={`Text tools (${os === 'mac' ? '⌘' : 'Ctrl'}+Shift+A)`}
+              active={showInputTools}
+            />
+            <FooterButton
+              icon={Globe}
+              onClick={() => {
+                setSearchEnabled(!searchEnabled)
+              }}
+              tooltip={`Search the web (${os === 'mac' ? '⌘' : 'Ctrl'}+Shift+F)`}
+              active={searchEnabled}
+              title="Web"
+            />
+            <ModelSelector selectedModelId={selectedModelId} onModelChange={setSelectedModelId} />
+          </div>
+          {useChatParams.isLoading && <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />}
+          {!useChatParams.isLoading && <SendButton submitForm={handleClientSubmit} input={useChatParams.input} />}
+        </div>
+      </form>
+      <div className="select-none text-xs text-muted-foreground">
+        AI can make mistakes. Double check important info.
       </div>
     </Container>
   )
@@ -500,8 +377,9 @@ const FooterButton = ({
         onClick(e)
       }}
       className={cn(
-        'overflow-hidden rounded-lg text-gray-600 transition-all duration-300 hover:bg-[#d8d8d8b3] hover:text-gray-800 hover:shadow-sm [&_svg]:size-[20px]',
-        active && 'rounded-3xl bg-[#d8d8d8b3] text-primary shadow-sm hover:text-primary',
+        'overflow-hidden rounded-lg text-gray-600 transition-all duration-300 [&_svg]:size-[20px]',
+        inputFooterBtnHover,
+        active && inputFooterBtnActive,
         title && 'w-auto px-1.5',
         title && active && 'bg-[#d3edfa] hover:bg-[#d3edfa]',
         className
@@ -524,40 +402,6 @@ const FooterButton = ({
           </div>
         )}
       </div>
-    </Button>
-  )
-}
-
-const TextToolButton = ({
-  icon: Icon,
-  onClick,
-  tooltip,
-  tooltipPosition = 'top',
-  className,
-  active
-}: {
-  icon: LucideIcon
-  onClick: (e: React.MouseEvent) => void
-  tooltip?: string
-  tooltipPosition?: 'top' | 'bottom' | 'left' | 'right'
-  className?: string
-  active?: boolean
-  editor: any
-}) => {
-  return (
-    <Button
-      onClick={e => {
-        e.preventDefault()
-        e.stopPropagation()
-        onClick(e)
-      }}
-      className={cn('h-6 w-6 rounded-md hover:bg-gray-200 [&_svg]:size-[16px]', active && 'bg-gray-200', className)}
-      variant="ghost"
-      size="icon"
-      tooltip={tooltip}
-      tooltipPosition={tooltipPosition}
-    >
-      <Icon />
     </Button>
   )
 }
