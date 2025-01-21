@@ -212,6 +212,11 @@ export default function AppInputMsg(props: {
         e.preventDefault()
         setShowInputTools(prev => !prev)
       }
+
+      if (e.key === 'f' && e.shiftKey && ((os === 'mac' && e.metaKey) || (os !== 'mac' && e.ctrlKey))) {
+        e.preventDefault()
+        setSearchEnabled(prev => !prev)
+      }
     }
 
     document.addEventListener('keydown', handleKeyDown)
@@ -448,7 +453,7 @@ export default function AppInputMsg(props: {
                 onClick={() => {
                   setSearchEnabled(!searchEnabled)
                 }}
-                tooltip="Search the web"
+                tooltip={`Search the web (${os === 'mac' ? '⌘' : 'Ctrl'}+Shift+F)`}
                 active={searchEnabled}
                 title="Web"
               />
