@@ -31,7 +31,7 @@ import {
 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import NextImage from 'next/image'
-import { RefObject, useState } from 'react'
+import { RefObject, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import Typography from '@tiptap/extension-typography'
@@ -40,6 +40,7 @@ import TurndownService from 'turndown'
 import { generateTitleFromUserMessage } from '../app/actions'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatIdStore } from '../hooks/useChatIdStore'
+import { useOperatingSystem } from '../hooks/useOperatingSystem'
 import { AppsIcon } from '../icons/AppsIcon'
 import { addMessage, createChat } from '../lib/chats'
 import { DEFAULT_MODEL_ID } from '../lib/models'
@@ -125,6 +126,7 @@ export default function AppInputMsg(props: {
   const [selectedModelId, setSelectedModelId] = useState(DEFAULT_MODEL_ID)
   const pathname = usePathname()
   const router = useRouter()
+  const os = useOperatingSystem()
 
   const editor = useEditor({
     // https://tiptap.dev/docs/editor/extensions/functionality/starterkit
@@ -197,6 +199,29 @@ export default function AppInputMsg(props: {
     },
     immediatelyRender: false // SSR
   })
+
+  // Add keyboard shortcut handler
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        editor?.isFocused && // Only activate when editor is focused
+        e.key === 'a' &&
+        e.shiftKey &&
+        ((os === 'mac' && e.metaKey) || (os !== 'mac' && e.ctrlKey))
+      ) {
+        e.preventDefault()
+        setShowInputTools(prev => !prev)
+      }
+
+      if (e.key === 'f' && e.shiftKey && ((os === 'mac' && e.metaKey) || (os !== 'mac' && e.ctrlKey))) {
+        e.preventDefault()
+        setSearchEnabled(prev => !prev)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [os, editor]) // Add editor to dependencies
 
   const { chat } = useChatClient(chatId)
 
@@ -404,7 +429,7 @@ export default function AppInputMsg(props: {
                 onClick={() => {
                   setShowInputTools(!showInputTools)
                 }}
-                tooltip="Text tools"
+                tooltip={`Text tools (${os === 'mac' ? '⌘' : 'Ctrl'}+Shift+A)`}
                 active={showInputTools}
               />
               <FooterButton
@@ -428,7 +453,7 @@ export default function AppInputMsg(props: {
                 onClick={() => {
                   setSearchEnabled(!searchEnabled)
                 }}
-                tooltip="Search the web"
+                tooltip={`Search the web (${os === 'mac' ? '⌘' : 'Ctrl'}+Shift+F)`}
                 active={searchEnabled}
                 title="Web"
               />
@@ -485,7 +510,7 @@ const FooterButton = ({
         onClick(e)
       }}
       className={cn(
-        'overflow-hidden rounded-lg text-gray-700 transition-all duration-300 hover:bg-[#d8d8d8b3] hover:shadow-sm [&_svg]:size-[20px] hover:text-gray-900',
+        'overflow-hidden rounded-lg text-gray-700 transition-all duration-300 hover:bg-[#d8d8d8b3] hover:text-gray-900 hover:shadow-sm [&_svg]:size-[20px]',
         active && 'rounded-3xl bg-[#d8d8d8b3] text-primary shadow-sm hover:text-primary',
         title && 'w-auto px-1.5',
         title && active && 'bg-[#d3edfa] hover:bg-[#d3edfa]',
