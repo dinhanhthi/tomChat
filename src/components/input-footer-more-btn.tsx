@@ -1,8 +1,7 @@
 'use client'
 
-import { Eraser, Library, ListFilter } from 'lucide-react'
+import { Blocks, EllipsisVertical, Eraser, Library } from 'lucide-react'
 import { useState } from 'react'
-import { AppsIcon } from '../icons/AppsIcon'
 import { cn } from '../lib/utils'
 import { Button } from './ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
@@ -52,12 +51,12 @@ export function InputFooterMoreBtn({
           size="icon"
           className="rounded-lg text-gray-600 transition-all duration-300 hover:bg-[#d8d8d8b3] hover:text-gray-800 hover:shadow-sm [&_svg]:size-[20px]"
         >
-          <ListFilter />
+          <EllipsisVertical />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-fit p-1 font-normal">
         <div className="flex flex-col gap-1">
-          <FooterButton icon={AppsIcon} onClick={onApps} tooltip="Apps" active={showApps} />
+          <FooterButton icon={Blocks} onClick={onApps} tooltip="Plugins" active={showApps} />
           <FooterButton icon={Eraser} onClick={onClearContext} tooltip="Clear context" />
           <FooterButton
             icon={Library}

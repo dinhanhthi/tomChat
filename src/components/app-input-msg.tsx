@@ -11,13 +11,11 @@ import {
   Bold,
   Braces,
   Code,
-  Eraser,
   Globe,
   Heading1,
   Heading2,
   Heading3,
   Italic,
-  Library,
   List,
   ListOrdered,
   Loader2,
@@ -25,6 +23,7 @@ import {
   Paperclip,
   Quote,
   Redo,
+  Settings2,
   Strikethrough,
   Undo,
   X
@@ -41,7 +40,6 @@ import { generateTitleFromUserMessage } from '../app/actions'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatIdStore } from '../hooks/useChatIdStore'
 import { useOperatingSystem } from '../hooks/useOperatingSystem'
-import { AppsIcon } from '../icons/AppsIcon'
 import { addMessage, createChat } from '../lib/chats'
 import { DEFAULT_MODEL_ID } from '../lib/models'
 import { cn } from '../lib/utils'
@@ -49,11 +47,11 @@ import { xtoast } from '../lib/xtoast'
 import '../styles/tiptap.scss'
 import ScrollToBottomButton from './btn-scroll-to-bottom'
 import Container from './container'
+import { InputFooterMoreBtn } from './input-footer-more-btn'
 import { ModelSelector } from './model-selector'
 import SendButton from './send-button'
 import StopButton from './stop-button'
 import { Button } from './ui/button'
-import { InputFooterMoreBtn } from './input-footer-more-btn'
 
 const ShiftEnterExtension = Extension.create({
   name: 'shiftEnterHandler',
@@ -416,13 +414,13 @@ export default function AppInputMsg(props: {
             </div>
           )}
 
-          <div className="max-h-[calc(25dvh)] min-h-6 overflow-auto bg-transparent p-2">
+          <div className="max-h-[calc(25dvh)] min-h-6 overflow-auto bg-transparent p-2 pb-4">
             <DynamicEditorContent editor={editor} className="pM-prose max-w-none focus-visible:outline-none" />
             {!editor && <div className="h-6 text-[#adb5bd]">{placeholder}</div>}
           </div>
 
           <div className="flex flex-row items-center justify-between gap-4 pr-1">
-            <div className="flex flex-row items-center gap-2">
+            <div className="flex flex-row items-center gap-1.5">
               <InputFooterMoreBtn
                 onClearContext={() => {}}
                 onPromptCollection={() => setShowPromptCollection(!showPromptCollection)}
@@ -430,6 +428,7 @@ export default function AppInputMsg(props: {
                 showPromptCollection={showPromptCollection}
                 showApps={showApps}
               />
+              <FooterButton icon={Settings2} onClick={() => {}} tooltip="This chat's configs" />
               <FooterButton icon={Paperclip} onClick={() => {}} tooltip="Attach files" />
               <FooterButton
                 icon={Baseline}

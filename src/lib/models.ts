@@ -139,7 +139,7 @@ const mistralModels: AIModel[] = [
     colorIcon: MistralColorIcon,
     serviceColor: '#ee5348',
     name: 'Mistral Small',
-    shortName: 'M Small'
+    shortName: 'Small'
   },
   {
     id: 'mistral-large-latest',
@@ -148,7 +148,7 @@ const mistralModels: AIModel[] = [
     colorIcon: MistralColorIcon,
     serviceColor: '#ee5348',
     name: 'Mistral Large',
-    shortName: 'M Large'
+    shortName: 'Large'
   }
 ]
 
@@ -173,7 +173,7 @@ const deepseekModels: AIModel[] = [
     colorIcon: DeepSeekColorIcon,
     serviceColor: '#4D6BFE',
     name: 'DeepSeek V3',
-    shortName: 'DS V3'
+    shortName: 'V3'
   },
   {
     id: 'deepseek-reasoner',
@@ -182,7 +182,7 @@ const deepseekModels: AIModel[] = [
     colorIcon: DeepSeekColorIcon,
     serviceColor: '#4D6BFE',
     name: 'DeepSeek R1',
-    shortName: 'DS R1'
+    shortName: 'R1'
   }
 ]
 
