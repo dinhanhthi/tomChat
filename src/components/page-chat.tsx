@@ -2,17 +2,15 @@
 
 import { useChat } from 'ai/react'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useChatIdStore } from '../hooks/useChatIdStore'
 import { addMessage, getChat, getMessages } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import AppInputMsg from './app-input-msg'
-import BrandLogoWithText from './brand'
-import Container from './container'
+import ConversationWrapper from './conversation-wrapper'
 import LoadingBar from './loading-bar'
-import MessagePreview from './message-preview'
 
 type PageChatProps = {
   className?: string
@@ -23,8 +21,7 @@ export default function PageChat(props: PageChatProps) {
   const router = useRouter()
   const pathname = usePathname()
   const { chatId } = useChatIdStore()
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const messagesContainerRef = useRef<HTMLDivElement>(null)
+
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [hash, setHash] = useState('')
 
@@ -64,16 +61,6 @@ export default function PageChat(props: PageChatProps) {
     }
   })
 
-  const scrollToBottom = (smooth: boolean = true) => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' })
-    }
-  }
-
-  useEffect(() => {
-    scrollToBottom(false)
-  }, [messages])
-
   useEffect(() => {
     const checkChat = async () => {
       try {
@@ -111,11 +98,29 @@ export default function PageChat(props: PageChatProps) {
     }
   }, [pathname])
 
+  // Fake conversations
+  const conversations = [
+    {
+      id: '1',
+      messages
+    }
+    // ,
+    // {
+    //   id: '2'
+    // }
+    // ,
+    // {
+    //   id: '3'
+    // }
+  ]
+
+  /* ###Thi */ console.log(`👉👉👉 messages: `, messages)
+
   return (
     <>
-      <div className={cn('relative flex h-full flex-col', className)}>
+      <div className={cn('flex h-full flex-col', className)}>
         <LoadingBar isLoading={isPageLoading} />
-        <div ref={messagesContainerRef} className="x-flex-1 overflow-y-auto">
+        {/* <div ref={messagesContainerRef} className="x-flex-1 overflow-y-auto">
           <Container className="h-full">
             {!isPageLoading && (
               <div className={cn('flex h-full w-full scroll-mb-[250px] flex-col gap-8 px-4 pb-14 pt-8', className)}>
@@ -148,9 +153,20 @@ export default function PageChat(props: PageChatProps) {
               </div>
             )}
           </Container>
+        </div> */}
+
+        <div className={cn('flex min-h-0 flex-1 flex-row items-center justify-center divide-x py-6')}>
+          {conversations.map(conversation => (
+            <ConversationWrapper
+              key={conversation.id}
+              className="h-full flex-1"
+              messages={messages}
+              smallText={conversations.length > 2}
+            />
+          ))}
         </div>
+
         <AppInputMsg
-          messagesContainerRef={messagesContainerRef}
           className="pb-4"
           useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading, stop }}
         />
