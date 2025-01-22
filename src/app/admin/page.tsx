@@ -179,7 +179,7 @@ export default function AdminPage() {
     <article className="container mx-auto flex flex-col gap-10 p-8">
       <header className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <h1 className="text-xl font-semibold">Admin Configs</h1>
+          <h1 className="text-2xl font-semibold">Admin Configs</h1>
           <div className="text-sm text-muted-foreground">
             This page provides direct database management capabilities. Actions performed here will modify the database
             directly. This interface is primarily intended for database restructuring and fixing legacy data formats in
