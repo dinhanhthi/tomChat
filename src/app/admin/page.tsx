@@ -242,7 +242,7 @@ export default function AdminPage() {
 
       <section className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <h2 className="text-base font-medium">Database Operations</h2>
+          <h2 className="text-base font-medium">Database Backup</h2>
           <div className="text-sm text-muted-foreground">
             Download creates a backup of all chats and messages. Restore will completely replace the current database.
           </div>

@@ -103,10 +103,11 @@ export default function PageChat(props: PageChatProps) {
     {
       id: '1',
       messages
-    },
-    {
-      id: '2'
     }
+    // ,
+    // {
+    //   id: '2'
+    // }
     // ,
     // {
     //   id: '3'
