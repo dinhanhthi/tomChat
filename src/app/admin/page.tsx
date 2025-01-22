@@ -4,10 +4,13 @@ import { useAlertDialog } from '@/components/dialog-confirm'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { db } from '@/db/database'
 import { useTagStore } from '@/hooks/useTagStore'
 import { bulkUpdateChatProperty } from '@/lib/chats'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { TriangleAlert, Upload } from 'lucide-react'
 import { ControllerRenderProps, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import * as z from 'zod'
 import TagIndicator from '../../components/tag-indicator'
 
@@ -127,25 +130,78 @@ export default function AdminPage() {
     }
   }
 
+  const handleDownloadDB = async () => {
+    const chats = await db.chats.toArray()
+    const messages = await db.messages.toArray()
+    const data = { chats, messages }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `tomchat-backup-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  const handleUploadDB = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    showAlert({
+      title: 'Confirm Database Restore',
+      description: 'This will replace all existing chats and messages. This action cannot be undone. Are you sure?',
+      confirmText: 'Restore',
+      confirmClassName: 'bg-destructive hover:bg-destructive/90',
+      onConfirm: async () => {
+        try {
+          const text = await file.text()
+          const data = JSON.parse(text)
+
+          await db.transaction('rw', db.chats, db.messages, async () => {
+            await db.chats.clear()
+            await db.messages.clear()
+            await db.chats.bulkAdd(data.chats)
+            await db.messages.bulkAdd(data.messages)
+          })
+
+          toast.success('Database restored successfully!')
+        } catch (error) {
+          console.error('Error restoring database:', error)
+          toast.error('Failed to restore database')
+        }
+      }
+    })
+  }
+
   return (
-    <div className="container mx-auto flex flex-col gap-8 p-8">
-      <header>
-        <h1 className="text-xl font-semibold">Admin Configs</h1>
-        <div className="mt-2 text-sm text-muted-foreground">
-          This page provides direct database management capabilities. IMPORTANT: Actions performed here will modify the
-          database directly. This interface is primarily intended for database restructuring and fixing legacy data
-          formats in the conversation database.
+    <article className="container mx-auto flex flex-col gap-10 p-8">
+      <header className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-xl font-semibold">Admin Configs</h1>
+          <div className="text-sm text-muted-foreground">
+            This page provides direct database management capabilities. Actions performed here will modify the database
+            directly. This interface is primarily intended for database restructuring and fixing legacy data formats in
+            the conversation database.
+          </div>
+        </div>
+        <div className="flex flex-row items-center gap-2 border-orange-700 bg-orange-100 p-4 text-sm">
+          <TriangleAlert className="h-5 w-5" />
+          <div>This page is intended for advanced users only. Please proceed with caution.</div>
         </div>
       </header>
 
       <section className="flex flex-col gap-4">
-        <h2 className="text-base font-medium">Modify value of a property for all chats</h2>
+        <div className="flex flex-col gap-2">
+          <h2 className="text-base font-medium">Modify value of a property for all chats</h2>
+          <div className="text-sm text-muted-foreground">
+            In case you want to add/update a property value in the chat.
+          </div>
+        </div>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex w-full flex-row items-center justify-between gap-6"
-          >
-            <div className="flex min-w-0 flex-1 flex-row items-center gap-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-row items-center gap-6">
+            <div className="flex flex-row items-center gap-6">
               <FormField
                 control={form.control}
                 name="property"
@@ -183,6 +239,24 @@ export default function AdminPage() {
           </form>
         </Form>
       </section>
-    </div>
+
+      <section className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-base font-medium">Database Operations</h2>
+          <div className="text-sm text-muted-foreground">
+            Download creates a backup of all chats and messages. Restore will completely replace the current database.
+          </div>
+        </div>
+        <div className="flex flex-row gap-4">
+          <Button onClick={handleDownloadDB} variant="secondary">
+            Download Backup
+          </Button>
+          <label className="flex cursor-pointer flex-row items-center rounded-md bg-orange-200 p-4 text-orange-900 h-9 gap-2 text-sm">
+            <Upload className="h-4 w-4" /> Restore Database
+            <input type="file" id="db-upload" className="hidden" accept=".json" onChange={handleUploadDB} />
+          </label>
+        </div>
+      </section>
+    </article>
   )
 }
