@@ -9,7 +9,7 @@ import { UseChatHelpers } from 'ai/react/dist'
 import { Baseline, Globe, Loader2, LucideIcon, Paperclip, Settings2, X } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import NextImage from 'next/image'
-import { RefObject, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import Typography from '@tiptap/extension-typography'
@@ -97,9 +97,8 @@ export default function AppInputMsg(props: {
     isLoading: UseChatHelpers['isLoading']
     stop: UseChatHelpers['stop']
   }
-  messagesContainerRef: RefObject<HTMLElement | null>
 }) {
-  const { className, useChatParams, messagesContainerRef } = props
+  const { className, useChatParams } = props
   const { chatId } = useChatIdStore()
   const [pastedImages, setPastedImages] = useState<PastedImage[]>([])
   const [showInputTools, setShowInputTools] = useState(false)
@@ -260,11 +259,11 @@ export default function AppInputMsg(props: {
   return (
     <Container className={cn('flex w-full flex-col items-center gap-0.5', className)}>
       <div
-        className="overflow-hidden transition-[height] duration-300 w-full"
+        className="w-full overflow-hidden transition-[height] duration-300"
         style={{ height: !showInputTools ? '0' : '2.5rem' }}
       >
         <div
-          className={cn('h-10 w-fit mx-auto origin-bottom px-8 transition-all duration-300', {
+          className={cn('mx-auto h-10 w-fit origin-bottom px-8 transition-all duration-300', {
             'pointer-events-none translate-y-full opacity-0': !showInputTools,
             'translate-y-0 opacity-100': showInputTools
           })}

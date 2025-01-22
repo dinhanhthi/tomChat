@@ -46,14 +46,14 @@ export default function MessagePreview(props: MessagePreviewProps) {
         animate={{ y: 0, opacity: 1 }}
       >
         {!isUser && (
-          <div className="flex shrink-0 items-center justify-center rounded-full border border-slate-300 p-2">
-            <Image src={LogoOpenAI} alt="OpenAI" width={20} height={20} className="!m-0 shrink-0" />
+          <div className="flex shrink-0 items-center justify-center rounded-full border border-slate-300 p-1">
+            <Image src={LogoOpenAI} alt="OpenAI" width={18} height={18} className="!m-0 shrink-0" />
           </div>
         )}
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <RemarkMarkdown
             className={cn('x-prose', {
-              'first:mt-2': !isUser,
+              'first:mt-0.5': !isUser,
               'text-[90%]': smallText,
               'text-[95%]': !smallText
             })}

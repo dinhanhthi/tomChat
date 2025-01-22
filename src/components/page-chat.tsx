@@ -2,7 +2,7 @@
 
 import { useChat } from 'ai/react'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useChatIdStore } from '../hooks/useChatIdStore'
 import { addMessage, getChat, getMessages } from '../lib/chats'
@@ -21,8 +21,7 @@ export default function PageChat(props: PageChatProps) {
   const router = useRouter()
   const pathname = usePathname()
   const { chatId } = useChatIdStore()
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const messagesContainerRef = useRef<HTMLDivElement>(null)
+
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [hash, setHash] = useState('')
 
@@ -61,16 +60,6 @@ export default function PageChat(props: PageChatProps) {
       xtoast.error(`Error when sending the message: **${error instanceof Error ? error.message : 'Unknown error!'}**`)
     }
   })
-
-  const scrollToBottom = (smooth: boolean = true) => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' })
-    }
-  }
-
-  useEffect(() => {
-    scrollToBottom(false)
-  }, [messages])
 
   useEffect(() => {
     const checkChat = async () => {
@@ -114,22 +103,21 @@ export default function PageChat(props: PageChatProps) {
     {
       id: '1',
       messages
-    }
-    ,
+    },
     {
       id: '2'
     }
-    ,
-    {
-      id: '3'
-    }
+    // ,
+    // {
+    //   id: '3'
+    // }
   ]
 
   /* ###Thi */ console.log(`👉👉👉 messages: `, messages)
 
   return (
     <>
-      <div className={cn('relative flex h-full flex-col', className)}>
+      <div className={cn('flex h-full flex-col', className)}>
         <LoadingBar isLoading={isPageLoading} />
         {/* <div ref={messagesContainerRef} className="x-flex-1 overflow-y-auto">
           <Container className="h-full">
@@ -166,7 +154,7 @@ export default function PageChat(props: PageChatProps) {
           </Container>
         </div> */}
 
-        <div className={cn('flex min-h-0 flex-1 flex-row items-center justify-center divide-x py-4')}>
+        <div className={cn('flex min-h-0 flex-1 flex-row items-center justify-center divide-x py-6')}>
           {conversations.map(conversation => (
             <ConversationWrapper
               key={conversation.id}
@@ -178,7 +166,6 @@ export default function PageChat(props: PageChatProps) {
         </div>
 
         <AppInputMsg
-          messagesContainerRef={messagesContainerRef}
           className="pb-4"
           useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading, stop }}
         />

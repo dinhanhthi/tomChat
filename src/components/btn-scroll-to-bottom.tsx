@@ -38,7 +38,7 @@ const ScrollToBottomButton: React.FC<ScrollToBottomButtonProps> = ({ targetRef, 
     <button
       onClick={scrollToBottom}
       className={cn(
-        'absolute bottom-4 right-0 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white p-1 text-slate-500 shadow-sm',
+        'absolute bottom-4 right-0 z-50 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white p-1 text-slate-500 shadow-sm',
         'transition-all duration-300 ease-in-out',
         'pointer-events-none', // Disable interactions when hidden
         showButton ? 'pointer-events-auto translate-y-0 scale-100 opacity-100' : 'translate-y-8 scale-0 opacity-0',
