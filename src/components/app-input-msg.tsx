@@ -24,7 +24,6 @@ import { DEFAULT_MODEL_ID } from '../lib/models'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import '../styles/tiptap.scss'
-import ScrollToBottomButton from './btn-scroll-to-bottom'
 import Container from './container'
 import { InputFooterMoreBtn } from './input-footer-more-btn'
 import { ModelSelector } from './model-selector'
@@ -259,20 +258,19 @@ export default function AppInputMsg(props: {
   }
 
   return (
-    <Container className={cn('relative flex w-full flex-col items-center', className)}>
-      <ScrollToBottomButton
-        className={cn('absolute right-1/2 top-[-50px]', {
-          'translate-y-[-40px]': showInputTools
-        })}
-        targetRef={messagesContainerRef}
-      />
+    <Container className={cn('flex w-full flex-col items-center gap-0.5', className)}>
       <div
-        className={cn('absolute left-0 top-[-47px] z-10 w-full origin-bottom px-8 transition-all duration-200', {
-          'pointer-events-none translate-y-full opacity-0': !showInputTools,
-          'translate-y-1 opacity-100': showInputTools
-        })}
+        className="overflow-hidden transition-[height] duration-300 w-full"
+        style={{ height: !showInputTools ? '0' : '2.5rem' }}
       >
-        <TextToolsGroup editor={editor} />
+        <div
+          className={cn('h-10 w-fit mx-auto origin-bottom px-8 transition-all duration-300', {
+            'pointer-events-none translate-y-full opacity-0': !showInputTools,
+            'translate-y-0 opacity-100': showInputTools
+          })}
+        >
+          <TextToolsGroup editor={editor} />
+        </div>
       </div>
       <form
         onSubmit={handleClientSubmit}
