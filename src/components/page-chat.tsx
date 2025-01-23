@@ -113,9 +113,7 @@ export default function PageChat(props: PageChatProps) {
     //   id: '3'
     // }
   ]
-
-  /* ###Thi */ console.log(`👉👉👉 messages: `, messages)
-
+  
   return (
     <>
       <div className={cn('flex h-full flex-col', className)}>
