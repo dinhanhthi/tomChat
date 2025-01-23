@@ -33,20 +33,21 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
             }
           )}
         >
-          <div className="flex w-full items-center justify-center">
+          <div className="flex w-full items-center justify-center gap-0.5">
             <selectedModel.colorIcon className={cn('h-4 w-4 flex-shrink-0 text-gray-700')} />
             <div
               className={cn(
-                'w-0 overflow-hidden font-normal opacity-0 transition-all duration-200 group-hover:ml-1 group-hover:w-auto group-hover:pr-1 group-hover:opacity-100',
-                {
-                  'ml-1 w-auto pr-1 opacity-100': open
-                }
+                'w-auto overflow-hidden font-normal duration-200 ml-1 pr-1'
               )}
               style={{ color: selectedModel.serviceColor }}
             >
               {selectedModel?.shortName || selectedModel?.name}
             </div>
-            <ChevronsUpDown className="ml-1 h-4 w-4 shrink-0 opacity-80" />
+            <ChevronsUpDown
+              className={cn('h-4 w-4 shrink-0 opacity-70 group-hover:opacity-80', {
+                'opacity-80': open
+              })}
+            />
           </div>
         </Button>
       </PopoverTrigger>
