@@ -1,7 +1,17 @@
-import { PGliteWorker } from '@electric-sql/pglite/worker'
+import { PGlite } from '@electric-sql/pglite'
+import { drizzle } from 'drizzle-orm/pglite'
+import { models } from './schema'
 
-export const pg = new PGliteWorker(
-  new Worker(new URL('./pglite.worker.ts', import.meta.url), {
-    type: 'module'
-  })
-)
+// const client = new PGlite('idb://testChat')
+// const db = drizzle({ client })
+
+// export { db, models }
+
+async function initializeDatabase() {
+  // const client = await PGlite.create('idb://testChat');
+  const client = new PGlite('idb://testChat');
+  const db = drizzle({client});
+  return db;
+}
+
+export { initializeDatabase, models };

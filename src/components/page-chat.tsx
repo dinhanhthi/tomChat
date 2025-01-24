@@ -11,6 +11,8 @@ import { xtoast } from '../lib/xtoast'
 import AppInputMsg from './app-input-msg'
 import ConversationWrapper from './conversation-wrapper'
 import LoadingBar from './loading-bar'
+import { initializeDatabase, models } from '../db/pglite'
+import { sql } from 'drizzle-orm'
 
 type PageChatProps = {
   className?: string
@@ -24,6 +26,41 @@ export default function PageChat(props: PageChatProps) {
 
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [hash, setHash] = useState('')
+
+  useEffect(() => {
+    const setupDatabase = async () => {
+      const db = await initializeDatabase();
+
+      await db.execute(sql`
+        CREATE TABLE IF NOT EXISTS models (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          service TEXT NOT NULL,
+          context INTEGER NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      const result = await db.select().from(models);
+
+      if (result.length === 0) {
+        console.log('No data found, inserting initial data...');
+
+        await db.insert(models).values({
+          id: '1',
+          name: 'Model A',
+          service: 'openai',
+          context: 2048,
+        });
+      }
+
+      // Fetch and log data from the 'models' table
+      const allModels = await db.select().from(models);
+      console.log(allModels);
+    };
+
+    setupDatabase();
+  }, []);
 
   useEffect(() => {
     const _hash = window.location.hash.substring(1)
