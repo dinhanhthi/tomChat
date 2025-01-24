@@ -48,6 +48,23 @@ yarn reinstall
 yarn test
 ```
 
+## Drizzle and database
+
+```bash
+# open studio
+yarn run db:studio
+
+# generate
+yarn run db:generate
+
+# apply changes to the database
+yarn run db:push
+```
+
+Read more:
+
+- [Update your table schema](https://orm.drizzle.team/docs/get-started/pglite-existing#step-9---update-your-table-schema-optional)
+
 ## Notes
 
 - Instead of using `toast`, use `xtoast` instead!
