@@ -1,6 +1,6 @@
 'use client'
 
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
 import { useChat } from 'ai/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -21,7 +21,7 @@ type PageChatProps = {
 
 export default function PageChat(props: PageChatProps) {
   const { className } = props
-  const { isLoading: isDbLoading, db } = useDbLoading()
+  const { isLoading: isDbLoading } = useDbLoading()
   const router = useRouter()
   const pathname = usePathname()
   const { chatId } = useChatIdStore()
@@ -29,7 +29,7 @@ export default function PageChat(props: PageChatProps) {
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [hash, setHash] = useState('')
 
-  // const db = usePGlite()
+  const db = usePGlite()
 
   // const models = useLiveQuery(
   //   `
@@ -42,7 +42,7 @@ export default function PageChat(props: PageChatProps) {
   // /* ###Thi */ console.log(`👉👉👉 items: `, models)
 
   db.select().from(models).then((result: any) => {
-    /* ###Thi */ console.log(`👉👉👉 items: `, result)
+    /* ###Thi */ console.log(`👉👉👉 items (db in pageChat): `, result)
   })
 
   // useEffect(() => {
