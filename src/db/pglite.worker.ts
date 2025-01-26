@@ -13,7 +13,7 @@ import { IDB_NAME } from '../lib/constants'
 worker({
   async init() {
     return new PGlite({
-      dataDir: IDB_NAME,
+      dataDir: `idb://${IDB_NAME}`,
       extensions: {
         vector,
         live // results updated when tables change (https://pglite.dev/docs/live-queries)

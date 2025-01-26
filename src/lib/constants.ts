@@ -7,6 +7,5 @@ export const N_WELCOME_SEARCH_RESULTS = 7
 export const NO_TAG = 'No tag' // user can't create tag with this name
 export const MAX_N_TAGS = 20
 
-// export const IDB_NAME = 'idb://tomChat' // indexedDB not working with studio
-// export const IDB_NAME = 'idb://testChat' // ###Thi
-export const IDB_NAME = 'idb://testChat2' // ###Thi
+// export const IDB_NAME = 'testChat'
+export const IDB_NAME = 'testChat3' // ###Thi

@@ -29,36 +29,22 @@ export default function PageChat(props: PageChatProps) {
 
   useEffect(() => {
     const setupDatabase = async () => {
-      // const db = await initializeDatabase();
-
-      // await db.execute(sql`
-      //   CREATE TABLE IF NOT EXISTS models (
-      //     id TEXT PRIMARY KEY,
-      //     name TEXT NOT NULL,
-      //     service TEXT NOT NULL,
-      //     context INTEGER NOT NULL,
-      //     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      //   );
-      // `);
-
-      // const result = await db.select().from(models);
-
-      // if (result.length === 0) {
-      //   console.log('No data found, inserting initial data...');
-
-      //   await db.insert(models).values({
-      //     id: '1',
-      //     name: 'Model A',
-      //     service: 'openai',
-      //     context: 2048,
-      //   });
-      // }
-
       const db = await initializeDb()
+      const result = await db.select().from(models)
 
-      // Fetch and log data from the 'models' table
+      if (result.length === 0) {
+        console.log('No data found, inserting initial data...')
+
+        await db.insert(models).values({
+          id: '1',
+          name: 'Model A',
+          service: 'openai',
+          context: 2048
+        })
+      }
+
       const allModels = await db.select().from(models)
-      console.log(allModels)
+      /* ###Thi */ console.log(`👉👉👉 allModels: `, allModels)
     }
 
     setupDatabase()
