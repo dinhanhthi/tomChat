@@ -71,6 +71,6 @@ Read more:
   - `.vscode/settings.json/prettier.printWidth`
   - `.vscode/settings.json/editor.rulers`
   - `.prettierrc.printWidth`
-- Cannot use Drizzle Studio with IndexedDB + PGlite.
+- Cannot use Drizzle Studio (`yarn run db:studio`) with IndexedDB + PGlite. Same for `yarn run db:push`.
 - In the browser, we cannot use database in the native filesystem (eg. `new PGlite('/path')`). Just in memory or IndexedDB.
 - PGlite worker doesn't work with NextJS Turbo.
