@@ -53,7 +53,7 @@ export default function PGliteWrapper({ children }: { children: React.ReactNode 
 
   return (
     <DbLoadingContext.Provider value={{ isLoading, db, pg }}>
-      <PGliteProvider db={db}>{children}</PGliteProvider>
+      <PGliteProvider db={pg}>{children}</PGliteProvider>
     </DbLoadingContext.Provider>
   )
 }

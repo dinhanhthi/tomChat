@@ -1,6 +1,6 @@
 'use client'
 
-// import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useChat } from 'ai/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -37,9 +37,17 @@ export default function PageChat(props: PageChatProps) {
   //   FROM models;
   // `
 
-  pg.live.query('SELECT * FROM models', [], (res: any) => {
-    console.log(`👉👉👉 res rows: `, res['rows'])
-  })
+  const items = useLiveQuery(`
+    SELECT *
+    FROM models;
+  `, [])
+
+  /* ###Thi */ console.log(`👉👉👉 items liveQuery: `, items)
+
+
+  // pg.live.query('SELECT * FROM models', [], (res: any) => {
+  //   console.log(`👉👉👉 res rows: `, res['rows'])
+  // })
 
   // /* ###Thi */ console.log(`👉👉👉 items : `, models)
 
