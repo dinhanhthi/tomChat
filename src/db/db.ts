@@ -1,4 +1,6 @@
-import { PGliteWorker } from '@electric-sql/pglite/worker'
+import { PGlite } from '@electric-sql/pglite'
+import { live } from '@electric-sql/pglite/live'
+import { vector } from '@electric-sql/pglite/vector'
 import { PgDialect } from 'drizzle-orm/pg-core'
 import { drizzle } from 'drizzle-orm/pglite'
 import { IDB_NAME } from '../lib/constants'
@@ -6,12 +8,21 @@ import migrations from './migrations/export.json'
 import * as schema from './schema'
 
 export async function initializeDb() {
-  const client = new PGliteWorker(
-    new Worker(new URL('./pglite.worker.ts', import.meta.url), {
-      type: 'module'
-    })
-  )
-  const _db = drizzle({ client: client as any })
+  // const client = new PGliteWorker(
+  //   new Worker(new URL('./pglite.worker.ts', import.meta.url), {
+  //     type: 'module'
+  //   })
+  // )
+
+  const pg = await PGlite.create({
+    dataDir: `idb://${IDB_NAME}`,
+    extensions: {
+      // vector,
+      live // results updated when tables change (https://pglite.dev/docs/live-queries)
+    }
+  })
+
+  const _db = drizzle({ client: pg as any })
 
   let isLocalDBSchemaSynced = false
 
@@ -19,8 +30,9 @@ export async function initializeDb() {
     const start = performance.now()
     try {
       await new PgDialect().migrate(migrations, _db._.session as any, IDB_NAME)
+      const runtime = performance.now() - start
       isLocalDBSchemaSynced = true
-      console.info(`✅ Local database ready in ${performance.now() - start}ms`)
+      console.info(`✅ Local database ready in ${parseFloat(runtime.toFixed(2))}ms`)
     } catch (error) {
       console.error(`❌ Local database failed to sync: ${error}`)
     }
@@ -30,5 +42,5 @@ export async function initializeDb() {
     schema
   })
 
-  return {db, pgClient: client}
+  return { db, pg }
 }

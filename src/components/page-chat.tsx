@@ -1,6 +1,6 @@
 'use client'
 
-import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
+// import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useChat } from 'ai/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -13,7 +13,6 @@ import AppInputMsg from './app-input-msg'
 import ConversationWrapper from './conversation-wrapper'
 import LoadingBar from './loading-bar'
 import { useDbLoading } from './pglite-wrapper'
-import {models} from '../db/schema'
 
 type PageChatProps = {
   className?: string
@@ -21,7 +20,7 @@ type PageChatProps = {
 
 export default function PageChat(props: PageChatProps) {
   const { className } = props
-  const { isLoading: isDbLoading } = useDbLoading()
+  const { isLoading: isDbLoading, pg } = useDbLoading()
   const router = useRouter()
   const pathname = usePathname()
   const { chatId } = useChatIdStore()
@@ -29,21 +28,24 @@ export default function PageChat(props: PageChatProps) {
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [hash, setHash] = useState('')
 
-  const db = usePGlite()
+  // const db = usePGlite()
 
-  // const models = useLiveQuery(
-  //   `
+  // const models = isDbLoading
+  //   ? []
+  //   : useLiveQuery.sql`
   //   SELECT *
   //   FROM models;
-  // `,
-  //   [isDbLoading]
-  // )
+  // `
 
-  // /* ###Thi */ console.log(`👉👉👉 items: `, models)
-
-  db.select().from(models).then((result: any) => {
-    /* ###Thi */ console.log(`👉👉👉 items (db in pageChat): `, result)
+  pg.live.query('SELECT * FROM models', [], (res: any) => {
+    console.log(`👉👉👉 res rows: `, res['rows'])
   })
+
+  // /* ###Thi */ console.log(`👉👉👉 items : `, models)
+
+  // db.select().from(models).then((result: any) => {
+  //   /* ###Thi */ console.log(`👉👉👉 items (db in pageChat): `, result)
+  // })
 
   // useEffect(() => {
   //   const getModels = async () => {
@@ -158,8 +160,34 @@ export default function PageChat(props: PageChatProps) {
     return <LoadingBar isLoading={true} />
   }
 
+  const handleAddModel = async () => {
+    try {
+      const newModel = {
+        id: uuidv4(),
+        name: `Model ${Math.floor(Math.random() * 100)}`,
+        service: 'openai',
+        context: 2048
+      }
+      
+      await pg.query('INSERT INTO models (id, name, service, context) VALUES ($1, $2, $3, $4)', 
+        [newModel.id, newModel.name, newModel.service, newModel.context]
+      )
+      
+      xtoast.success('New model added successfully!')
+    } catch (error) {
+      xtoast.error('Failed to add new model')
+      console.error(error)
+    }
+  }
+
   return (
     <div className={cn('flex h-full flex-col', className)}>
+      <button
+        onClick={handleAddModel}
+        className="fixed bottom-20 right-4 rounded-full bg-blue-500 p-4 text-white shadow-lg hover:bg-blue-600"
+      >
+        Add Model
+      </button>
       <LoadingBar isLoading={isPageLoading} />
       {/* <div ref={messagesContainerRef} className="x-flex-1 overflow-y-auto">
         <Container className="h-full">
