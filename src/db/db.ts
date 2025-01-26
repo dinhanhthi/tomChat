@@ -10,7 +10,9 @@ export async function initializeDb() {
   const dbName = 'testChat'
 
   const client = await PGlite.create({
-    dataDir: `idb://${dbName}`,
+    // dataDir: `memory://${dbName}`,
+    dataDir: './database/',
+    // dataDir: `idb://${dbName}`,
     extensions: { vector, live }
   })
 

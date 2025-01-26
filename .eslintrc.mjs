@@ -14,7 +14,8 @@ const config = {
     'plugin:tailwindcss/recommended',
     'next',
     'plugin:unicorn/recommended',
-    'prettier' // make sure it's the last one,
+    'prettier', // make sure it's the last one,
+    "plugin:drizzle/all" // https://orm.drizzle.team/docs/eslint-plugin
   ],
   overrides: [],
   parser: '@typescript-eslint/parser',
@@ -27,7 +28,7 @@ const config = {
       tsx: true
     }
   },
-  plugins: ['react', '@typescript-eslint', 'prettier', 'tailwindcss', 'unused-imports'],
+  plugins: ['react', '@typescript-eslint', 'prettier', 'tailwindcss', 'unused-imports', 'drizzle'],
   /*
   More: https://eslint.org/docs/rules/
   "rules" always win over "extends"
