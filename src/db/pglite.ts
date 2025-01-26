@@ -1,15 +1,10 @@
-import { PGlite } from '@electric-sql/pglite'
-import { live } from '@electric-sql/pglite/live'
+import { PGliteWorker } from '@electric-sql/pglite/worker'
 import { drizzle } from 'drizzle-orm/pglite'
-import { IDB_NAME } from '../lib/constants'
 import { models } from './schema'
 
 async function initializeDatabase() {
-  const client = new PGlite({
-    dataDir: IDB_NAME,
-    extensions: { live }
-  })
-  const db = drizzle({ client })
+  const client = new PGliteWorker(new Worker(new URL('./pglite.worker.ts', import.meta.url)))
+  const db = drizzle({ client: client as any })
   return db
 }
 
