@@ -6,7 +6,11 @@ import migrations from './migrations/export.json'
 import * as schema from './schema'
 
 export async function initializeDb() {
-  const client = new PGliteWorker(new Worker(new URL('./pglite.worker.ts', import.meta.url)))
+  const client = new PGliteWorker(
+    new Worker(new URL('./pglite.worker.ts', import.meta.url), {
+      type: 'module'
+    })
+  )
   const _db = drizzle({ client: client as any })
 
   let isLocalDBSchemaSynced = false
@@ -26,5 +30,5 @@ export async function initializeDb() {
     schema
   })
 
-  return db
+  return {db, pgClient: client}
 }

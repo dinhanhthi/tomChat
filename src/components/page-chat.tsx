@@ -1,5 +1,6 @@
 'use client'
 
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useChat } from 'ai/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -11,6 +12,8 @@ import { xtoast } from '../lib/xtoast'
 import AppInputMsg from './app-input-msg'
 import ConversationWrapper from './conversation-wrapper'
 import LoadingBar from './loading-bar'
+import { useDbLoading } from './pglite-wrapper'
+import {models} from '../db/schema'
 
 type PageChatProps = {
   className?: string
@@ -18,13 +21,49 @@ type PageChatProps = {
 
 export default function PageChat(props: PageChatProps) {
   const { className } = props
-
+  const { isLoading: isDbLoading, db } = useDbLoading()
   const router = useRouter()
   const pathname = usePathname()
   const { chatId } = useChatIdStore()
 
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [hash, setHash] = useState('')
+
+  // const db = usePGlite()
+
+  // const models = useLiveQuery(
+  //   `
+  //   SELECT *
+  //   FROM models;
+  // `,
+  //   [isDbLoading]
+  // )
+
+  // /* ###Thi */ console.log(`👉👉👉 items: `, models)
+
+  db.select().from(models).then((result: any) => {
+    /* ###Thi */ console.log(`👉👉👉 items: `, result)
+  })
+
+  // useEffect(() => {
+  //   const getModels = async () => {
+  //     const allModels = await db.select().from('models')
+  //     // if (allModels.length === 0) {
+  //     //   console.log('No data found, inserting initial data...')
+  //     //   await db.insert('models').values({
+  //     //     id: '1',
+  //     //     name: 'Model A',
+  //     //     service: 'openai',
+  //     //     context: 2048
+  //     //   })
+  //     // }
+  //     /* ###Thi */ console.log(`👉👉👉 models: `, allModels)
+  //   }
+
+  //   if (!isDbLoading) {
+  //     getModels()
+  //   }
+  // }, [isDbLoading])
 
   useEffect(() => {
     const _hash = window.location.hash.substring(1)
@@ -114,6 +153,10 @@ export default function PageChat(props: PageChatProps) {
     //   id: '3'
     // }
   ]
+
+  if (isDbLoading) {
+    return <LoadingBar isLoading={true} />
+  }
 
   return (
     <div className={cn('flex h-full flex-col', className)}>

@@ -1,17 +1,28 @@
 'use client'
 
 import { PGliteProvider } from '@electric-sql/pglite-react'
-import { PGliteWithLive } from '@electric-sql/pglite/live'
-import { useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { initializeDb } from '../db/db'
 import { models } from '../db/schema'
 
+type DbLoadingContextType = {
+  isLoading: boolean
+  db?: any
+}
+
+const DbLoadingContext = createContext<DbLoadingContextType>({ isLoading: true, db: undefined })
+
+export function useDbLoading() {
+  return useContext(DbLoadingContext)
+}
+
 export default function PGliteWrapper({ children }: { children: React.ReactNode }) {
-  const [db, setDb] = useState<PGliteWithLive>()
+  const [db, setDb] = useState<any>()
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const setupDatabase = async () => {
-      const db = await initializeDb() as any
+      const { db } = await initializeDb()
       const result = await db.select().from(models)
 
       if (result.length === 0) {
@@ -24,15 +35,24 @@ export default function PGliteWrapper({ children }: { children: React.ReactNode 
         })
       }
 
+      /* ###Thi */ console.log(`👉👉👉 result wrapper: `, result)
+
       setDb(db)
+      setIsLoading(false)
     }
 
     setupDatabase()
   }, [])
 
-  if (!db) {
-    return <div>Loading database...</div>
+  if (isLoading) {
+    return <div>Loading...</div>
   }
 
-  return <PGliteProvider db={db}>{children}</PGliteProvider>
+  return (
+    <DbLoadingContext.Provider value={{ isLoading, db }}>
+      {/* {db ? <PGliteProvider db={db}>{children}</PGliteProvider> : <>{children}</>} */}
+      {/* <PGliteProvider db={db}>{children}</PGliteProvider> */}
+      {children}
+    </DbLoadingContext.Provider>
+  )
 }
