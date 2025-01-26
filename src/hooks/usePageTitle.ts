@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
-import { LucideIcon, Settings } from 'lucide-react'
+import { LucideIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import { useEffect } from 'react'
 import { BRAND_NAME } from '../lib/constants'
 import { useChatClient } from './useChatClient'
 import { useChatIdStore } from './useChatIdStore'

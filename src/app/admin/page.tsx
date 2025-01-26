@@ -251,7 +251,7 @@ export default function AdminPage() {
           <Button onClick={handleDownloadDB} variant="secondary">
             Download Backup
           </Button>
-          <label className="flex cursor-pointer flex-row items-center rounded-md bg-orange-200 p-4 text-orange-900 h-9 gap-2 text-sm">
+          <label className="flex h-9 cursor-pointer flex-row items-center gap-2 rounded-md bg-orange-200 p-4 text-sm text-orange-900">
             <Upload className="h-4 w-4" /> Restore Database
             <input type="file" id="db-upload" className="hidden" accept=".json" onChange={handleUploadDB} />
           </label>

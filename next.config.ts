@@ -1,6 +1,6 @@
 import type { NextConfig } from 'next'
 
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === 'production'
 
 const nextConfig: NextConfig = {
   //   trailingSlash: true, // use "/about/" instead of "/about" (not supported yet by --turbo)
@@ -17,8 +17,8 @@ const nextConfig: NextConfig = {
   // https://pglite.dev/docs/bundler-support#next-js
   transpilePackages: [
     '@electric-sql/pglite-react', // Optional
-    '@electric-sql/pglite',
-  ],
+    '@electric-sql/pglite'
+  ]
 }
 
 export default nextConfig

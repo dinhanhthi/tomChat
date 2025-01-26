@@ -8,13 +8,13 @@
   }
 
   .pM-code {
-    @apply break-words rounded-md bg-gray-50 p-[1px_5px_2px_5px] border border-slate-300 font-mono text-[85%] font-normal text-rose-500 before:content-[''] after:content-[''];
+    @apply break-words rounded-md border border-slate-300 bg-gray-50 p-[1px_5px_2px_5px] font-mono text-[85%] font-normal text-rose-500 before:content-[''] after:content-[''];
   }
 
   .pM-pre {
-    @apply rounded-lg bg-slate-500 text-base text-white font-normal;
+    @apply rounded-lg bg-slate-500 text-base font-normal text-white;
     code {
-      @apply pl-0 before:content-none after:content-none bg-transparent border-none text-inherit;
+      @apply border-none bg-transparent pl-0 text-inherit before:content-none after:content-none;
     }
   }
 
