@@ -72,3 +72,5 @@ Read more:
   - `.vscode/settings.json/prettier.printWidth`
   - `.vscode/settings.json/editor.rulers`
   - `.prettierrc.printWidth`
+- Cannot use Drizzle Studio with IndexedDB + PGlite.
+- In the browser, we cannot use database in the native filesystem (eg. `new PGlite('/path')`). Just in memory or IndexedDB.

@@ -5,11 +5,12 @@
 import { PGlite } from '@electric-sql/pglite'
 import { live } from '@electric-sql/pglite/live'
 import { worker } from '@electric-sql/pglite/worker'
+import { IDB_NAME } from '../lib/constants'
 
 worker({
   async init() {
     return new PGlite({
-      dataDir: 'idb://tomchat',
+      dataDir: IDB_NAME,
       extensions: {
         live // results updated when tables change (https://pglite.dev/docs/live-queries)
       }
