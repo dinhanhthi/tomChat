@@ -4,8 +4,6 @@ import { useChat } from 'ai/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { initializeDb } from '../db/db'
-import { models } from '../db/schema'
 import { useChatIdStore } from '../hooks/useChatIdStore'
 import { addMessage, getChat, getMessages } from '../lib/chats'
 import { cn } from '../lib/utils'
@@ -20,35 +18,13 @@ type PageChatProps = {
 
 export default function PageChat(props: PageChatProps) {
   const { className } = props
+
   const router = useRouter()
   const pathname = usePathname()
   const { chatId } = useChatIdStore()
 
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [hash, setHash] = useState('')
-
-  useEffect(() => {
-    const setupDatabase = async () => {
-      const db = await initializeDb()
-      const result = await db.select().from(models)
-
-      if (result.length === 0) {
-        console.log('No data found, inserting initial data...')
-
-        await db.insert(models).values({
-          id: '1',
-          name: 'Model A',
-          service: 'openai',
-          context: 2048
-        })
-      }
-
-      const allModels = await db.select().from(models)
-      /* ###Thi */ console.log(`👉👉👉 allModels: `, allModels)
-    }
-
-    setupDatabase()
-  }, [])
 
   useEffect(() => {
     const _hash = window.location.hash.substring(1)
@@ -140,60 +116,58 @@ export default function PageChat(props: PageChatProps) {
   ]
 
   return (
-    <>
-      <div className={cn('flex h-full flex-col', className)}>
-        <LoadingBar isLoading={isPageLoading} />
-        {/* <div ref={messagesContainerRef} className="x-flex-1 overflow-y-auto">
-          <Container className="h-full">
-            {!isPageLoading && (
-              <div className={cn('flex h-full w-full scroll-mb-[250px] flex-col gap-8 px-4 pb-14 pt-8', className)}>
-                {messages
-                  .filter(msg => !!msg.content)
-                  .map((msg, i) => (
-                    <MessagePreview
-                      key={msg.id ?? i}
-                      message={msg}
-                      isLoading={isLoading}
-                      isLast={i === messages.filter(msg => !!msg.content).length - 1}
-                    />
-                  ))}
-                {!messages.length && (
-                  <div className="x-flex-1 flex flex-col items-center justify-center gap-4 opacity-30">
-                    <BrandLogoWithText
-                      size={32}
-                      className="select-none gap-2 grayscale"
-                      textClassName="text-2xl font-bold opacity-80"
-                      wrap={true}
-                    />
-                  </div>
-                )}
+    <div className={cn('flex h-full flex-col', className)}>
+      <LoadingBar isLoading={isPageLoading} />
+      {/* <div ref={messagesContainerRef} className="x-flex-1 overflow-y-auto">
+        <Container className="h-full">
+          {!isPageLoading && (
+            <div className={cn('flex h-full w-full scroll-mb-[250px] flex-col gap-8 px-4 pb-14 pt-8', className)}>
+              {messages
+                .filter(msg => !!msg.content)
+                .map((msg, i) => (
+                  <MessagePreview
+                    key={msg.id ?? i}
+                    message={msg}
+                    isLoading={isLoading}
+                    isLast={i === messages.filter(msg => !!msg.content).length - 1}
+                  />
+                ))}
+              {!messages.length && (
+                <div className="x-flex-1 flex flex-col items-center justify-center gap-4 opacity-30">
+                  <BrandLogoWithText
+                    size={32}
+                    className="select-none gap-2 grayscale"
+                    textClassName="text-2xl font-bold opacity-80"
+                    wrap={true}
+                  />
+                </div>
+              )}
 
-                {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
-                  <div className="is-typing text-sm italic text-muted-foreground">I'm thinking, please wait</div>
-                )}
+              {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
+                <div className="is-typing text-sm italic text-muted-foreground">I'm thinking, please wait</div>
+              )}
 
-                <div ref={messagesEndRef} className="h-4 min-h-4 min-w-8 shrink-0"></div>
-              </div>
-            )}
-          </Container>
-        </div> */}
+              <div ref={messagesEndRef} className="h-4 min-h-4 min-w-8 shrink-0"></div>
+            </div>
+          )}
+        </Container>
+      </div> */}
 
-        <div className={cn('flex min-h-0 flex-1 flex-row items-center justify-center divide-x py-6')}>
-          {conversations.map(conversation => (
-            <ConversationWrapper
-              key={conversation.id}
-              className="h-full flex-1"
-              messages={messages}
-              smallText={conversations.length > 2}
-            />
-          ))}
-        </div>
-
-        <AppInputMsg
-          className="pb-4"
-          useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading, stop }}
-        />
+      <div className={cn('flex min-h-0 flex-1 flex-row items-center justify-center divide-x py-6')}>
+        {conversations.map(conversation => (
+          <ConversationWrapper
+            key={conversation.id}
+            className="h-full flex-1"
+            messages={messages}
+            smallText={conversations.length > 2}
+          />
+        ))}
       </div>
-    </>
+
+      <AppInputMsg
+        className="pb-4"
+        useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading, stop }}
+      />
+    </div>
   )
 }

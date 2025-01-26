@@ -5,6 +5,7 @@ import SearchDialogWrapper from '@/components/search-dialog-wrapper'
 import AppHeader from '../components/app-header'
 import AppSidebar from '../components/app-sidebar'
 import { AlertDialogProvider } from '../components/dialog-confirm'
+import PGliteWrapper from '../components/pglite-wrapper'
 import { SidebarProvider } from '../components/ui/sidebar'
 import { Toaster } from '../components/ui/sonner'
 import { BRAND_DESCRIPTION, BRAND_NAME } from '../lib/constants'
@@ -25,14 +26,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={cn(inter.className, 'overflow-hidden')}>
         <TooltipProvider>
           <AlertDialogProvider>
-            <SidebarProvider>
-              <AppSidebar />
-              <main className="x-flex-1 flex h-svh flex-col bg-background">
-                <AppHeader />
-                <div className="x-flex-1">{children}</div>
-              </main>
-            </SidebarProvider>
-            <SearchDialogWrapper />
+            <PGliteWrapper>
+              <SidebarProvider>
+                <AppSidebar />
+                <main className="x-flex-1 flex h-svh flex-col bg-background">
+                  <AppHeader />
+                  <div className="x-flex-1">{children}</div>
+                </main>
+              </SidebarProvider>
+              <SearchDialogWrapper />
+            </PGliteWrapper>
           </AlertDialogProvider>
           <Toaster position="top-center" />
         </TooltipProvider>
