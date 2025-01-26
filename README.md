@@ -23,11 +23,10 @@ yarn
 
 # run dev server
 yarn dev
-yarn dev --turbo
+yarn dev --turbo # cannot use with PGlite worker
 
 # build
 yarn build
-yarn buuld --turbo
 
 # run production server
 yarn start
@@ -74,3 +73,4 @@ Read more:
   - `.prettierrc.printWidth`
 - Cannot use Drizzle Studio with IndexedDB + PGlite.
 - In the browser, we cannot use database in the native filesystem (eg. `new PGlite('/path')`). Just in memory or IndexedDB.
+- PGlite worker doesn't work with NextJS Turbo.
