@@ -1,6 +1,5 @@
-import { PGlite } from '@electric-sql/pglite'
 import { live } from '@electric-sql/pglite/live'
-import { vector } from '@electric-sql/pglite/vector'
+import { PGliteWorker } from '@electric-sql/pglite/worker'
 import { PgDialect } from 'drizzle-orm/pg-core'
 import { drizzle } from 'drizzle-orm/pglite'
 import { IDB_NAME } from '../lib/constants'
@@ -8,19 +7,24 @@ import migrations from './migrations/export.json'
 import * as schema from './schema'
 
 export async function initializeDb() {
-  // const client = new PGliteWorker(
-  //   new Worker(new URL('./pglite.worker.ts', import.meta.url), {
-  //     type: 'module'
-  //   })
-  // )
-
-  const pg = await PGlite.create({
-    dataDir: `idb://${IDB_NAME}`,
-    extensions: {
-      // vector,
-      live // results updated when tables change (https://pglite.dev/docs/live-queries)
+  const pg = new PGliteWorker(
+    new Worker(new URL('./pglite.worker.ts', import.meta.url), {
+      type: 'module'
+    }),
+    {
+      extensions: {
+        live
+      }
     }
-  })
+  )
+
+  // const pg = await PGlite.create({
+  //   dataDir: `idb://${IDB_NAME}`,
+  //   extensions: {
+  //     // vector,
+  //     live // results updated when tables change (https://pglite.dev/docs/live-queries)
+  //   }
+  // })
 
   const _db = drizzle({ client: pg as any })
 
