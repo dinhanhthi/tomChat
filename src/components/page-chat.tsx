@@ -4,6 +4,8 @@ import { useChat } from 'ai/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+import { initializeDb } from '../db/db'
+import { models } from '../db/schema'
 import { useChatIdStore } from '../hooks/useChatIdStore'
 import { addMessage, getChat, getMessages } from '../lib/chats'
 import { cn } from '../lib/utils'
@@ -11,9 +13,6 @@ import { xtoast } from '../lib/xtoast'
 import AppInputMsg from './app-input-msg'
 import ConversationWrapper from './conversation-wrapper'
 import LoadingBar from './loading-bar'
-import { sql } from 'drizzle-orm'
-import { db } from '../db/db'
-import { models } from '../db/schema'
 
 type PageChatProps = {
   className?: string
@@ -55,13 +54,15 @@ export default function PageChat(props: PageChatProps) {
       //   });
       // }
 
-      // Fetch and log data from the 'models' table
-      const allModels = await db.select().from(models);
-      console.log(allModels);
-    };
+      const db = await initializeDb()
 
-    setupDatabase();
-  }, []);
+      // Fetch and log data from the 'models' table
+      const allModels = await db.select().from(models)
+      console.log(allModels)
+    }
+
+    setupDatabase()
+  }, [])
 
   useEffect(() => {
     const _hash = window.location.hash.substring(1)
@@ -151,7 +152,7 @@ export default function PageChat(props: PageChatProps) {
     //   id: '3'
     // }
   ]
-  
+
   return (
     <>
       <div className={cn('flex h-full flex-col', className)}>
