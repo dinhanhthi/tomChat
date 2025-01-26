@@ -28,22 +28,15 @@ export default function PageChat(props: PageChatProps) {
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [hash, setHash] = useState('')
 
-  // const db = usePGlite()
-
-  // const models = isDbLoading
-  //   ? []
-  //   : useLiveQuery.sql`
-  //   SELECT *
-  //   FROM models;
-  // `
-
-  const items = useLiveQuery(`
+  const items = useLiveQuery(
+    `
     SELECT *
     FROM models;
-  `, [])
+  `,
+    []
+  )
 
   /* ###Thi */ console.log(`👉👉👉 items liveQuery: `, items)
-
 
   // pg.live.query('SELECT * FROM models', [], (res: any) => {
   //   console.log(`👉👉👉 res rows: `, res['rows'])
@@ -54,26 +47,6 @@ export default function PageChat(props: PageChatProps) {
   // db.select().from(models).then((result: any) => {
   //   /* ###Thi */ console.log(`👉👉👉 items (db in pageChat): `, result)
   // })
-
-  // useEffect(() => {
-  //   const getModels = async () => {
-  //     const allModels = await db.select().from('models')
-  //     // if (allModels.length === 0) {
-  //     //   console.log('No data found, inserting initial data...')
-  //     //   await db.insert('models').values({
-  //     //     id: '1',
-  //     //     name: 'Model A',
-  //     //     service: 'openai',
-  //     //     context: 2048
-  //     //   })
-  //     // }
-  //     /* ###Thi */ console.log(`👉👉👉 models: `, allModels)
-  //   }
-
-  //   if (!isDbLoading) {
-  //     getModels()
-  //   }
-  // }, [isDbLoading])
 
   useEffect(() => {
     const _hash = window.location.hash.substring(1)
@@ -176,11 +149,14 @@ export default function PageChat(props: PageChatProps) {
         service: 'openai',
         context: 2048
       }
-      
-      await pg.query('INSERT INTO models (id, name, service, context) VALUES ($1, $2, $3, $4)', 
-        [newModel.id, newModel.name, newModel.service, newModel.context]
-      )
-      
+
+      await pg.query('INSERT INTO models (id, name, service, context) VALUES ($1, $2, $3, $4)', [
+        newModel.id,
+        newModel.name,
+        newModel.service,
+        newModel.context
+      ])
+
       xtoast.success('New model added successfully!')
     } catch (error) {
       xtoast.error('Failed to add new model')

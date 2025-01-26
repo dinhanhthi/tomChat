@@ -14,7 +14,7 @@ worker({
     return new PGlite({
       dataDir: `idb://${IDB_NAME}`,
       extensions: {
-        vector,
+        vector
         // live // results updated when tables change (https://pglite.dev/docs/live-queries)
         // If we use worker, we cannot use "live" here
       }

@@ -7,7 +7,7 @@ import migrations from './migrations/export.json'
 import * as schema from './schema'
 
 export async function initializeDb() {
-  const pg = new PGliteWorker(
+  const pg = await PGliteWorker.create(
     new Worker(new URL('./pglite.worker.ts', import.meta.url), {
       type: 'module'
     }),
@@ -17,14 +17,6 @@ export async function initializeDb() {
       }
     }
   )
-
-  // const pg = await PGlite.create({
-  //   dataDir: `idb://${IDB_NAME}`,
-  //   extensions: {
-  //     // vector,
-  //     live // results updated when tables change (https://pglite.dev/docs/live-queries)
-  //   }
-  // })
 
   const _db = drizzle({ client: pg as any })
 
