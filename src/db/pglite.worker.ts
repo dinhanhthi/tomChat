@@ -16,7 +16,7 @@ worker({
       extensions: {
         vector
         // live // results updated when tables change (https://pglite.dev/docs/live-queries)
-        // If we use worker, we cannot use "live" here
+        // If we use worker, we cannot use "live" here, we put it in `db.ts`
       }
     })
   }

@@ -21,9 +21,10 @@
     "clean-build": "yarn run clean && yarn run build",
     "reinstall": "yarn run clean && rimraf node_modules && rm yarn.lock && yarn install && rimraf package-lock.json",
     "db:generate": "drizzle-kit generate --config=drizzle.config.ts && tsx scripts/export-db-migrations.ts",
-    "db:push": "drizzle-kit push",
-    "db:pull": "drizzle-kit pull",
-    "db:studio": "drizzle-kit studio"
+    "db:push": "drizzle-kit push --config=drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
+    "db:pull": "drizzle-kit pull --config=drizzle.config.ts",
+    "db:studio": "drizzle-kit studio --config=drizzle.config.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.0.10",

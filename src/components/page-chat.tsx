@@ -36,7 +36,7 @@ export default function PageChat(props: PageChatProps) {
     []
   )
 
-  /* ###Thi */ console.log(`👉👉👉 items liveQuery: `, items)
+  // /* ###Thi */ console.log(`👉👉👉 items liveQuery: `, items)
 
   // pg.live.query('SELECT * FROM models', [], (res: any) => {
   //   console.log(`👉👉👉 res rows: `, res['rows'])
@@ -141,37 +141,37 @@ export default function PageChat(props: PageChatProps) {
     return <LoadingBar isLoading={true} />
   }
 
-  const handleAddModel = async () => {
-    try {
-      const newModel = {
-        id: uuidv4(),
-        name: `Model ${Math.floor(Math.random() * 100)}`,
-        service: 'openai',
-        context: 2048
-      }
+  // const handleAddModel = async () => {
+  //   try {
+  //     const newModel = {
+  //       id: uuidv4(),
+  //       name: `Model ${Math.floor(Math.random() * 100)}`,
+  //       service: 'openai',
+  //       context: 2048
+  //     }
 
-      await pg.query('INSERT INTO models (id, name, service, context) VALUES ($1, $2, $3, $4)', [
-        newModel.id,
-        newModel.name,
-        newModel.service,
-        newModel.context
-      ])
+  //     await pg.query('INSERT INTO models (id, name, service, context) VALUES ($1, $2, $3, $4)', [
+  //       newModel.id,
+  //       newModel.name,
+  //       newModel.service,
+  //       newModel.context
+  //     ])
 
-      xtoast.success('New model added successfully!')
-    } catch (error) {
-      xtoast.error('Failed to add new model')
-      console.error(error)
-    }
-  }
+  //     xtoast.success('New model added successfully!')
+  //   } catch (error) {
+  //     xtoast.error('Failed to add new model')
+  //     console.error(error)
+  //   }
+  // }
 
   return (
     <div className={cn('flex h-full flex-col', className)}>
-      <button
+      {/* <button
         onClick={handleAddModel}
         className="fixed bottom-20 right-4 rounded-full bg-blue-500 p-4 text-white shadow-lg hover:bg-blue-600"
       >
         Add Model
-      </button>
+      </button> */}
       <LoadingBar isLoading={isPageLoading} />
       {/* <div ref={messagesContainerRef} className="x-flex-1 overflow-y-auto">
         <Container className="h-full">
