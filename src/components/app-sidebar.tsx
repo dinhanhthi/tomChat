@@ -13,6 +13,7 @@ import FilterButton from './sidebar-filter'
 import SidebarGroupChats, { SidebarGroupChatsSkeleton } from './sidebar-group-chats'
 import { TagSelector } from './tag-selector'
 import { Button } from './ui/button'
+import { useChatsDb } from '../hooks/useChatsDb'
 
 export const SPECIAL_HISTORY_LABELS: Record<string, string> = {
   today: 'Today',
@@ -27,7 +28,7 @@ export default function AppSidebar() {
   const [isLoading, setIsLoading] = useState(true)
   const { settings, updateSettings, isChanged } = useFilterSettings()
   const [selectedTagName, setSelectedTagName] = useState<string>('')
-  const { chats } = useChats({
+  const { chats } = useChatsDb({
     onlyArchived: settings.onlyArchived,
     alsoArchived: settings.alsoArchived,
     tagName: settings.showByTags && selectedTagName ? selectedTagName : undefined
@@ -40,8 +41,8 @@ export default function AppSidebar() {
     }
   }, [chats])
 
-  const pinnedChats = chats?.filter(conv => conv.pinned === 'true') || []
-  const unpinnedChats = chats?.filter(conv => conv.pinned !== 'true') || []
+  const pinnedChats = chats?.filter(conv => conv.pinned) || []
+  const unpinnedChats = chats?.filter(conv => conv.pinned) || []
   const groupedChats = groupChatsByDates(unpinnedChats)
 
   const getLabel = (key: string) => {

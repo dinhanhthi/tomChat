@@ -21,7 +21,7 @@ export const removeChat = async (chatId: string) => {
   return chatId
 }
 
-export async function toggleChatStatus(id: string, field: 'pinned' | 'archived', value: 'true' | 'false') {
+export async function toggleChatStatus(id: string, field: 'pinned' | 'archived', value: boolean) {
   return await db.chats.update(id, { [field]: value })
 }
 

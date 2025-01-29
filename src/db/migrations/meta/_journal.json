@@ -8,6 +8,13 @@
       "when": 1737715519837,
       "tag": "0000_brief_sasquatch",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1738152707016,
+      "tag": "0001_huge_hitman",
+      "breakpoints": true
     }
   ]
 }

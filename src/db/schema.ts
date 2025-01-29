@@ -1,4 +1,4 @@
-import { relations, sql } from 'drizzle-orm'
+import { relations, sql, InferModel } from 'drizzle-orm'
 import { boolean, integer, pgTable, primaryKey, text, timestamp } from 'drizzle-orm/pg-core'
 
 // Models table
@@ -24,10 +24,10 @@ export const chats = pgTable('chats', {
   title: text('title').notNull(),
   icon: text('icon'),
   description: text('description'),
-  pinned: boolean('pinned').default(false),
-  archived: boolean('archived').default(false),
-  createdAt: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp('updated_at').default(sql`CURRENT_TIMESTAMP`),
+  pinned: boolean('pinned').notNull().default(false),
+  archived: boolean('archived').notNull().default(false),
+  createdAt: timestamp('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`),
   totalTokens: integer('total_tokens').default(0)
 })
 
@@ -49,8 +49,8 @@ export const conversations = pgTable('conversations', {
     .notNull(),
   modelId: text('model_id').references(() => models.id),
   totalTokens: integer('total_tokens').default(0),
-  createdAt: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: timestamp('updated_at').default(sql`CURRENT_TIMESTAMP`)
+  createdAt: timestamp('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp('updated_at').notNull().default(sql`CURRENT_TIMESTAMP`)
 })
 
 // Messages table
@@ -66,7 +66,7 @@ export const messages = pgTable('messages', {
   completionTokens: integer('completion_tokens').default(0),
   totalTokens: integer('total_tokens').default(0),
   favorite: boolean('favorite').default(false),
-  createdAt: timestamp('created_at').default(sql`CURRENT_TIMESTAMP`)
+  createdAt: timestamp('created_at').notNull().default(sql`CURRENT_TIMESTAMP`)
 })
 
 // Define relationships
@@ -109,3 +109,12 @@ export const chatTagsRelations = relations(chatTags, ({ one }) => ({
     references: [tags.id]
   })
 }))
+
+// Infer types ---------------------------------------------------------------
+
+export type Tag = typeof tags.$inferSelect
+export type Model = typeof models.$inferSelect
+export type Chat = typeof chats.$inferSelect
+export type Message = typeof messages.$inferSelect
+export type Conversation = typeof conversations.$inferSelect
+export type ChatTag = typeof chatTags.$inferSelect

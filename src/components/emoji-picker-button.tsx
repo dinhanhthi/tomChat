@@ -11,7 +11,7 @@ interface EmojiPickerButtonProps {
   size?: 'sm' | 'lg'
   popupOpen?: boolean
   onPopupOpenChange?: (open: boolean) => void
-  currentIcon?: string
+  currentIcon: string | null
   onEmojiSelect: (emoji: { native: string }) => void
   handleBtnClick: (e: React.MouseEvent) => void
   tooltip?: string

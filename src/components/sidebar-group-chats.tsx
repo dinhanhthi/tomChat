@@ -25,22 +25,19 @@ import {
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { Chat } from '../db/schema'
 import { useChatIdStore } from '../hooks/useChatIdStore'
 import { SidebarFilter } from '../hooks/useFilterSettings'
 import { TagData } from '../hooks/useTagStore'
-import { Chat } from '../interface'
 import { removeChat, toggleChatStatus, updateChatMeta } from '../lib/chats'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import { useAlertDialog } from './dialog-confirm'
 import { RenameDialog } from './dialog-rename'
-import { TagsDialog } from './dialog-tags'
 import { EmojiPickerButton } from './emoji-picker-button'
 import OverflowTooltip from './overflow-tooltip'
-import TagIndicator from './tag-indicator'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { Skeleton } from './ui/skeleton'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip'
 
 export default function SidebarGroupChats(props: {
   label: string
@@ -74,15 +71,15 @@ export default function SidebarGroupChats(props: {
 
   const handleTogglePin = async (e: React.MouseEvent, chat: Chat) => {
     e.stopPropagation()
-    await toggleChatStatus(chat.id, 'pinned', chat.pinned === 'true' ? 'false' : 'true')
+    await toggleChatStatus(chat.id, 'pinned', !chat.pinned)
   }
 
   const handleToggleArchive = async (e: React.MouseEvent, chat: Chat) => {
     e.stopPropagation()
-    if (chat.archived === 'false') {
+    if (!chat.archived) {
       router.push('/')
     }
-    toggleChatStatus(chat.id, 'archived', chat.archived === 'true' ? 'false' : 'true')
+    toggleChatStatus(chat.id, 'archived', !chat.archived)
   }
 
   const handleRename = async (newTitle: string) => {
@@ -94,14 +91,10 @@ export default function SidebarGroupChats(props: {
   const renderDropdownContent = (chat: Chat) => (
     <>
       <DropdownMenuItem>{shareComponent()}</DropdownMenuItem>
-      {chat.pinned && ['true', 'false'].includes(chat.pinned) && (
-        <DropdownMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</DropdownMenuItem>
-      )}
+      <DropdownMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</DropdownMenuItem>
       <DropdownMenuItem onClick={() => setRenameChat(chat)}>{renameComponent()}</DropdownMenuItem>
       <DropdownMenuItem onClick={() => setTagsChat(chat)}>{tagsComponent()}</DropdownMenuItem>
-      {chat.archived && ['true', 'false'].includes(chat.archived) && (
-        <DropdownMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</DropdownMenuItem>
-      )}
+      <DropdownMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</DropdownMenuItem>
       <DropdownMenuItem onClick={handleRemoveChat(chat)} className="text-danger hover:!text-danger">
         {deleteComponent(chat)}
       </DropdownMenuItem>
@@ -118,14 +111,10 @@ export default function SidebarGroupChats(props: {
   const renderContextContent = (chat: Chat) => (
     <>
       <ContextMenuItem>{shareComponent()}</ContextMenuItem>
-      {chat.pinned && ['true', 'false'].includes(chat.pinned) && (
-        <ContextMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</ContextMenuItem>
-      )}
+      <ContextMenuItem onClick={e => handleTogglePin(e, chat)}>{pinComponent(chat)}</ContextMenuItem>
       <ContextMenuItem onClick={() => setRenameChat(chat)}>{renameComponent()}</ContextMenuItem>
       <ContextMenuItem onClick={() => setTagsChat(chat)}>{tagsComponent()}</ContextMenuItem>
-      {chat.archived && ['true', 'false'].includes(chat.archived) && (
-        <ContextMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</ContextMenuItem>
-      )}
+      <ContextMenuItem onClick={e => handleToggleArchive(e, chat)}>{archiveComponent(chat)}</ContextMenuItem>
       <ContextMenuItem onClick={handleRemoveChat(chat)} className="text-danger hover:!text-danger">
         {deleteComponent(chat)}
       </ContextMenuItem>
@@ -155,7 +144,7 @@ export default function SidebarGroupChats(props: {
           <SidebarGroupLabel className="sticky top-0 z-20 bg-sidebar text-sidebar-primary">{label}</SidebarGroupLabel>
           <SidebarMenu className="gap-1">
             {chats.map((chat, index) => {
-              const chatTags: string[] = chat.tags ?? []
+              // const chatTags: string[] = chat.tags ?? []
               return (
                 <SidebarMenuItem key={index}>
                   <ContextMenu>
@@ -185,7 +174,7 @@ export default function SidebarGroupChats(props: {
                               position="right"
                               delayDuration={700}
                             />
-                            {settings?.showTagIndicators && chatTags && chatTags?.length > 0 && (
+                            {/* {settings?.showTagIndicators && chatTags && chatTags?.length > 0 && (
                               <div className="z-50 flex w-full flex-row items-center gap-2 overflow-hidden hover:overflow-auto [&::-webkit-scrollbar]:hidden">
                                 {[...chatTags]
                                   .sort((a, b) => a.localeCompare(b))
@@ -206,7 +195,7 @@ export default function SidebarGroupChats(props: {
                                     )
                                   })}
                               </div>
-                            )}
+                            )} */}
                           </div>
                         </Link>
                       </SidebarMenuButton>
@@ -230,10 +219,10 @@ export default function SidebarGroupChats(props: {
                         <span className="sr-only">More</span>
                       </SidebarMenuAction>
                     </DropdownMenuTrigger>
-                    {chat.pinned === 'true' && chat.archived !== 'true' && (
+                    {chat.pinned && !chat.archived && (
                       <Pin className="absolute right-2 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
                     )}
-                    {chat.archived === 'true' && (
+                    {chat.archived && (
                       <Archive className="absolute right-2 top-2 z-10 h-4 w-4 group-focus-within/menu-item:opacity-0 group-hover/menu-item:opacity-0 peer-data-[state=open]:opacity-0" />
                     )}
                     <DropdownMenuContent
@@ -265,7 +254,7 @@ export default function SidebarGroupChats(props: {
         title={renameChat?.title || ''}
         onRename={handleRename}
       />
-      <TagsDialog chat={tagsChat} open={!!tagsChat} onOpenChange={open => !open && setTagsChat(null)} />
+      {/* <TagsDialog chat={tagsChat} open={!!tagsChat} onOpenChange={open => !open && setTagsChat(null)} /> */}
     </>
   )
 }
@@ -289,7 +278,7 @@ export function SidebarGroupChatsSkeleton() {
 const pinComponent = (chat: Chat) => {
   return (
     <>
-      {chat.pinned === 'true' ? (
+      {chat.pinned ? (
         <>
           <PinOff className="mr-1 text-muted-foreground" />
           <span>Unpin</span>
@@ -325,7 +314,7 @@ const renameComponent = () => {
 const archiveComponent = (chat: Chat) => {
   return (
     <>
-      {chat.archived === 'true' ? (
+      {chat.archived ? (
         <>
           <ArchiveX className="mr-1 text-muted-foreground" />
           <span>Unarchive</span>
