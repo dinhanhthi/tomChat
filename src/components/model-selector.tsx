@@ -36,7 +36,12 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
           <div className="flex w-full items-center justify-center gap-0.5">
             <selectedModel.colorIcon className={cn('h-4 w-4 flex-shrink-0 text-gray-700')} />
             <div
-              className={cn('ml-1 w-auto overflow-hidden pr-1 font-normal duration-200')}
+              className={cn(
+                'w-0 overflow-hidden font-normal opacity-0 transition-all duration-200 group-hover:ml-1 group-hover:w-auto group-hover:pr-1 group-hover:opacity-100',
+                {
+                  'ml-1 w-auto pr-1 opacity-100': open
+                }
+              )}
               style={{ color: selectedModel.serviceColor }}
             >
               {selectedModel?.shortName || selectedModel?.name}
