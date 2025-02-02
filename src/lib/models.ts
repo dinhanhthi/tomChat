@@ -137,7 +137,7 @@ const mistralModels: AIModel[] = [
     service: 'mistral',
     icon: MistralIcon,
     colorIcon: MistralColorIcon,
-    serviceColor: '#ee5348',
+    serviceColor: '#b71e13',
     name: 'Mistral Small',
     shortName: 'Small'
   },
@@ -146,7 +146,7 @@ const mistralModels: AIModel[] = [
     service: 'mistral',
     icon: MistralIcon,
     colorIcon: MistralColorIcon,
-    serviceColor: '#ee5348',
+    serviceColor: '#b71e13',
     name: 'Mistral Large',
     shortName: 'Large'
   }

@@ -12,6 +12,7 @@ import {
   LucideIcon,
   Quote,
   Redo,
+  Sigma,
   Strikethrough,
   Undo
 } from 'lucide-react'
@@ -104,6 +105,13 @@ export default function TextToolsGroup(props: TextToolsGroupProps) {
         icon={Quote}
         onClick={() => editor?.chain().focus().toggleBlockquote().run()}
         tooltip="Quote"
+        active={editor?.isActive('blockquote')}
+        editor={editor}
+      />
+      <TextToolButton
+        icon={Sigma}
+        onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+        tooltip="Math equation"
         active={editor?.isActive('blockquote')}
         editor={editor}
       />
