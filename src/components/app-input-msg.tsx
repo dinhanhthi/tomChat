@@ -13,13 +13,13 @@ import { v4 as uuidv4 } from 'uuid'
 
 import Typography from '@tiptap/extension-typography'
 import { UseChatHelpers } from 'ai/react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import TurndownService from 'turndown'
 import { generateTitleFromUserMessage } from '../app/actions'
+import { DbType } from '../db/db'
 import { useChatClient } from '../hooks/useChatClient'
-import { useChatIdStore } from '../hooks/useChatIdStore'
 import { useOperatingSystem } from '../hooks/useOperatingSystem'
-import { addMessage, createChat } from '../lib/chats'
+import { addMessage, createChat } from '../lib/chatsDb'
 import { DEFAULT_MODEL_ID } from '../lib/models'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
@@ -87,6 +87,9 @@ export const inputFooterBtnActive = 'bg-slate-200 text-primary shadow-sm rounded
 export const inputBg = 'border-slate-200 bg-slate-100'
 
 export default function AppInputMsg(props: {
+  chatId: string
+  conversationId: string
+  db: DbType
   className?: string
   useChatParams: {
     input: UseChatHelpers['input']
@@ -94,12 +97,12 @@ export default function AppInputMsg(props: {
     handleSubmit: UseChatHelpers['handleSubmit']
     setMessages: UseChatHelpers['setMessages']
     messages: UseChatHelpers['messages']
-    isLoading: UseChatHelpers['isLoading']
+    isAIAnswering: UseChatHelpers['isLoading']
     stop: UseChatHelpers['stop']
   }
 }) {
-  const { className, useChatParams } = props
-  const { chatId } = useChatIdStore()
+  const { chatId, conversationId, db, className, useChatParams } = props
+  // const { chatId } = useChatIdStore()
   const [pastedImages, setPastedImages] = useState<PastedImage[]>([])
   const [showInputTools, setShowInputTools] = useState(false)
   const [searchEnabled, setSearchEnabled] = useState(false)
@@ -107,8 +110,8 @@ export default function AppInputMsg(props: {
   const [showApps, setShowApps] = useState(false)
   const [selectedModelId, setSelectedModelId] = useState(DEFAULT_MODEL_ID)
   const pathname = usePathname()
-  const router = useRouter()
   const os = useOperatingSystem()
+  // const { db } = useDbLoading()
 
   const editor = useEditor({
     // https://tiptap.dev/docs/editor/extensions/functionality/starterkit
@@ -209,7 +212,7 @@ export default function AppInputMsg(props: {
 
   const handleClientSubmit = async () => {
     if (pathname === '/') {
-      window.history.pushState({}, '', `/chat/${chatId}`)
+      window.history.replaceState({}, '', `/chat/${chatId}?convId=${conversationId}`)
     }
 
     try {
@@ -224,18 +227,29 @@ export default function AppInputMsg(props: {
             xtoast.warning(errMsg)
             return useChatParams.input.slice(0, 50)
           })
-          await createChat(title, chatId)
+          await createChat({ title, chatId, conversationId, db })
         }
 
         // Here you can handle images separately or combine them with the message
         // For example:
-        await addMessage(chatId, {
-          id: uuidv4(),
-          role: 'user',
-          content,
-          // images: images, // You'll need to modify your message type to include images
-          createdAt: new Date(),
-          chatId
+        await addMessage({
+          message: {
+            id: uuidv4(),
+            conversationId,
+            role: 'user',
+            content,
+            // images: images, // You'll need to modify your message type to include images
+            createdAt: new Date(),
+            promptTokens: 0,
+            completionTokens: 0,
+            totalTokens: 0,
+            favorite: false,
+            modelId: 'model-a',
+            serviceId: 'openai'
+          },
+          db,
+          chatId,
+          conversationId
         })
 
         // Clear images after successful submission
@@ -338,8 +352,10 @@ export default function AppInputMsg(props: {
             />
             <ModelSelector selectedModelId={selectedModelId} onModelChange={setSelectedModelId} />
           </div>
-          {useChatParams.isLoading && <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />}
-          {!useChatParams.isLoading && <SendButton submitForm={handleClientSubmit} input={useChatParams.input} />}
+          {useChatParams.isAIAnswering && (
+            <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />
+          )}
+          {!useChatParams.isAIAnswering && <SendButton submitForm={handleClientSubmit} input={useChatParams.input} />}
         </div>
       </form>
       <div className="select-none text-xs text-muted-foreground">

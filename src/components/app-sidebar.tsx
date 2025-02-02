@@ -4,7 +4,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarSeparator
 import { Archive, BadgeInfo, BookOpenText, Bug, Lightbulb, ScrollText, Tag } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useChats } from '../hooks/useChats'
+import { useChatsDb } from '../hooks/useChatsDb'
 import { useFilterSettings } from '../hooks/useFilterSettings'
 import { useTagStore } from '../hooks/useTagStore'
 import { groupChatsByDates } from '../lib/utils'
@@ -13,7 +13,6 @@ import FilterButton from './sidebar-filter'
 import SidebarGroupChats, { SidebarGroupChatsSkeleton } from './sidebar-group-chats'
 import { TagSelector } from './tag-selector'
 import { Button } from './ui/button'
-import { useChatsDb } from '../hooks/useChatsDb'
 
 export const SPECIAL_HISTORY_LABELS: Record<string, string> = {
   today: 'Today',
@@ -38,6 +37,7 @@ export default function AppSidebar() {
   useEffect(() => {
     if (chats) {
       setIsLoading(false)
+      /* ###Thi */ console.log(`👉👉👉 chats: `, chats)
     }
   }, [chats])
 

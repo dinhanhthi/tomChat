@@ -2,6 +2,12 @@
 
 An UI to run seamlessly LLM services (OpenAI, Claude, Gemini, Mistral,...)
 
+## Important note why stop using PGLite
+
+PGLite works well overall - all tables are created and the `chatsDb.ts` functions as expected. However, there are issues with loading chats, conversations, and messages between the home page and current chat page. React rendering problems keep occurring, likely due to handling the database entirely on the client side. With limited time to troubleshoot this approach, I questioned its value.
+
+Therefore, I've decided to switch to using a separate Postgres server and handle database interactions from the server side instead. This allows me to learn something new rather than continuing with PGLite, which isn't widely used in production environments.
+
 ## Getting Started
 
 To get started, install [nvm](https://github.com/nvm-sh/nvm) and use it to install the desired version of Node.js and [Yarn](https://yarnpkg.com/).

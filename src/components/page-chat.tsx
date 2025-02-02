@@ -1,12 +1,11 @@
 'use client'
 
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useChat } from 'ai/react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useChatIdStore } from '../hooks/useChatIdStore'
-import { addMessage, getChat, getMessages } from '../lib/chats'
+import { addMessage, getMessages } from '../lib/chatsDb'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import AppInputMsg from './app-input-msg'
@@ -20,33 +19,19 @@ type PageChatProps = {
 
 export default function PageChat(props: PageChatProps) {
   const { className } = props
-  const { isLoading: isDbLoading, pg } = useDbLoading()
+  const { db } = useDbLoading()
   const router = useRouter()
   const pathname = usePathname()
-  const { chatId } = useChatIdStore()
+  const searchParams = useSearchParams()
+  const { chatId, conversationId } = useChatIdStore()
+  // const chatId = (params.chatId as string) ?? uuidv4()
+  // const conversationId = searchParams.get('convId') ?? uuidv4()
+
+  // const [chatId, setChatId] = useState('')
+  // const [conversationId, setConversationId] = useState('')
 
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [hash, setHash] = useState('')
-
-  const items = useLiveQuery(
-    `
-    SELECT *
-    FROM models;
-  `,
-    []
-  )
-
-  // /* ###Thi */ console.log(`👉👉👉 items liveQuery: `, items)
-
-  // pg.live.query('SELECT * FROM models', [], (res: any) => {
-  //   console.log(`👉👉👉 res rows: `, res['rows'])
-  // })
-
-  // /* ###Thi */ console.log(`👉👉👉 items : `, models)
-
-  // db.select().from(models).then((result: any) => {
-  //   /* ###Thi */ console.log(`👉👉👉 items (db in pageChat): `, result)
-  // })
 
   useEffect(() => {
     const _hash = window.location.hash.substring(1)
@@ -64,45 +49,55 @@ export default function PageChat(props: PageChatProps) {
     }
   }, [hash])
 
-  // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
-  const { messages, setMessages, input, setInput, handleSubmit, isLoading, stop } = useChat({
-    onFinish: async (message, options) => {
-      await addMessage(chatId, {
-        ...message,
-        serviceId: message.id,
-        id: uuidv4(),
-        chatId,
-        usage: {
-          promptTokens: options.usage.promptTokens,
-          completionTokens: options.usage.completionTokens,
-          totalTokens: options.usage.totalTokens
-        }
-      })
-    },
-    onError: error => {
-      xtoast.error(`Error when sending the message: **${error instanceof Error ? error.message : 'Unknown error!'}**`)
+  // // Fix: Clear messages when navigating to the home page (we need this because sometimes it doesn't clear the messages)
+  useEffect(() => {
+    if (pathname === '/') {
+      setMessages([])
     }
-  })
+  }, [pathname])
 
   useEffect(() => {
     const checkChat = async () => {
       try {
-        if (pathname === `/chat/${chatId}`) {
-          const chat = await getChat(chatId)
-          if (!chat) {
-            setIsPageLoading(false)
+        /* ###Thi */ console.log(`👉👉👉 pathname: `, pathname)
+        // if (pathname === '/') {
+        //   setMessages([])
+        //   setChatId(uuidv4())
+        //   setConversationId(uuidv4())
+        // } else
+
+        if (pathname.match(/^\/chat\/[^/]+$/) && searchParams.has('convId')) {
+          const segments = pathname.split('/')
+          const chatId = segments[2]
+          const conversationId = searchParams.get('convId')
+
+          if (!chatId || !conversationId) {
             xtoast.error('Chat not found!')
             router.push('/')
             router.refresh()
-            setMessages([])
+            return
           }
-          const messages = await getMessages(chatId)
+
+          // const chat = await getChat(chatId, db)
+          // if (!chat) {
+          //   xtoast.error('Chat not found!')
+          //   router.push('/')
+          //   router.refresh()
+          //   return
+          // }
+
+          const messages = await getMessages(conversationId, db)
+          if (!messages || !messages.length) {
+            xtoast.error('Messages not found!')
+            router.push('/')
+            router.refresh()
+            return
+          }
           setMessages(messages)
-          setIsPageLoading(false)
-        } else {
-          setIsPageLoading(false)
         }
-      } catch (error) {
+
+        setIsPageLoading(false)
+      } catch (err) {
         xtoast.error('There is an unknown error when loading the chat you want!')
         setIsPageLoading(false)
         router.push('/')
@@ -112,14 +107,73 @@ export default function PageChat(props: PageChatProps) {
     }
 
     checkChat()
-  }, [router, chatId])
+  }, [router, chatId, conversationId])
 
-  // Fix: Clear messages when navigating to the home page (we need this because sometimes it doesn't clear the messages)
-  useEffect(() => {
-    if (pathname === '/') {
-      setMessages([])
+  // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
+  const {
+    messages,
+    setMessages,
+    input,
+    setInput,
+    handleSubmit,
+    isLoading: isAIAnswering,
+    stop
+  } = useChat({
+    onFinish: async (message, options) => {
+      if (chatId) {
+        await addMessage({
+          db,
+          conversationId,
+          chatId,
+          message: {
+            ...message,
+            serviceId: message.id,
+            id: uuidv4(),
+            conversationId,
+            promptTokens: options.usage.promptTokens,
+            completionTokens: options.usage.completionTokens,
+            totalTokens: options.usage.totalTokens,
+            favorite: false,
+            modelId: 'model-a',
+            createdAt: message.createdAt ?? new Date()
+          }
+        })
+      }
+    },
+    onError: error => {
+      xtoast.error(`Error when sending the message: **${error instanceof Error ? error.message : 'Unknown error!'}**`)
     }
-  }, [pathname])
+  })
+
+  // useEffect(() => {
+  //   const checkChat = async () => {
+  //     try {
+  //       if (pathname === `/chat/${chatId}`) {
+  //         const chat = await getChat(chatId, db)
+  //         if (!chat) {
+  //           setIsPageLoading(false)
+  //           xtoast.error('Chat not found!')
+  //           router.push('/')
+  //           router.refresh()
+  //           setMessages([])
+  //         }
+  //         const messages = await getMessages(chatId, db)
+  //         setMessages(messages)
+  //         setIsPageLoading(false)
+  //       } else {
+  //         setIsPageLoading(false)
+  //       }
+  //     } catch (error) {
+  //       xtoast.error('There is an unknown error when loading the chat you want!')
+  //       setIsPageLoading(false)
+  //       router.push('/')
+  //       router.refresh()
+  //       setMessages([])
+  //     }
+  //   }
+
+  //   checkChat()
+  // }, [chatId])
 
   // Fake conversations
   const conversations = [
@@ -127,19 +181,7 @@ export default function PageChat(props: PageChatProps) {
       id: '1',
       messages
     }
-    // ,
-    // {
-    //   id: '2'
-    // }
-    // ,
-    // {
-    //   id: '3'
-    // }
   ]
-
-  if (isDbLoading) {
-    return <LoadingBar isLoading={true} />
-  }
 
   // const handleAddModel = async () => {
   //   try {
@@ -163,6 +205,10 @@ export default function PageChat(props: PageChatProps) {
   //     console.error(error)
   //   }
   // }
+
+  if (isPageLoading) {
+    return 'Page is loading...'
+  }
 
   return (
     <div className={cn('flex h-full flex-col', className)}>
@@ -220,8 +266,11 @@ export default function PageChat(props: PageChatProps) {
       </div>
 
       <AppInputMsg
+        chatId={chatId}
+        conversationId={conversationId}
+        db={db}
         className="pb-4"
-        useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isLoading, stop }}
+        useChatParams={{ input, setInput, handleSubmit, setMessages, messages, isAIAnswering, stop }}
       />
     </div>
   )
