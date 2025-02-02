@@ -8,4 +8,4 @@ export const NO_TAG = 'No tag' // user can't create tag with this name
 export const MAX_N_TAGS = 20
 
 // export const IDB_NAME = 'testChat'
-export const IDB_NAME = 'testChat3' // ###Thi
+export const IDB_NAME = 'testChat6' // ###Thi

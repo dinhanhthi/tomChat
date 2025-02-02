@@ -6,7 +6,7 @@ export default defineConfig({
   schema: './src/db/schema.ts',
   out: './src/db/migrations',
   driver: 'pglite',
-  // Not working with studio
+  // Not working with studio when we use IndexedDB
   dbCredentials: {
     url: IDB_NAME
   },

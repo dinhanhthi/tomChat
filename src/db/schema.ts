@@ -1,4 +1,4 @@
-import { relations, sql, InferModel } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 import { boolean, integer, pgTable, primaryKey, text, timestamp } from 'drizzle-orm/pg-core'
 
 // Models table
@@ -66,7 +66,8 @@ export const messages = pgTable('messages', {
   completionTokens: integer('completion_tokens').default(0),
   totalTokens: integer('total_tokens').default(0),
   favorite: boolean('favorite').default(false),
-  createdAt: timestamp('created_at').notNull().default(sql`CURRENT_TIMESTAMP`)
+  createdAt: timestamp('created_at').notNull().default(sql`CURRENT_TIMESTAMP`),
+  serviceId: text('service_id') // the id from LLM service
 })
 
 // Define relationships

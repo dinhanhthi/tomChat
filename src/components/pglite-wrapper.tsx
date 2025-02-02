@@ -30,7 +30,7 @@ export default function PGliteWrapper({ children }: { children: React.ReactNode 
       if (result.length === 0) {
         console.log('No data found, inserting initial data...')
         await dbInit.insert(models).values({
-          id: '1',
+          id: 'model-a',
           name: 'Model A',
           service: 'openai',
           context: 2048
@@ -48,7 +48,7 @@ export default function PGliteWrapper({ children }: { children: React.ReactNode 
   }, [])
 
   if (isLoading) {
-    return <div>Loading dataabase...</div>
+    return <div>Loading database...</div>
   }
 
   return (

@@ -1,10 +1,16 @@
 import { live } from '@electric-sql/pglite/live'
 import { PGliteWorker } from '@electric-sql/pglite/worker'
 import { PgDialect } from 'drizzle-orm/pg-core'
-import { drizzle } from 'drizzle-orm/pglite'
+import { drizzle, PgliteDatabase } from 'drizzle-orm/pglite'
 import { IDB_NAME } from '../lib/constants'
 import migrations from './migrations/export.json'
 import * as schema from './schema'
+
+export type DbType = PgliteDatabase<Record<string, never>> & {
+  $client: any
+} & {
+  schema: typeof schema
+}
 
 export async function initializeDb() {
   const pg = await PGliteWorker.create(
