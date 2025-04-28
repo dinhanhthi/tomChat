@@ -5,7 +5,7 @@ import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 import { Command } from 'cmdk'
 import { debounce } from 'lodash'
 import { Archive, MessageCircle, X } from 'lucide-react'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useChats } from '../hooks/useChats'
 import { useSearchChats } from '../hooks/useSearchChats'
@@ -129,8 +129,6 @@ const SearchContent = ({ onOpenChange }: SearchContentProps) => {
 }
 
 export default function SearchDialog({ isOpen, onOpenChange }: SearchDialogProps) {
-  const pathname = usePathname()
-
   return (
     <TooltipProvider>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
