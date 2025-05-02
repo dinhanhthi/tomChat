@@ -13,7 +13,16 @@ export const getChat = async (chatId: string) => {
 export const createChat = async (title: string, chatId?: string, model?: string) => {
   const id = chatId ?? uuidv4()
   // Use provided model, or get from localStorage, or use DEFAULT_MODEL_ID
-  const defaultModel = model || localStorage.getItem('default_model_id') || DEFAULT_MODEL_ID
+  let defaultModel = model || DEFAULT_MODEL_ID
+
+  // Only access localStorage on the client side
+  if (typeof window !== 'undefined') {
+    const storedModel = localStorage.getItem('default_model_id')
+    if (storedModel) {
+      defaultModel = storedModel
+    }
+  }
+
   await db.chats.add(new Chat({ id, title, model: defaultModel }))
   return id
 }

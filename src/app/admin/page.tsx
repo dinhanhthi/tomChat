@@ -34,7 +34,18 @@ export default function AdminPage() {
 
   const [isValidating, setIsValidating] = useState(false)
   const selectedService = apiKeyForm.watch('service')
-  const [defaultModel, setDefaultModel] = useState(localStorage.getItem('default_model_id') || DEFAULT_MODEL_ID)
+  const [defaultModel, setDefaultModel] = useState<string>(DEFAULT_MODEL_ID)
+
+  // Initialize the defaultModel from localStorage when on client
+  useEffect(() => {
+    // Only access localStorage on the client side
+    if (typeof window !== 'undefined') {
+      const storedModel = localStorage.getItem('default_model_id')
+      if (storedModel) {
+        setDefaultModel(storedModel)
+      }
+    }
+  }, [])
 
   // Tìm thông tin dịch vụ được chọn trong supportedAIServices
   const selectedServiceInfo = supportedAIServices.find(service => service.key === selectedService)
@@ -43,6 +54,8 @@ export default function AdminPage() {
 
   // Load saved API key when service changes
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const service = apiKeyForm.watch('service')
     if (service) {
       const savedKey = localStorage.getItem(`${service}_api_key`)
@@ -55,6 +68,8 @@ export default function AdminPage() {
   }, [apiKeyForm.watch('service')])
 
   const handleClearAllApiKeys = () => {
+    if (typeof window === 'undefined') return
+
     showAlert({
       title: 'Confirm Clear API Keys',
       description: 'This will remove all saved API keys. Are you sure you want to continue?',
@@ -154,7 +169,7 @@ export default function AdminPage() {
         return false
       }
 
-      if (isValid) {
+      if (isValid && typeof window !== 'undefined') {
         localStorage.setItem(`${service}_api_key`, apiKey)
         xtoast.success(`API Key for ${service} is valid and has been saved`)
       } else {
@@ -176,6 +191,8 @@ export default function AdminPage() {
   }
 
   const handleModelChange = (modelId: string) => {
+    if (typeof window === 'undefined') return
+
     const serviceInfo = getServiceInfoFromModelId(modelId)
 
     if (!serviceInfo) {
@@ -324,7 +341,7 @@ export default function AdminPage() {
           </div>
         </div>
         <div className="flex flex-row gap-4">
-          <Button className="h-9 rounded-3xl" onClick={handleDownloadDB} variant="secondary">
+          <Button className="h-9 rounded-3xl" onClick={handleDownloadDB} variant="default">
             <Download className="h-4 w-4" /> Download
           </Button>
           <label className="flex h-9 cursor-pointer flex-row items-center gap-2 rounded-3xl bg-secondary p-4 text-sm text-secondary-foreground hover:bg-secondary/80">

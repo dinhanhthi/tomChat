@@ -107,7 +107,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ai-sdk/react@npm:1.2.11":
+"@ai-sdk/react@npm:1.2.11, @ai-sdk/react@npm:^1.2.11":
   version: 1.2.11
   resolution: "@ai-sdk/react@npm:1.2.11"
   dependencies:
@@ -13250,6 +13250,7 @@ __metadata:
     "@ai-sdk/google": "npm:^1.2.14"
     "@ai-sdk/mistral": "npm:^1.2.7"
     "@ai-sdk/openai": "npm:^1.3.21"
+    "@ai-sdk/react": "npm:^1.2.11"
     "@ai-sdk/xai": "npm:^1.2.15"
     "@emoji-mart/data": "npm:^1.2.1"
     "@emoji-mart/react": "npm:^1.1.1"

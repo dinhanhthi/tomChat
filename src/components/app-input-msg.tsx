@@ -19,8 +19,8 @@ import { generateTitleFromUserMessage } from '../app/actions'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatIdStore } from '../hooks/useChatIdStore'
 import { useOperatingSystem } from '../hooks/useOperatingSystem'
-import { addMessage, createChat, updateChatMeta } from '../lib/chats'
-import { DEFAULT_MODEL_ID, getServiceInfoFromModelId } from '../lib/models'
+import { addMessage, createChat } from '../lib/chats'
+import { getServiceInfoFromModelId } from '../lib/models'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import '../styles/tiptap.scss'
@@ -97,39 +97,32 @@ export default function AppInputMsg(props: {
     status: UseChatHelpers['status']
     stop: UseChatHelpers['stop']
   }
+  selectedModelId: string
+  setSelectedModelId: (modelId: string) => void
+  isModelLoading?: boolean
 }) {
-  const { className, useChatParams } = props
+  const { className, useChatParams, selectedModelId, setSelectedModelId, isModelLoading = false } = props
   const { chatId } = useChatIdStore()
   const [pastedImages, setPastedImages] = useState<PastedImage[]>([])
   const [showInputTools, setShowInputTools] = useState(false)
   const [searchEnabled, setSearchEnabled] = useState(false)
   const [showPromptCollection, setShowPromptCollection] = useState(false)
   const [showApps, setShowApps] = useState(false)
-  const [selectedModelId, setSelectedModelId] = useState(localStorage.getItem('default_model_id') || DEFAULT_MODEL_ID)
   const pathname = usePathname()
   const router = useRouter()
   const os = useOperatingSystem()
 
   const { chat } = useChatClient(chatId)
 
-  // Update selectedModelId when chat changes
-  useEffect(() => {
-    if (chat?.model) {
-      setSelectedModelId(chat.model)
-    }
-  }, [chat])
-
-  // Update chat model when selectedModelId changes
-  useEffect(() => {
-    if (chatId && chat && selectedModelId !== chat.model) {
-      updateChatMeta(chatId, 'model', selectedModelId)
-    }
-  }, [selectedModelId, chatId, chat])
-
   const handleModelChange = (modelId: string) => {
+    /* ###Thi */ console.log(`👉👉👉 chat: `, chat)
+    /* ###Thi */ console.log(`👉👉👉 useChatParams.messages: `, useChatParams.messages)
+    // Don't allow model changes for existing chats
+    if (useChatParams.messages && useChatParams.messages.length > 0) return
+
     const serviceInfo = getServiceInfoFromModelId(modelId)
 
-    if (serviceInfo) {
+    if (serviceInfo && typeof window !== 'undefined') {
       const apiKey = localStorage.getItem(`${serviceInfo.key}_api_key`)
 
       if (!apiKey) {
@@ -146,6 +139,13 @@ export default function AppInputMsg(props: {
       }
     }
 
+    // Save the selected model to localStorage as the default
+    // This happens only when the user explicitly selects a model
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('default_model_id', modelId)
+    }
+
+    // Call the parent component's setSelectedModelId function
     setSelectedModelId(modelId)
   }
 
@@ -249,13 +249,45 @@ export default function AppInputMsg(props: {
       window.history.pushState({}, '', `/chat/${chatId}`)
     }
 
-    try {
-      if (useChatParams) {
-        const content = useChatParams.input
-        // const images = pastedImages.map(img => img.file)
+    // Clear all pasted images as they are now processed
+    setPastedImages([])
 
+    // Extract only the content from the message
+    if (useChatParams) {
+      const content = useChatParams.input
+
+      // Don't submit empty messages
+      if (!content.trim()) return
+
+      try {
+        // Get API key for title generation based on the selected model
+        let titleApiKey: string | undefined = undefined
+        const serviceInfo = getServiceInfoFromModelId(selectedModelId)
+
+        if (serviceInfo && typeof window !== 'undefined') {
+          const storedApiKey = localStorage.getItem(`${serviceInfo.key}_api_key`)
+          if (storedApiKey) {
+            titleApiKey = storedApiKey
+          } else {
+            xtoast.error(`API key for ${serviceInfo.name} is required. Please set it in the Admin page.`, {
+              action: {
+                label: 'Go to Admin',
+                onClick: () => {
+                  router.push('/admin#api-keys')
+                }
+              },
+              duration: 5000
+            })
+            return
+          }
+        } else {
+          xtoast.error('Unknown model service. Cannot proceed without a valid service.')
+          return
+        }
+
+        // If we don't have a chat yet, create one with a title
         if (!chat) {
-          const title = await generateTitleFromUserMessage(content).catch(e => {
+          const title = await generateTitleFromUserMessage(content, titleApiKey).catch(e => {
             const errMsg = `Error when generating the title for this chat: ${e instanceof Error ? e.message : 'Unknown error!'}. Using a part of the user input instead.`
             xtoast.warning(errMsg)
             return useChatParams.input.slice(0, 50)
@@ -274,17 +306,15 @@ export default function AppInputMsg(props: {
           chatId
         })
 
-        // Clear images after successful submission
-        setPastedImages([])
         useChatParams.handleSubmit()
 
         // Clear the editor content after submitting
         editor?.commands.clearContent()
+      } catch (error) {
+        xtoast.error(
+          `${error instanceof Error ? error.message : 'There is an unknown error when submitting a new message!'}`
+        )
       }
-    } catch (error) {
-      xtoast.error(
-        `${error instanceof Error ? error.message : 'There is an unknown error when submitting a new message!'}`
-      )
     }
   }
 
@@ -372,7 +402,17 @@ export default function AppInputMsg(props: {
               active={searchEnabled}
               title="Web"
             />
-            <ModelSelector selectedModelId={selectedModelId} onModelChange={handleModelChange} />
+            <ModelSelector
+              selectedModelId={selectedModelId}
+              onModelChange={handleModelChange}
+              disabled={useChatParams.messages && useChatParams.messages.length > 0}
+              isLoading={isModelLoading}
+              tooltip={
+                useChatParams.messages && useChatParams.messages.length > 0
+                  ? "Model can't be changed once messages exist"
+                  : undefined
+              }
+            />
           </div>
           {useChatParams.status === 'streaming' && (
             <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />

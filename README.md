@@ -13,8 +13,7 @@ npm i --global yarn
 yarn --version
 ```
 
-> [!WARNING]  
-> `--turbo` [doesn't work](https://github.com/vercel/next.js/issues/42651) with [`yarn` PnP](https://yarnpkg.com/features/pnp), try `npm` or force yarn to use `node-modules` instead!
+> [!WARNING] > `--turbo` [doesn't work](https://github.com/vercel/next.js/issues/42651) with [`yarn` PnP](https://yarnpkg.com/features/pnp), try `npm` or force yarn to use `node-modules` instead!
 > (`yarn config set nodeLinker node-modules`, revert to use pnp by `yarn config set nodeLinker pnp`)
 
 ```bash
@@ -67,3 +66,30 @@ Therefore, I've decided to switch to using a separate Postgres server and handle
 ### Branch `dexie-indexeddb`
 
 This branch contains the first working app built with IndexedDB and Dexie, without any Postgres database. We'll explore PGLite and Postgres implementations in other branches. If you're looking for a "serverless" solution, this is the one!
+
+## API Key Management
+
+The application uses API keys stored in your browser's local storage to authenticate with LLM service providers.
+
+- API keys are stored in local storage after being validated in the Admin page
+- Keys are securely stored in your browser and never sent to any server except the respective LLM service providers
+- The application will automatically use the appropriate API key based on the model you select
+- **Important:** No environment variables are used for API keys - you must set them in the Admin panel
+
+To set up your API keys:
+
+1. Navigate to the Admin page
+2. Select a service (OpenAI, Claude, etc.)
+3. Enter your API key
+4. Click "Validate and Save"
+
+## Environment Variables
+
+Create a `.env.local` file with the following variables:
+
+```bash
+# Configure the application environment
+ENV_MODE="dev"
+```
+
+Note: The application does not use environment variables for API keys. All keys must be set through the Admin interface.

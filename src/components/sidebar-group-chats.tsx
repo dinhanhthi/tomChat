@@ -61,13 +61,13 @@ export default function SidebarGroupChats(props: {
   const handleRemoveChat = (chat: Chat) => async () => {
     showAlert({
       title: 'Delete Chat',
-      description: `Are you sure you want to delete **${chat.title}**?`,
+      description: `Are you sure you want to delete "${chat.title}"?`,
       confirmText: 'Delete',
       confirmClassName: 'bg-danger hover:bg-danger-hover text-white',
       onConfirm: async () => {
         await removeChat(chat.id)
         router.push('/')
-        xtoast.info(`Chat **${chat.title}** has been deleted!`)
+        xtoast.info(`Chat "${chat.title}" has been deleted!`)
       }
     })
   }
