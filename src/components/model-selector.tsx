@@ -14,8 +14,8 @@ interface ModelSelectorProps {
   onModelChange: (model: string) => void
   compact?: boolean // hide the model name and only show the icon in the button
   className?: string
-  disabled?: boolean // disable the model selector
-  tooltip?: string // tooltip text for the button
+  disabled?: boolean
+  tooltip?: string
   isLoading?: boolean // add loading state
 }
 
@@ -38,12 +38,10 @@ export function ModelSelector({
     }
   }, [selectedModelId])
 
-  // Find the selected model object
   const selectedModel = currentModelId
     ? allModels.find(model => model.id === currentModelId) || allModels[0]
     : allModels[0]
 
-  // Determine if we should show loading state
   const showLoading = isLoading || selectedModelId === undefined
 
   return (
