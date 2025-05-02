@@ -2,6 +2,7 @@ import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid'
 import { db } from '../db/database'
 import { Chat, exMessage } from '../interface'
+import { DEFAULT_MODEL_ID } from './models'
 
 // CHATS ---------------------------------------------------------
 
@@ -9,9 +10,11 @@ export const getChat = async (chatId: string) => {
   return await db.chats.get(chatId)
 }
 
-export const createChat = async (title: string, chatId?: string) => {
+export const createChat = async (title: string, chatId?: string, model?: string) => {
   const id = chatId ?? uuidv4()
-  await db.chats.add(new Chat({ id, title }))
+  // Use provided model, or get from localStorage, or use DEFAULT_MODEL_ID
+  const defaultModel = model || localStorage.getItem('default_model_id') || DEFAULT_MODEL_ID
+  await db.chats.add(new Chat({ id, title, model: defaultModel }))
   return id
 }
 

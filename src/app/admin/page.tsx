@@ -1,14 +1,15 @@
 'use client'
 
 import { useAlertDialog } from '@/components/dialog-confirm'
+import { ModelSelector } from '@/components/model-selector'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { db } from '@/db/database'
-import { AIService, supportedAIServices } from '@/lib/models'
+import { AIService, DEFAULT_MODEL_ID, supportedAIServices } from '@/lib/models'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Upload } from 'lucide-react'
+import { Download, Upload } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -33,6 +34,7 @@ export default function AdminPage() {
 
   const [isValidating, setIsValidating] = useState(false)
   const selectedService = apiKeyForm.watch('service')
+  const [defaultModel, setDefaultModel] = useState(localStorage.getItem('default_model_id') || DEFAULT_MODEL_ID)
 
   // Tìm thông tin dịch vụ được chọn trong supportedAIServices
   const selectedServiceInfo = supportedAIServices.find(service => service.key === selectedService)
@@ -173,8 +175,30 @@ export default function AdminPage() {
     await validateApiKey(data.service as AIService, data.apiKey)
   }
 
+  const handleModelChange = (modelId: string) => {
+    setDefaultModel(modelId)
+    localStorage.setItem('default_model_id', modelId)
+    xtoast.success('Default model has been saved')
+  }
+
   return (
     <article className="container mx-auto flex flex-col gap-4 p-4">
+      {/* Default AI Model */}
+      <section className="flex flex-col gap-4 rounded-md border p-4">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-lg font-medium">Default AI Model</h2>
+          <div className="text-sm text-muted-foreground">
+            Choose the default model to use when starting a new conversation.
+          </div>
+        </div>
+
+        <div className="flex flex-row items-center gap-4">
+          <div className="flex items-center">
+            <ModelSelector selectedModelId={defaultModel} onModelChange={handleModelChange} className="w-auto" />
+          </div>
+        </div>
+      </section>
+
       {/* AI Service API Keys */}
       <section className="flex flex-col gap-4 rounded-md border p-4">
         <div className="flex flex-col gap-2">
@@ -253,7 +277,7 @@ export default function AdminPage() {
               </div>
             )}
 
-            <div className="mt-2 flex flex-row gap-2">
+            <div className="mt-2 flex flex-row gap-4">
               <Button
                 className="h-9 rounded-3xl"
                 variant="default"
@@ -262,7 +286,7 @@ export default function AdminPage() {
               >
                 {isValidating ? 'Validating...' : 'Validate & Save'}
               </Button>
-              <Button className="h-9 rounded-3xl" variant="destructive" type="button" onClick={handleClearAllApiKeys}>
+              <Button className="h-9 rounded-3xl" variant="secondary" type="button" onClick={handleClearAllApiKeys}>
                 Clear All
               </Button>
             </div>
@@ -275,16 +299,16 @@ export default function AdminPage() {
         <div className="flex flex-col gap-2">
           <h2 className="text-lg font-medium">Database Backup</h2>
           <div className="text-sm text-muted-foreground">
-            Download creates a complete backup of all chats and messages. Restore will completely replace the current
+            Download creates a complete backup of all chats and messages. ⚠️ Restore will completely replace the current
             database with data from your backup file.
           </div>
         </div>
         <div className="flex flex-row gap-4">
           <Button className="h-9 rounded-3xl" onClick={handleDownloadDB} variant="secondary">
-            Download Backup
+            <Download className="h-4 w-4" /> Download
           </Button>
-          <label className="flex h-9 cursor-pointer flex-row items-center gap-2 rounded-3xl bg-orange-200 p-4 text-sm text-orange-900">
-            <Upload className="h-4 w-4" /> Restore Database
+          <label className="flex h-9 cursor-pointer flex-row items-center gap-2 rounded-3xl bg-secondary p-4 text-sm text-secondary-foreground hover:bg-secondary/80">
+            <Upload className="h-4 w-4" /> Restore
             <input type="file" id="db-upload" className="hidden" accept=".json" onChange={handleUploadDB} />
           </label>
         </div>

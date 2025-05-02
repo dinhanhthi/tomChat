@@ -12,9 +12,11 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 interface ModelSelectorProps {
   selectedModelId: string
   onModelChange: (model: string) => void
+  compact?: boolean // hide the model name and only show the icon in the button
+  className?: string
 }
 
-export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorProps) {
+export function ModelSelector({ selectedModelId, onModelChange, compact = false, className }: ModelSelectorProps) {
   const [open, setOpen] = useState(false)
   const selectedModel = allModels.find(model => model.id === selectedModelId)!
 
@@ -30,7 +32,8 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
             {
               'rounded-3xl shadow-sm': open,
               [inputFooterBtnFixed]: open
-            }
+            },
+            className
           )}
         >
           <div className="flex w-full items-center justify-center gap-0.5">
@@ -39,10 +42,9 @@ export function ModelSelector({ selectedModelId, onModelChange }: ModelSelectorP
               className={cn(
                 'w-0 overflow-hidden font-normal opacity-0 transition-all duration-200 group-hover:ml-1 group-hover:w-auto group-hover:pr-1 group-hover:opacity-100',
                 {
-                  'ml-1 w-auto pr-1 opacity-100': open
+                  'ml-1 w-auto pr-1 opacity-100': open || !compact
                 }
               )}
-              style={{ color: selectedModel.serviceColor }}
             >
               {selectedModel?.shortName || selectedModel?.name}
             </div>

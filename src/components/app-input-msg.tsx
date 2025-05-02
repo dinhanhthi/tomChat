@@ -19,7 +19,7 @@ import { generateTitleFromUserMessage } from '../app/actions'
 import { useChatClient } from '../hooks/useChatClient'
 import { useChatIdStore } from '../hooks/useChatIdStore'
 import { useOperatingSystem } from '../hooks/useOperatingSystem'
-import { addMessage, createChat } from '../lib/chats'
+import { addMessage, createChat, updateChatMeta } from '../lib/chats'
 import { DEFAULT_MODEL_ID } from '../lib/models'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
@@ -105,10 +105,31 @@ export default function AppInputMsg(props: {
   const [searchEnabled, setSearchEnabled] = useState(false)
   const [showPromptCollection, setShowPromptCollection] = useState(false)
   const [showApps, setShowApps] = useState(false)
-  const [selectedModelId, setSelectedModelId] = useState(DEFAULT_MODEL_ID)
+  const [selectedModelId, setSelectedModelId] = useState(localStorage.getItem('default_model_id') || DEFAULT_MODEL_ID)
   const pathname = usePathname()
   const router = useRouter()
   const os = useOperatingSystem()
+
+  const { chat } = useChatClient(chatId)
+
+  // Update selectedModelId when chat changes
+  useEffect(() => {
+    if (chat?.model) {
+      setSelectedModelId(chat.model)
+    }
+  }, [chat])
+
+  // Update chat model when selectedModelId changes
+  useEffect(() => {
+    if (chatId && chat && selectedModelId !== chat.model) {
+      updateChatMeta(chatId, 'model', selectedModelId)
+    }
+  }, [selectedModelId, chatId, chat])
+
+  // Handle model change
+  const handleModelChange = (modelId: string) => {
+    setSelectedModelId(modelId)
+  }
 
   const editor = useEditor({
     // https://tiptap.dev/docs/editor/extensions/functionality/starterkit
@@ -205,8 +226,6 @@ export default function AppInputMsg(props: {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [os, editor]) // Add editor to dependencies
 
-  const { chat } = useChatClient(chatId)
-
   const handleClientSubmit = async () => {
     if (pathname === '/') {
       window.history.pushState({}, '', `/chat/${chatId}`)
@@ -224,7 +243,9 @@ export default function AppInputMsg(props: {
             xtoast.warning(errMsg)
             return useChatParams.input.slice(0, 50)
           })
-          await createChat(title, chatId)
+          // Pass selectedModelId when creating a new chat
+          await createChat(title, chatId, selectedModelId)
+          // No need to update chat meta since the model is already set during creation
         }
 
         // Here you can handle images separately or combine them with the message
@@ -336,7 +357,7 @@ export default function AppInputMsg(props: {
               active={searchEnabled}
               title="Web"
             />
-            <ModelSelector selectedModelId={selectedModelId} onModelChange={setSelectedModelId} />
+            <ModelSelector selectedModelId={selectedModelId} onModelChange={handleModelChange} compact />
           </div>
           {useChatParams.isLoading && <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />}
           {!useChatParams.isLoading && <SendButton submitForm={handleClientSubmit} input={useChatParams.input} />}
