@@ -1,133 +1,88 @@
 'use client'
 
 import { useAlertDialog } from '@/components/dialog-confirm'
+import { ModelSelector } from '@/components/model-selector'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { db } from '@/db/database'
-import { useTagStore } from '@/hooks/useTagStore'
-import { bulkUpdateChatProperty } from '@/lib/chats'
+import { AIService, DEFAULT_MODEL_ID, getServiceInfoFromModelId, supportedAIServices } from '@/lib/models'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { TriangleAlert, Upload } from 'lucide-react'
-import { ControllerRenderProps, useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { Download, Upload } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-import TagIndicator from '../../components/tag-indicator'
+import { xtoast } from '../../lib/xtoast'
 
-const FormSchema = z.discriminatedUnion('property', [
-  z.object({
-    property: z.literal('archived'),
-    value: z.enum(['true', 'false'])
-  }),
-  z.object({
-    property: z.literal('hasNoTag'),
-    value: z.enum(['0', '1']) // Keep as string, don't transform
-  }),
-  z.object({
-    property: z.literal('pinned'),
-    value: z.enum(['true', 'false'])
-  }),
-  z.object({
-    property: z.literal('tags'),
-    value: z.string()
-  })
-])
+// API Key Form Schema
+const ApiKeyFormSchema = z.object({
+  service: z.string(),
+  apiKey: z.string().min(1, 'API Key is required')
+})
 
-type FormValues = z.infer<typeof FormSchema>
+type ApiKeyFormValues = z.infer<typeof ApiKeyFormSchema>
 
 export default function AdminPage() {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(FormSchema)
+  const apiKeyForm = useForm<ApiKeyFormValues>({
+    resolver: zodResolver(ApiKeyFormSchema),
+    defaultValues: {
+      service: '',
+      apiKey: ''
+    }
   })
-  const { tags } = useTagStore()
-  const selectedProperty = form.watch('property')
+
+  const [isValidating, setIsValidating] = useState(false)
+  const selectedService = apiKeyForm.watch('service')
+  const [defaultModel, setDefaultModel] = useState<string>(DEFAULT_MODEL_ID)
+
+  // Initialize the defaultModel from localStorage when on client
+  useEffect(() => {
+    // Only access localStorage on the client side
+    if (typeof window !== 'undefined') {
+      const storedModel = localStorage.getItem('default_model_id')
+      if (storedModel) {
+        setDefaultModel(storedModel)
+      }
+    }
+  }, [])
+
+  // Tìm thông tin dịch vụ được chọn trong supportedAIServices
+  const selectedServiceInfo = supportedAIServices.find(service => service.key === selectedService)
 
   const { showAlert } = useAlertDialog()
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
-    const value =
-      data.property === 'hasNoTag'
-        ? Number(data.value)
-        : data.property === 'tags' && data.value === 'empty'
-          ? []
-          : data.value
+  // Load saved API key when service changes
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const service = apiKeyForm.watch('service')
+    if (service) {
+      const savedKey = localStorage.getItem(`${service}_api_key`)
+      if (savedKey) {
+        apiKeyForm.setValue('apiKey', savedKey)
+      } else {
+        apiKeyForm.setValue('apiKey', '')
+      }
+    }
+  }, [apiKeyForm.watch('service')])
+
+  const handleClearAllApiKeys = () => {
+    if (typeof window === 'undefined') return
 
     showAlert({
-      title: 'Confirm Bulk Update',
-      description: `Are you sure you want to update the **${data.property}** property to "**${
-        Array.isArray(value) ? '[]' : value
-      }**" for all chats?\n\nThis action cannot be undone.`,
-      confirmText: 'Update All',
-      confirmClassName: 'bg-yellow-600 hover:bg-yellow-700',
-      onConfirm: async () => {
-        await bulkUpdateChatProperty(data.property as any, value)
-        form.reset()
+      title: 'Confirm Clear API Keys',
+      description: 'This will remove all saved API keys. Are you sure you want to continue?',
+      confirmText: 'Clear',
+      confirmClassName: 'bg-destructive hover:bg-destructive/90',
+      onConfirm: () => {
+        supportedAIServices.forEach(service => {
+          localStorage.removeItem(`${service.key}_api_key`)
+        })
+        apiKeyForm.setValue('apiKey', '')
+        xtoast.success('All API keys have been cleared')
       }
     })
-  }
-
-  const renderValueInput = ({ field }: { field: ControllerRenderProps<FormValues, 'value'> }) => {
-    switch (selectedProperty) {
-      case 'archived':
-      case 'pinned':
-        return (
-          <FormItem className="flex flex-row items-center gap-4">
-            <FormLabel className="whitespace-nowrap">Value</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl>
-                <SelectTrigger className="!mt-0 h-9 w-fit gap-4">
-                  <SelectValue placeholder="Select a value" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="true">true</SelectItem>
-                <SelectItem value="false">false</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )
-      case 'hasNoTag':
-        return (
-          <FormItem className="flex flex-row items-center gap-4">
-            <FormLabel className="whitespace-nowrap">Value</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl>
-                <SelectTrigger className="!mt-0 h-9 w-fit gap-4">
-                  <SelectValue placeholder="Select a value" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="1">1</SelectItem>
-                <SelectItem value="0">0</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )
-      case 'tags':
-        return (
-          <FormItem className="flex flex-row items-center gap-4">
-            <FormLabel className="whitespace-nowrap">Value</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl>
-                <SelectTrigger className="!mt-0 h-9 w-fit gap-4">
-                  <SelectValue placeholder="Select a value" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="empty">Empty</SelectItem>
-                {tags.map(tag => (
-                  <SelectItem key={tag.name} value={tag.name}>
-                    <div className="flex flex-row flex-nowrap items-center gap-2">
-                      {tag.name}
-                      <TagIndicator tagColor={tag.color} />
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )
-    }
   }
 
   const handleDownloadDB = async () => {
@@ -166,95 +121,395 @@ export default function AdminPage() {
             await db.messages.bulkAdd(data.messages)
           })
 
-          toast.success('Database restored successfully!')
+          xtoast.success('Database restored successfully!')
         } catch (error) {
           console.error('Error restoring database:', error)
-          toast.error('Failed to restore database')
+          xtoast.error('Failed to restore database')
         }
       }
     })
   }
 
-  return (
-    <article className="container mx-auto flex flex-col gap-10 p-8">
-      <header className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-semibold">Admin Configs</h1>
-          <div className="text-sm text-muted-foreground">
-            This page provides direct database management capabilities. Actions performed here will modify the database
-            directly. This interface is primarily intended for database restructuring and fixing legacy data formats in
-            the conversation database.
-          </div>
-        </div>
-        <div className="flex flex-row items-center gap-2 border-orange-700 bg-orange-100 p-4 text-sm">
-          <TriangleAlert className="h-5 w-5" />
-          <div>This page is intended for advanced users only. Please proceed with caution.</div>
-        </div>
-      </header>
+  const [dbStats, setDbStats] = useState<{ chatCount: number; messageCount: number; size: string }>({
+    chatCount: 0,
+    messageCount: 0,
+    size: '0 KB'
+  })
 
-      <section className="flex flex-col gap-4">
+  const [isLoadingStats, setIsLoadingStats] = useState(true)
+
+  const loadDbStats = async () => {
+    setIsLoadingStats(true)
+    try {
+      const chats = await db.chats.toArray()
+      const messages = await db.messages.toArray()
+
+      // Get more accurate storage usage if Storage Manager API is supported
+      let size = '0 KB'
+
+      if ('storage' in navigator && 'estimate' in navigator.storage) {
+        const estimate = await navigator.storage.estimate()
+        /* ###Thi */ console.log(`👉👉👉 estimate: `, estimate)
+        const usageInBytes = estimate.usage || 0
+
+        if (usageInBytes < 1024) {
+          size = `${usageInBytes} B`
+        } else if (usageInBytes < 1024 * 1024) {
+          size = `${(usageInBytes / 1024).toFixed(1)} KB`
+        } else if (usageInBytes < 1024 * 1024 * 1024) {
+          size = `${(usageInBytes / (1024 * 1024)).toFixed(1)} MB`
+        } else {
+          size = `${(usageInBytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
+        }
+
+        // Include quota information if available
+        if (estimate.quota) {
+          const quotaInBytes = estimate.quota
+          let quotaSize: string
+
+          if (quotaInBytes < 1024 * 1024) {
+            quotaSize = `${(quotaInBytes / 1024).toFixed(1)} KB`
+          } else if (quotaInBytes < 1024 * 1024 * 1024) {
+            quotaSize = `${(quotaInBytes / (1024 * 1024)).toFixed(1)} MB`
+          } else {
+            quotaSize = `${(quotaInBytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
+          }
+
+          size += ` / ${quotaSize}`
+        }
+      } else {
+        // Fall back to the previous estimation method
+        const serializedData = JSON.stringify({ chats, messages })
+        const sizeInBytes = new Blob([serializedData]).size
+
+        if (sizeInBytes < 1024) {
+          size = `${sizeInBytes} B`
+        } else if (sizeInBytes < 1024 * 1024) {
+          size = `${(sizeInBytes / 1024).toFixed(1)} KB`
+        } else if (sizeInBytes < 1024 * 1024 * 1024) {
+          size = `${(sizeInBytes / (1024 * 1024)).toFixed(1)} MB`
+        } else {
+          size = `${(sizeInBytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
+        }
+      }
+
+      setDbStats({
+        chatCount: chats.length,
+        messageCount: messages.length,
+        size
+      })
+    } catch (error) {
+      console.error('Error loading DB stats:', error)
+    } finally {
+      setIsLoadingStats(false)
+    }
+  }
+
+  // Load DB stats on component mount
+  useEffect(() => {
+    loadDbStats()
+    // Set up an interval to refresh stats every 30 seconds
+    const interval = setInterval(loadDbStats, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const handleClearAllData = () => {
+    showAlert({
+      title: 'Clear All Data',
+      description: 'This will delete all chats and messages permanently. This action cannot be undone. Are you sure?',
+      confirmText: 'Clear All Data',
+      confirmClassName: 'bg-destructive hover:bg-destructive/90',
+      onConfirm: async () => {
+        try {
+          await db.transaction('rw', db.chats, db.messages, async () => {
+            await db.chats.clear()
+            await db.messages.clear()
+          })
+          xtoast.success('All data has been cleared')
+          loadDbStats() // Refresh stats
+        } catch (error) {
+          console.error('Error clearing database:', error)
+          xtoast.error('Failed to clear database')
+        }
+      }
+    })
+  }
+
+  // Function to validate API key for different services
+  const validateApiKey = async (service: AIService, apiKey: string) => {
+    setIsValidating(true)
+    try {
+      let isValid = false
+
+      // Use API endpoint for validation
+      try {
+        const validationResponse = await fetch('/api/validate-key', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            service,
+            apiKey
+          })
+        })
+
+        if (!validationResponse.ok) {
+          const errorText = await validationResponse.text().catch(() => 'Unknown error')
+          console.error(`Proxy validation error (${service}):`, errorText)
+          xtoast.error(`Validation service error: ${validationResponse.status} ${validationResponse.statusText}`)
+          return false
+        }
+
+        const result = await validationResponse.json()
+        isValid = result.isValid
+
+        if (!isValid && result.error) {
+          console.error(`${service} API error:`, result.error)
+          xtoast.error(`API Error: ${result.error.message || 'Unknown error'}`)
+        }
+      } catch (error) {
+        console.error(`Error validating ${service} key:`, error)
+        xtoast.error(`Network error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+        return false
+      }
+
+      if (isValid && typeof window !== 'undefined') {
+        localStorage.setItem(`${service}_api_key`, apiKey)
+        xtoast.success(`API Key for ${service} is valid and has been saved`)
+      } else {
+        xtoast.error(`Invalid API Key for ${service}`)
+      }
+
+      return isValid
+    } catch (error) {
+      console.error(`Error validating ${service} API key:`, error)
+      xtoast.error(`Error validating API Key: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      return false
+    } finally {
+      setIsValidating(false)
+    }
+  }
+
+  const onApiKeySubmit = async (data: ApiKeyFormValues) => {
+    await validateApiKey(data.service as AIService, data.apiKey)
+  }
+
+  const handleModelChange = (modelId: string) => {
+    if (typeof window === 'undefined') return
+
+    const serviceInfo = getServiceInfoFromModelId(modelId)
+
+    if (!serviceInfo) {
+      xtoast.error('Unknown model service')
+      return
+    }
+
+    const serviceApiKey = localStorage.getItem(`${serviceInfo.key}_api_key`)
+
+    if (!serviceApiKey) {
+      xtoast.warning(`Need an API key found for ${serviceInfo.name}.`)
+      return
+    }
+
+    setDefaultModel(modelId)
+    localStorage.setItem('default_model_id', modelId)
+    xtoast.success('Default model has been saved')
+  }
+
+  return (
+    <article className="container mx-auto flex h-full flex-col gap-4 overflow-auto p-4">
+      {/* Default AI Model */}
+      <section className="flex flex-col gap-4 rounded-md border p-4">
         <div className="flex flex-col gap-2">
-          <h2 className="text-base font-medium">Modify value of a property for all chats</h2>
+          <h2 id="default-model" className="text-lg font-medium">
+            Default AI Model
+          </h2>
           <div className="text-sm text-muted-foreground">
-            In case you want to add/update a property value in the chat.
+            Choose the default model to use when starting a new conversation.
           </div>
         </div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-row items-center gap-6">
+
+        <div className="flex flex-row items-center gap-4">
+          <div className="flex items-center">
+            <ModelSelector selectedModelId={defaultModel} onModelChange={handleModelChange} className="w-auto" />
+          </div>
+        </div>
+      </section>
+
+      {/* AI Service API Keys */}
+      <section className="flex flex-col gap-4 rounded-md border p-4">
+        <div className="flex flex-col gap-2">
+          <h2 id="api-keys" className="text-lg font-medium">
+            AI Service API Keys
+          </h2>
+          <div className="text-sm text-muted-foreground">
+            Add or update your API keys for the supported AI services. ☝ The keys are stored in your browser's local
+            storage and never leave your device.
+          </div>
+        </div>
+
+        <Form {...apiKeyForm}>
+          <form onSubmit={apiKeyForm.handleSubmit(onApiKeySubmit)} className="flex flex-col gap-4">
             <div className="flex flex-row items-center gap-6">
               <FormField
-                control={form.control}
-                name="property"
-                render={({ field }: { field: ControllerRenderProps<FormValues, 'property'> }) => (
-                  <FormItem className="flex flex-row items-center gap-4">
-                    <FormLabel className="whitespace-nowrap">Chat Property</FormLabel>
-                    <Select
-                      onValueChange={value => {
-                        field.onChange(value)
-                        form.setValue('value', '')
-                      }}
-                      defaultValue={field.value}
-                    >
+                control={apiKeyForm.control}
+                name="service"
+                render={({ field }) => (
+                  <FormItem className="flex w-full flex-row items-center gap-4">
+                    <FormLabel className="min-w-24 whitespace-nowrap">AI Service</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className="!mt-0 h-9 w-fit gap-4">
-                          <SelectValue placeholder="Select a property" />
+                        <SelectTrigger className="!mt-0 h-9 w-60">
+                          <SelectValue placeholder="Select a service">
+                            {selectedServiceInfo && (
+                              <div className="flex items-center gap-2">
+                                {selectedServiceInfo.colorIcon && <selectedServiceInfo.colorIcon className="h-4 w-4" />}
+                                <span>{selectedServiceInfo.name}</span>
+                              </div>
+                            )}
+                          </SelectValue>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="archived">archived</SelectItem>
-                        <SelectItem value="hasNoTag">hasNoTag</SelectItem>
-                        <SelectItem value="pinned">pinned</SelectItem>
-                        <SelectItem value="tags">tags</SelectItem>
+                        {supportedAIServices.map(service => (
+                          <SelectItem key={service.key} value={service.key}>
+                            <div className="flex items-center gap-2">
+                              {service.colorIcon && <service.colorIcon className="h-4 w-4" />}
+                              <span>{service.name}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormItem>
                 )}
               />
-
-              <FormField control={form.control} name="value" render={renderValueInput} />
             </div>
-            <Button className="h-9 rounded-3xl" variant="default" type="submit">
-              Update
-            </Button>
+
+            <div className="flex flex-row items-center gap-6">
+              <FormField
+                control={apiKeyForm.control}
+                name="apiKey"
+                render={({ field }) => (
+                  <FormItem className="flex w-full flex-row items-center gap-4">
+                    <FormLabel className="min-w-24 whitespace-nowrap">API Key</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your API key" {...field} className="h-9" type="password" />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {selectedServiceInfo?.apiDocUrl && (
+              <div className="mt-1 text-xs text-muted-foreground">
+                Need an API key? Visit{' '}
+                <a
+                  href={selectedServiceInfo.apiDocUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline hover:text-blue-800"
+                >
+                  {selectedServiceInfo.name} documentation
+                </a>{' '}
+                to learn how to get one.
+              </div>
+            )}
+
+            <div className="mt-2 flex flex-row gap-4">
+              <Button
+                className="h-9 rounded-3xl"
+                variant="default"
+                type="submit"
+                disabled={isValidating || !selectedServiceInfo}
+              >
+                {isValidating ? 'Validating...' : 'Validate & Save'}
+              </Button>
+              <Button className="h-9 rounded-3xl" variant="secondary" type="button" onClick={handleClearAllApiKeys}>
+                Clear All
+              </Button>
+            </div>
           </form>
         </Form>
       </section>
 
-      <section className="flex flex-col gap-4">
+      {/* Database Backup */}
+      <section className="flex flex-col gap-4 rounded-md border p-4">
         <div className="flex flex-col gap-2">
-          <h2 className="text-base font-medium">Database Backup</h2>
+          <h2 id="database-backup" className="text-lg font-medium">
+            Database Backup
+          </h2>
           <div className="text-sm text-muted-foreground">
-            Download creates a backup of all chats and messages. Restore will completely replace the current database.
+            Download creates a complete backup of all chats and messages. ⚠️ Restore will completely replace the current
+            database with data from your backup file.
           </div>
         </div>
         <div className="flex flex-row gap-4">
-          <Button onClick={handleDownloadDB} variant="secondary">
-            Download Backup
+          <Button className="h-9 rounded-3xl" onClick={handleDownloadDB} variant="default">
+            <Download className="h-4 w-4" /> Download
           </Button>
-          <label className="flex cursor-pointer flex-row items-center rounded-md bg-orange-200 p-4 text-orange-900 h-9 gap-2 text-sm">
-            <Upload className="h-4 w-4" /> Restore Database
+          <label className="flex h-9 cursor-pointer flex-row items-center gap-2 rounded-3xl bg-secondary p-4 text-sm text-secondary-foreground hover:bg-secondary/80">
+            <Upload className="h-4 w-4" /> Restore
             <input type="file" id="db-upload" className="hidden" accept=".json" onChange={handleUploadDB} />
           </label>
+        </div>
+      </section>
+
+      {/* Database Storage Information */}
+      <section className="flex flex-col gap-4 rounded-md border p-4">
+        <div className="flex flex-col gap-2">
+          <h2 id="database-storage" className="text-lg font-medium">
+            Database Storage
+          </h2>
+          <div className="text-sm text-muted-foreground">
+            View current database storage statistics and manage stored data.
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="flex flex-col gap-2 rounded-md border p-3">
+            <span className="text-sm text-muted-foreground">Chats</span>
+            {isLoadingStats ? (
+              <div className="flex items-center space-x-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                <span className="text-sm text-muted-foreground">Loading...</span>
+              </div>
+            ) : (
+              <span className="text-xl font-semibold">{dbStats.chatCount}</span>
+            )}
+          </div>
+          <div className="flex flex-col gap-2 rounded-md border p-3">
+            <span className="text-sm text-muted-foreground">Messages</span>
+            {isLoadingStats ? (
+              <div className="flex items-center space-x-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                <span className="text-sm text-muted-foreground">Loading...</span>
+              </div>
+            ) : (
+              <span className="text-xl font-semibold">{dbStats.messageCount}</span>
+            )}
+          </div>
+          <div className="flex flex-col gap-2 rounded-md border p-3">
+            <span className="text-sm text-muted-foreground">Storage Size</span>
+            {isLoadingStats ? (
+              <div className="flex items-center space-x-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                <span className="text-sm text-muted-foreground">Calculating...</span>
+              </div>
+            ) : (
+              <span className="overflow-hidden text-ellipsis text-xl font-semibold">{dbStats.size}</span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-row gap-4">
+          <Button className="h-9 rounded-3xl" variant="destructive" onClick={handleClearAllData}>
+            Clear All Data
+          </Button>
+          <Button className="h-9 rounded-3xl" variant="outline" onClick={loadDbStats}>
+            Refresh Stats
+          </Button>
         </div>
       </section>
     </article>

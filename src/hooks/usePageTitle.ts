@@ -26,14 +26,6 @@ export function usePageTitle(): PageTitle {
     }
   }, [pathname, chat])
 
-  // if (pathname === '/admin') {
-  //   return {
-  //     title: 'Admin configs',
-  //     icon: Settings,
-  //     isEmoji: false
-  //   }
-  // }
-
   if (pathname === '/') {
     return { title: 'Create a new chat' }
   }
@@ -43,6 +35,13 @@ export function usePageTitle(): PageTitle {
       title: chat.title,
       icon: chat.icon,
       isEmoji: true
+    }
+  }
+
+  if (pathname === '/admin') {
+    return {
+      title: 'Admin configs',
+      isEmoji: false
     }
   }
 
