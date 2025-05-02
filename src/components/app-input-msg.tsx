@@ -20,7 +20,7 @@ import { useChatClient } from '../hooks/useChatClient'
 import { useChatIdStore } from '../hooks/useChatIdStore'
 import { useOperatingSystem } from '../hooks/useOperatingSystem'
 import { addMessage, createChat, updateChatMeta } from '../lib/chats'
-import { DEFAULT_MODEL_ID } from '../lib/models'
+import { DEFAULT_MODEL_ID, getServiceInfoFromModelId } from '../lib/models'
 import { cn } from '../lib/utils'
 import { xtoast } from '../lib/xtoast'
 import '../styles/tiptap.scss'
@@ -126,8 +126,26 @@ export default function AppInputMsg(props: {
     }
   }, [selectedModelId, chatId, chat])
 
-  // Handle model change
   const handleModelChange = (modelId: string) => {
+    const serviceInfo = getServiceInfoFromModelId(modelId)
+
+    if (serviceInfo) {
+      const apiKey = localStorage.getItem(`${serviceInfo.key}_api_key`)
+
+      if (!apiKey) {
+        xtoast.warning(`API key for ${serviceInfo.name} is not set`, {
+          action: {
+            label: 'Go to Admin',
+            onClick: () => {
+              router.push('/admin#api-keys')
+            }
+          },
+          duration: 5000
+        })
+        return
+      }
+    }
+
     setSelectedModelId(modelId)
   }
 
@@ -357,7 +375,7 @@ export default function AppInputMsg(props: {
               active={searchEnabled}
               title="Web"
             />
-            <ModelSelector selectedModelId={selectedModelId} onModelChange={handleModelChange} compact />
+            <ModelSelector selectedModelId={selectedModelId} onModelChange={handleModelChange} />
           </div>
           {useChatParams.isLoading && <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />}
           {!useChatParams.isLoading && <SendButton submitForm={handleClientSubmit} input={useChatParams.input} />}

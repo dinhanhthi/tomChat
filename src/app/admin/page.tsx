@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { db } from '@/db/database'
-import { AIService, DEFAULT_MODEL_ID, supportedAIServices } from '@/lib/models'
+import { AIService, DEFAULT_MODEL_ID, getServiceInfoFromModelId, supportedAIServices } from '@/lib/models'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Download, Upload } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -176,6 +176,20 @@ export default function AdminPage() {
   }
 
   const handleModelChange = (modelId: string) => {
+    const serviceInfo = getServiceInfoFromModelId(modelId)
+
+    if (!serviceInfo) {
+      xtoast.error('Unknown model service')
+      return
+    }
+
+    const serviceApiKey = localStorage.getItem(`${serviceInfo.key}_api_key`)
+
+    if (!serviceApiKey) {
+      xtoast.warning(`Need an API key found for ${serviceInfo.name}.`)
+      return
+    }
+
     setDefaultModel(modelId)
     localStorage.setItem('default_model_id', modelId)
     xtoast.success('Default model has been saved')
@@ -186,7 +200,9 @@ export default function AdminPage() {
       {/* Default AI Model */}
       <section className="flex flex-col gap-4 rounded-md border p-4">
         <div className="flex flex-col gap-2">
-          <h2 className="text-lg font-medium">Default AI Model</h2>
+          <h2 id="default-model" className="text-lg font-medium">
+            Default AI Model
+          </h2>
           <div className="text-sm text-muted-foreground">
             Choose the default model to use when starting a new conversation.
           </div>
@@ -202,7 +218,9 @@ export default function AdminPage() {
       {/* AI Service API Keys */}
       <section className="flex flex-col gap-4 rounded-md border p-4">
         <div className="flex flex-col gap-2">
-          <h2 className="text-lg font-medium">AI Service API Keys</h2>
+          <h2 id="api-keys" className="text-lg font-medium">
+            AI Service API Keys
+          </h2>
           <div className="text-sm text-muted-foreground">
             Add or update your API keys for the supported AI services. ☝ The keys are stored in your browser's local
             storage and never leave your device.
@@ -297,7 +315,9 @@ export default function AdminPage() {
       {/* Database Backup */}
       <section className="flex flex-col gap-4 rounded-md border p-4">
         <div className="flex flex-col gap-2">
-          <h2 className="text-lg font-medium">Database Backup</h2>
+          <h2 id="database-backup" className="text-lg font-medium">
+            Database Backup
+          </h2>
           <div className="text-sm text-muted-foreground">
             Download creates a complete backup of all chats and messages. ⚠️ Restore will completely replace the current
             database with data from your backup file.

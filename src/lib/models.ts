@@ -207,12 +207,10 @@ export const supportedAIServices: AIServiceInfo[] = [
   }
 ]
 
-// Hàm để lấy thông tin service từ key
 export const getServiceInfo = (key: AIService): AIServiceInfo | undefined => {
   return supportedAIServices.find(service => service.key === key)
 }
 
-// Hàm để lấy thông tin service từ model id
 export const getServiceInfoFromModelId = (modelId: string): AIServiceInfo | undefined => {
   for (const service of supportedAIServices) {
     if (service.models?.some(model => model.id === modelId)) {
@@ -222,7 +220,6 @@ export const getServiceInfoFromModelId = (modelId: string): AIServiceInfo | unde
   return undefined
 }
 
-// Định nghĩa lại AIModel với thông tin đầy đủ từ service kết hợp với model
 export interface FullAIModel extends AIModel {
   service: AIService
   icon: React.FC<React.SVGProps<SVGSVGElement>>
@@ -230,7 +227,6 @@ export interface FullAIModel extends AIModel {
   serviceColor: string
 }
 
-// Hàm để lấy model với thông tin đầy đủ
 export const getFullModelInfo = (model: AIModel, service: AIServiceInfo): FullAIModel => {
   return {
     ...model,
@@ -241,7 +237,6 @@ export const getFullModelInfo = (model: AIModel, service: AIServiceInfo): FullAI
   }
 }
 
-// Chuyển đổi mảng các model đơn giản sang mảng các model đầy đủ
 export const allModels: FullAIModel[] = supportedAIServices.flatMap(service =>
   (service.models || []).map(model => getFullModelInfo(model, service))
 )
