@@ -34,7 +34,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </SidebarProvider>
             <SearchDialogWrapper />
           </AlertDialogProvider>
-          <Toaster position="top-center" />
+          <Toaster position="bottom-right" />
         </TooltipProvider>
       </body>
     </html>

@@ -1,6 +1,7 @@
 'use client'
 
 import { Edit, Info, LucideIcon, MessageSquareShare, Pencil, Search, SlidersHorizontal } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useChatClient } from '../hooks/useChatClient'
@@ -17,7 +18,6 @@ import { useSearchDialogStore } from './search-dialog-wrapper'
 import { Button } from './ui/button'
 import { Separator } from './ui/separator'
 import { SidebarTrigger } from './ui/sidebar'
-import { UserMenu } from './user-menu'
 
 export default function AppHeader() {
   const router = useRouter()
@@ -146,11 +146,11 @@ export default function AppHeader() {
             <MessageSquareShare />
           </Button>
 
-          <Button variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
-            <SlidersHorizontal />
+          <Button asChild variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
+            <Link href="/admin">
+              <SlidersHorizontal />
+            </Link>
           </Button>
-
-          <UserMenu />
         </div>
       </header>
       <RenameDialog
