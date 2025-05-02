@@ -94,7 +94,7 @@ export default function AppInputMsg(props: {
     handleSubmit: UseChatHelpers['handleSubmit']
     setMessages: UseChatHelpers['setMessages']
     messages: UseChatHelpers['messages']
-    isLoading: UseChatHelpers['isLoading']
+    status: UseChatHelpers['status']
     stop: UseChatHelpers['stop']
   }
 }) {
@@ -242,7 +242,7 @@ export default function AppInputMsg(props: {
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [os, editor]) // Add editor to dependencies
+  }, [os, editor])
 
   const handleClientSubmit = async () => {
     if (pathname === '/') {
@@ -251,9 +251,8 @@ export default function AppInputMsg(props: {
 
     try {
       if (useChatParams) {
-        // Handle both text and images here
         const content = useChatParams.input
-        const images = pastedImages.map(img => img.file)
+        // const images = pastedImages.map(img => img.file)
 
         if (!chat) {
           const title = await generateTitleFromUserMessage(content).catch(e => {
@@ -261,13 +260,11 @@ export default function AppInputMsg(props: {
             xtoast.warning(errMsg)
             return useChatParams.input.slice(0, 50)
           })
-          // Pass selectedModelId when creating a new chat
           await createChat(title, chatId, selectedModelId)
           // No need to update chat meta since the model is already set during creation
         }
 
         // Here you can handle images separately or combine them with the message
-        // For example:
         await addMessage(chatId, {
           id: uuidv4(),
           role: 'user',
@@ -377,8 +374,12 @@ export default function AppInputMsg(props: {
             />
             <ModelSelector selectedModelId={selectedModelId} onModelChange={handleModelChange} />
           </div>
-          {useChatParams.isLoading && <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />}
-          {!useChatParams.isLoading && <SendButton submitForm={handleClientSubmit} input={useChatParams.input} />}
+          {useChatParams.status === 'streaming' && (
+            <StopButton stop={useChatParams.stop} setMessages={useChatParams.setMessages} />
+          )}
+          {useChatParams.status !== 'streaming' && (
+            <SendButton submitForm={handleClientSubmit} input={useChatParams.input} />
+          )}
         </div>
       </form>
       <div className="select-none text-xs text-muted-foreground">
