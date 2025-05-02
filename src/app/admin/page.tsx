@@ -130,6 +130,111 @@ export default function AdminPage() {
     })
   }
 
+  const [dbStats, setDbStats] = useState<{ chatCount: number; messageCount: number; size: string }>({
+    chatCount: 0,
+    messageCount: 0,
+    size: '0 KB'
+  })
+
+  const [isLoadingStats, setIsLoadingStats] = useState(true)
+
+  const loadDbStats = async () => {
+    setIsLoadingStats(true)
+    try {
+      const chats = await db.chats.toArray()
+      const messages = await db.messages.toArray()
+
+      // Get more accurate storage usage if Storage Manager API is supported
+      let size = '0 KB'
+
+      if ('storage' in navigator && 'estimate' in navigator.storage) {
+        const estimate = await navigator.storage.estimate()
+        /* ###Thi */ console.log(`👉👉👉 estimate: `, estimate)
+        const usageInBytes = estimate.usage || 0
+
+        if (usageInBytes < 1024) {
+          size = `${usageInBytes} B`
+        } else if (usageInBytes < 1024 * 1024) {
+          size = `${(usageInBytes / 1024).toFixed(1)} KB`
+        } else if (usageInBytes < 1024 * 1024 * 1024) {
+          size = `${(usageInBytes / (1024 * 1024)).toFixed(1)} MB`
+        } else {
+          size = `${(usageInBytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
+        }
+
+        // Include quota information if available
+        if (estimate.quota) {
+          const quotaInBytes = estimate.quota
+          let quotaSize: string
+
+          if (quotaInBytes < 1024 * 1024) {
+            quotaSize = `${(quotaInBytes / 1024).toFixed(1)} KB`
+          } else if (quotaInBytes < 1024 * 1024 * 1024) {
+            quotaSize = `${(quotaInBytes / (1024 * 1024)).toFixed(1)} MB`
+          } else {
+            quotaSize = `${(quotaInBytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
+          }
+
+          size += ` / ${quotaSize}`
+        }
+      } else {
+        // Fall back to the previous estimation method
+        const serializedData = JSON.stringify({ chats, messages })
+        const sizeInBytes = new Blob([serializedData]).size
+
+        if (sizeInBytes < 1024) {
+          size = `${sizeInBytes} B`
+        } else if (sizeInBytes < 1024 * 1024) {
+          size = `${(sizeInBytes / 1024).toFixed(1)} KB`
+        } else if (sizeInBytes < 1024 * 1024 * 1024) {
+          size = `${(sizeInBytes / (1024 * 1024)).toFixed(1)} MB`
+        } else {
+          size = `${(sizeInBytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
+        }
+      }
+
+      setDbStats({
+        chatCount: chats.length,
+        messageCount: messages.length,
+        size
+      })
+    } catch (error) {
+      console.error('Error loading DB stats:', error)
+    } finally {
+      setIsLoadingStats(false)
+    }
+  }
+
+  // Load DB stats on component mount
+  useEffect(() => {
+    loadDbStats()
+    // Set up an interval to refresh stats every 30 seconds
+    const interval = setInterval(loadDbStats, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const handleClearAllData = () => {
+    showAlert({
+      title: 'Clear All Data',
+      description: 'This will delete all chats and messages permanently. This action cannot be undone. Are you sure?',
+      confirmText: 'Clear All Data',
+      confirmClassName: 'bg-destructive hover:bg-destructive/90',
+      onConfirm: async () => {
+        try {
+          await db.transaction('rw', db.chats, db.messages, async () => {
+            await db.chats.clear()
+            await db.messages.clear()
+          })
+          xtoast.success('All data has been cleared')
+          loadDbStats() // Refresh stats
+        } catch (error) {
+          console.error('Error clearing database:', error)
+          xtoast.error('Failed to clear database')
+        }
+      }
+    })
+  }
+
   // Function to validate API key for different services
   const validateApiKey = async (service: AIService, apiKey: string) => {
     setIsValidating(true)
@@ -213,7 +318,7 @@ export default function AdminPage() {
   }
 
   return (
-    <article className="container mx-auto flex flex-col gap-4 p-4">
+    <article className="container mx-auto flex h-full flex-col gap-4 overflow-auto p-4">
       {/* Default AI Model */}
       <section className="flex flex-col gap-4 rounded-md border p-4">
         <div className="flex flex-col gap-2">
@@ -348,6 +453,63 @@ export default function AdminPage() {
             <Upload className="h-4 w-4" /> Restore
             <input type="file" id="db-upload" className="hidden" accept=".json" onChange={handleUploadDB} />
           </label>
+        </div>
+      </section>
+
+      {/* Database Storage Information */}
+      <section className="flex flex-col gap-4 rounded-md border p-4">
+        <div className="flex flex-col gap-2">
+          <h2 id="database-storage" className="text-lg font-medium">
+            Database Storage
+          </h2>
+          <div className="text-sm text-muted-foreground">
+            View current database storage statistics and manage stored data.
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="flex flex-col gap-2 rounded-md border p-3">
+            <span className="text-sm text-muted-foreground">Chats</span>
+            {isLoadingStats ? (
+              <div className="flex items-center space-x-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                <span className="text-sm text-muted-foreground">Loading...</span>
+              </div>
+            ) : (
+              <span className="text-xl font-semibold">{dbStats.chatCount}</span>
+            )}
+          </div>
+          <div className="flex flex-col gap-2 rounded-md border p-3">
+            <span className="text-sm text-muted-foreground">Messages</span>
+            {isLoadingStats ? (
+              <div className="flex items-center space-x-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                <span className="text-sm text-muted-foreground">Loading...</span>
+              </div>
+            ) : (
+              <span className="text-xl font-semibold">{dbStats.messageCount}</span>
+            )}
+          </div>
+          <div className="flex flex-col gap-2 rounded-md border p-3">
+            <span className="text-sm text-muted-foreground">Storage Size</span>
+            {isLoadingStats ? (
+              <div className="flex items-center space-x-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                <span className="text-sm text-muted-foreground">Calculating...</span>
+              </div>
+            ) : (
+              <span className="overflow-hidden text-ellipsis text-xl font-semibold">{dbStats.size}</span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-row gap-4">
+          <Button className="h-9 rounded-3xl" variant="destructive" onClick={handleClearAllData}>
+            Clear All Data
+          </Button>
+          <Button className="h-9 rounded-3xl" variant="outline" onClick={loadDbStats}>
+            Refresh Stats
+          </Button>
         </div>
       </section>
     </article>
