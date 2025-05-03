@@ -2,6 +2,9 @@
 
 An UI to run seamlessly LLM services (OpenAI, Claude, Gemini, Mistral,...)
 
+> [!IMPORTANT]  
+> This project is stopped. Feel free to fork it and continue the development.
+
 ## Getting Started
 
 To get started, install [nvm](https://github.com/nvm-sh/nvm) and use it to install the desired version of Node.js and [Yarn](https://yarnpkg.com/).
@@ -61,11 +64,7 @@ yarn test
 
 PGLite works well overall - all tables are created and the `chatsDb.ts` functions as expected. However, there are issues with loading chats, conversations, and messages between the home page and current chat page. React rendering problems keep occurring, likely due to handling the database entirely on the client side. With limited time to troubleshoot this approach, I questioned its value.
 
-Therefore, I've decided to switch to using a separate Postgres server and handle database interactions from the server side instead. This allows me to learn something new rather than continuing with PGLite, which isn't widely used in production environments.
-
-### Branch `dexie-indexeddb`
-
-This branch contains the first working app built with IndexedDB and Dexie, without any Postgres database. We'll explore PGLite and Postgres implementations in other branches. If you're looking for a "serverless" solution, this is the one!
+Therefore, I've decided to switch to using a separate Postgres server and handle database interactions from the server side instead. This allows me to learn something new rather than continuing with PGLite, which isn't widely used in production environments.=
 
 ## API Key Management
 
