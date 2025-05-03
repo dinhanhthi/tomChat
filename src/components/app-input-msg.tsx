@@ -130,7 +130,7 @@ export default function AppInputMsg(props: {
           action: {
             label: 'Go to Admin',
             onClick: () => {
-              router.push('/admin#api-keys')
+              router.push('/settings#api-keys')
             }
           },
           duration: 5000
@@ -271,9 +271,9 @@ export default function AppInputMsg(props: {
           } else {
             xtoast.error(`API key for ${serviceInfo.name} is required. Please set it in the Admin page.`, {
               action: {
-                label: 'Go to Admin',
+                label: 'Go to Settings',
                 onClick: () => {
-                  router.push('/admin#api-keys')
+                  router.push('/settings#api-keys')
                 }
               },
               duration: 5000
