@@ -173,6 +173,12 @@ export default function AppSidebar() {
         </Button>
       </SidebarFooter>
 
+      <SidebarSeparator />
+
+      <SidebarFooter className="flex flex-row items-center justify-evenly bg-amber-200 p-2 text-sm text-amber-800">
+        🚨 This project is stopped. Feel free to fork it and continue the development.
+      </SidebarFooter>
+
       {/* <SidebarRail /> */}
     </Sidebar>
   )

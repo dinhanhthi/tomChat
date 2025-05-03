@@ -15,7 +15,6 @@ import BrandLogoWithText from './brand'
 import Container from './container'
 import LoadingBar from './loading-bar'
 import MessagePreview from './message-preview'
-import { inspect } from 'util'
 
 type PageChatProps = {
   className?: string
