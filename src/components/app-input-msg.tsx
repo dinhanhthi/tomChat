@@ -130,7 +130,7 @@ export default function AppInputMsg(props: {
           action: {
             label: 'Go to Admin',
             onClick: () => {
-              router.push('/admin#api-keys')
+              router.push('/settings#api-keys')
             }
           },
           duration: 5000
@@ -262,7 +262,9 @@ export default function AppInputMsg(props: {
       try {
         // Get API key for title generation based on the selected model
         let titleApiKey: string | undefined = undefined
+        /* ###Thi */ console.log(`👉👉👉 selectedModelId: `, selectedModelId)
         const serviceInfo = getServiceInfoFromModelId(selectedModelId)
+        /* ###Thi */ console.log(`👉👉👉 serviceInfo: `, serviceInfo)
 
         if (serviceInfo && typeof window !== 'undefined') {
           const storedApiKey = localStorage.getItem(`${serviceInfo.key}_api_key`)
@@ -271,9 +273,9 @@ export default function AppInputMsg(props: {
           } else {
             xtoast.error(`API key for ${serviceInfo.name} is required. Please set it in the Admin page.`, {
               action: {
-                label: 'Go to Admin',
+                label: 'Go to Settings',
                 onClick: () => {
-                  router.push('/admin#api-keys')
+                  router.push('/settings#api-keys')
                 }
               },
               duration: 5000
@@ -287,9 +289,9 @@ export default function AppInputMsg(props: {
 
         // If we don't have a chat yet, create one with a title
         if (!chat) {
-          const title = await generateTitleFromUserMessage(content, titleApiKey).catch(e => {
+          const title = await generateTitleFromUserMessage(content, titleApiKey, selectedModelId).catch(e => {
             const errMsg = `Error when generating the title for this chat: ${e instanceof Error ? e.message : 'Unknown error!'}. Using a part of the user input instead.`
-            xtoast.warning(errMsg)
+            console.error(errMsg)
             return useChatParams.input.slice(0, 50)
           })
           await createChat(title, chatId, selectedModelId)

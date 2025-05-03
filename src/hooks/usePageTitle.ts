@@ -17,8 +17,8 @@ export function usePageTitle(): PageTitle {
   const { chat } = useChatClient(chatId as string)
 
   useEffect(() => {
-    if (pathname === '/admin') {
-      document.title = `Admin configs | ${BRAND_NAME}`
+    if (pathname === '/settings') {
+      document.title = `Settings | ${BRAND_NAME}`
     } else if (pathname === '/') {
       document.title = `Create a new chat | ${BRAND_NAME}`
     } else if (pathname.startsWith('/chat/') && chat) {
@@ -38,9 +38,9 @@ export function usePageTitle(): PageTitle {
     }
   }
 
-  if (pathname === '/admin') {
+  if (pathname === '/settings') {
     return {
-      title: 'Admin configs',
+      title: 'Settings',
       isEmoji: false
     }
   }

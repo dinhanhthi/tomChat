@@ -49,11 +49,6 @@ export const supportedAIServices: AIServiceInfo[] = [
         shortName: 'ChatGPT'
       },
       {
-        id: 'gpt-4.5',
-        name: 'GPT-4.5',
-        shortName: 'GPT-4.5'
-      },
-      {
         id: 'gpt-4o-mini',
         name: 'GPT-4o mini',
         shortName: '4o Mini'
@@ -99,12 +94,12 @@ export const supportedAIServices: AIServiceInfo[] = [
     serviceColor: '#cf4c15',
     models: [
       {
-        id: 'claude-3-7-sonnet',
+        id: 'claude-3-7-sonnet-20250219',
         name: 'Claude 3.7 Sonnet',
         shortName: '3.7 Sonnet'
       },
       {
-        id: 'claude-3-5-haiku',
+        id: 'claude-3-5-haiku-20241022',
         name: 'Claude 3.5 Haiku',
         shortName: '3.5 Haiku'
       }

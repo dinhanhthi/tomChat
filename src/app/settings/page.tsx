@@ -149,7 +149,6 @@ export default function AdminPage() {
 
       if ('storage' in navigator && 'estimate' in navigator.storage) {
         const estimate = await navigator.storage.estimate()
-        /* ###Thi */ console.log(`👉👉👉 estimate: `, estimate)
         const usageInBytes = estimate.usage || 0
 
         if (usageInBytes < 1024) {
@@ -332,7 +331,12 @@ export default function AdminPage() {
 
         <div className="flex flex-row items-center gap-4">
           <div className="flex items-center">
-            <ModelSelector selectedModelId={defaultModel} onModelChange={handleModelChange} className="w-auto" />
+            <ModelSelector
+              useFullModelName={true}
+              selectedModelId={defaultModel}
+              onModelChange={handleModelChange}
+              className="w-auto"
+            />
           </div>
         </div>
       </section>

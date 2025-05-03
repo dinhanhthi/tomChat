@@ -147,7 +147,7 @@ export default function AppHeader() {
           </Button>
 
           <Button asChild variant="ghost" size="iconBig" tooltip="Configs" tooltipPosition="bottom">
-            <Link href="/admin">
+            <Link href="/settings">
               <SlidersHorizontal />
             </Link>
           </Button>
