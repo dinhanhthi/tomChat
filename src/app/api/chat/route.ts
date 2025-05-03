@@ -1,8 +1,8 @@
 import { getServiceInfoFromModelId } from '@/lib/models'
 import { getServiceClient, isValidApiKey } from '@/lib/server-api-helpers'
 import { streamText } from 'ai'
-import * as validators from '../validate-key/validators'
 import { inspect } from 'util'
+import * as validators from '../validate-key/validators'
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30
