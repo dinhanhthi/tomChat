@@ -17,6 +17,7 @@ interface ModelSelectorProps {
   disabled?: boolean
   tooltip?: string
   isLoading?: boolean // add loading state
+  useFullModelName?: boolean // use the full model name in the button
 }
 
 export function ModelSelector({
@@ -26,7 +27,8 @@ export function ModelSelector({
   className,
   disabled,
   tooltip,
-  isLoading = false
+  isLoading = false,
+  useFullModelName = false
 }: ModelSelectorProps) {
   const [open, setOpen] = useState(false)
   const [currentModelId, setCurrentModelId] = useState(selectedModelId)
@@ -92,7 +94,7 @@ export function ModelSelector({
                     }
                   )}
                 >
-                  {selectedModel?.shortName || selectedModel?.name}
+                  {(useFullModelName ? selectedModel?.name : selectedModel?.shortName) || selectedModel?.name}
                 </div>
                 <ChevronsUpDown
                   className={cn('h-4 w-4 shrink-0 opacity-70 group-hover:opacity-80', {
